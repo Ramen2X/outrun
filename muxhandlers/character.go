@@ -7,6 +7,7 @@ import (
 
 	"github.com/fluofoxxo/outrun/analytics"
 	"github.com/fluofoxxo/outrun/analytics/factors"
+	"github.com/fluofoxxo/outrun/config"
 	"github.com/fluofoxxo/outrun/consts"
 	"github.com/fluofoxxo/outrun/db"
 	"github.com/fluofoxxo/outrun/emess"
@@ -119,7 +120,23 @@ func UpgradeCharacter(helper *helper.Helper) {
 	}
 
 	baseInfo := helper.BaseInfo(emess.OK, int64(sendStatus))
-	response := responses.DefaultUpgradeCharacter(baseInfo, player)
+	respPlayer := player
+	if request.Version == "1.1.4" { // must send fewer characters
+		// only get first 21 characters
+		// TODO: enforce order 300000 to 300020?
+		//cState = cState[:len(cState)-(len(cState)-10)]
+		cState := respPlayer.CharacterState
+		cState = cState[:16]
+		if config.CFile.DebugPrints {
+			helper.Out("cState length: " + strconv.Itoa(len(cState)))
+			helper.Out("Sent character IDs: ")
+			for _, char := range cState {
+				helper.Out(char.ID)
+			}
+		}
+		respPlayer.CharacterState = cState
+	}
+	response := responses.DefaultUpgradeCharacter(baseInfo, respPlayer)
 	err = helper.SendResponse(response)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)

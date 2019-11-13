@@ -21,7 +21,7 @@ func DefaultMileageReward(point int64) MileageReward {
         strconv.Itoa(int(enums.ItemIDInvincible)),
         1,
         point,
-        690, // 11 minutes, 30 seconds
+        -1, // 11 minutes, 30 seconds
     }
 }
 

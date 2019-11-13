@@ -352,91 +352,101 @@ func PostGameResults(helper *helper.Helper) {
 			subC,
 		}
 
-		player.MileageMapState.StageTotalScore += request.Score
-
-		goToNextChapter := request.ChapterClear == 1
-		//chaoEggs := request.GetChaoEgg
-		// TODO: Add chao eggs to player
-		newPoint := request.ReachPoint
-
-		goToNextEpisode := true
-		if goToNextChapter {
-			// Assumed this just means next episode...
-			maxChapters, episodeHasMultipleChapters := consts.EpisodeWithChapters[player.MileageMapState.Episode]
-			if episodeHasMultipleChapters {
-				goToNextEpisode = false
-				player.MileageMapState.Chapter++
-				player.MileageMapState.StageTotalScore = 0
-				if player.MileageMapState.Chapter > maxChapters {
-					// there's no more chapters for this episode!
-					goToNextEpisode = true
-				}
-			}
-			if goToNextEpisode {
-				player.MileageMapState.Episode++
-				player.MileageMapState.Chapter = 1
-				player.MileageMapState.Point = 0
-				player.MileageMapState.StageTotalScore = 0
-				if config.CFile.DebugPrints {
-					helper.Out(strconv.Itoa(int(player.MileageMapState.Episode)))
-				}
-				if config.CFile.Debug {
-					player.MileageMapState.Episode = 15
-				}
-			}
-			if player.MileageMapState.Episode > 50 { // if beat game, reset to 50-1
-				player.MileageMapState.Episode = 50
-				player.MileageMapState.Chapter = 1
-				player.MileageMapState.Point = 0
-				player.MileageMapState.StageTotalScore = 0
-				if config.CFile.DebugPrints {
-					helper.Out("Player (" + player.ID + ") beat the game!")
-				}
-			}
-		} else {
-			player.MileageMapState.Point = newPoint
-		}
-		if config.CFile.Debug {
-			if player.MileageMapState.Episode < 14 {
-				player.MileageMapState.Episode = 14
-			}
-		}
-		newRewardEpisode = player.MileageMapState.Episode
-		newRewardChapter = player.MileageMapState.Chapter
-		newRewardPoint = player.MileageMapState.Point
-		// add rewards to PlayerState
-		wonRewards := campaign.GetWonRewards(oldRewardEpisode, oldRewardChapter, oldRewardPoint, newRewardEpisode, newRewardChapter, newRewardPoint)
-		if config.CFile.DebugPrints {
-			helper.Out("wonRewards length: " + strconv.Itoa(len(wonRewards)))
-			helper.Out("Previous rings: " + strconv.Itoa(int(player.PlayerState.NumRings)))
-		}
-		newItems := player.PlayerState.Items
-		for _, reward := range wonRewards { // TODO: This is O(n^2). Maybe alleviate this?
+		if(request.EventId != 0) { // Is this an event stage?
+			
 			if config.CFile.DebugPrints {
-				helper.Out("Reward: " + reward.ItemID)
-				helper.Out("Reward amount: " + strconv.Itoa(int(reward.NumItem)))
+				helper.Out("Event ID: " + strconv.Itoa(int(request.EventId)))
+				helper.Out("Player got " + strconv.Itoa(int(request.EventValue))+ " event object(s)")
 			}
-			if reward.ItemID[2:] == "12" { // ID is an item
-				// check if the item is already in the player's inventory
-				for _, item := range player.PlayerState.Items {
-					if item.ID == reward.ItemID { // item found, increment amount
-						item.Amount += reward.NumItem
-						break
+			player.EventState.Param += request.EventValue
+			//TODO: Add event incentives
+		} else {
+			player.MileageMapState.StageTotalScore += request.Score
+
+			goToNextChapter := request.ChapterClear == 1
+			//chaoEggs := request.GetChaoEgg
+			// TODO: Add chao eggs to player
+			newPoint := request.ReachPoint
+
+			goToNextEpisode := true
+			if goToNextChapter {
+				// Assumed this just means next episode...
+				maxChapters, episodeHasMultipleChapters := consts.EpisodeWithChapters[player.MileageMapState.Episode]
+				if episodeHasMultipleChapters {
+					goToNextEpisode = false
+					player.MileageMapState.Chapter++
+					player.MileageMapState.StageTotalScore = 0
+					if player.MileageMapState.Chapter > maxChapters {
+						// there's no more chapters for this episode!
+						goToNextEpisode = true
 					}
 				}
-			} else if reward.ItemID == strconv.Itoa(enums.ItemIDRing) { // Rings
-				player.PlayerState.NumRings += reward.NumItem
-			} else if reward.ItemID == strconv.Itoa(enums.ItemIDRedRing) { // Red rings
-				player.PlayerState.NumRedRings += reward.NumItem
+				if goToNextEpisode {
+					player.MileageMapState.Episode++
+					player.MileageMapState.Chapter = 1
+					player.MileageMapState.Point = 0
+					player.MileageMapState.StageTotalScore = 0
+					if config.CFile.DebugPrints {
+						helper.Out(strconv.Itoa(int(player.MileageMapState.Episode)))
+					}
+					if config.CFile.Debug {
+						player.MileageMapState.Episode = 15
+					}
+				}
+				if player.MileageMapState.Episode > 50 { // if beat game, reset to 50-1
+					player.MileageMapState.Episode = 50
+					player.MileageMapState.Chapter = 1
+					player.MileageMapState.Point = 0
+					player.MileageMapState.StageTotalScore = 0
+					if config.CFile.DebugPrints {
+						helper.Out("Player (" + player.ID + ") beat the game!")
+					}
+				}
 			} else {
-				helper.Out("Unknown reward '" + reward.ItemID + "', ignoring")
+				player.MileageMapState.Point = newPoint
 			}
-			// TODO: allow for characters to join the cast, like Tails on 11-1.1
+			if config.CFile.Debug {
+				if player.MileageMapState.Episode < 14 {
+					player.MileageMapState.Episode = 14
+				}
+			}
+			newRewardEpisode = player.MileageMapState.Episode
+			newRewardChapter = player.MileageMapState.Chapter
+			newRewardPoint = player.MileageMapState.Point
+			// add rewards to PlayerState
+			wonRewards := campaign.GetWonRewards(oldRewardEpisode, oldRewardChapter, oldRewardPoint, newRewardEpisode, newRewardChapter, newRewardPoint)
+			if config.CFile.DebugPrints {
+				helper.Out("wonRewards length: " + strconv.Itoa(len(wonRewards)))
+				helper.Out("Previous rings: " + strconv.Itoa(int(player.PlayerState.NumRings)))
+			}
+			newItems := player.PlayerState.Items
+			for _, reward := range wonRewards { // TODO: This is O(n^2). Maybe alleviate this?
+				if config.CFile.DebugPrints {
+					helper.Out("Reward: " + reward.ItemID)
+					helper.Out("Reward amount: " + strconv.Itoa(int(reward.NumItem)))
+				}
+				if reward.ItemID[2:] == "12" { // ID is an item
+					// check if the item is already in the player's inventory
+					for _, item := range player.PlayerState.Items {
+						if item.ID == reward.ItemID { // item found, increment amount
+							item.Amount += reward.NumItem
+							break
+						}
+					}
+				} else if reward.ItemID == strconv.Itoa(enums.ItemIDRing) { // Rings
+					player.PlayerState.NumRings += reward.NumItem
+				} else if reward.ItemID == strconv.Itoa(enums.ItemIDRedRing) { // Red rings
+					player.PlayerState.NumRedRings += reward.NumItem
+				} else {
+					helper.Out("Unknown reward '" + reward.ItemID + "', ignoring")
+				}
+				// TODO: allow for characters to join the cast, like Tails on 11-1.1
+			}
+			if config.CFile.DebugPrints {
+				helper.Out("Current rings: " + strconv.Itoa(int(player.PlayerState.NumRings)))
+			}
+			player.PlayerState.Items = newItems
 		}
-		if config.CFile.DebugPrints {
-			helper.Out("Current rings: " + strconv.Itoa(int(player.PlayerState.NumRings)))
-		}
-		player.PlayerState.Items = newItems
 	}
 
 	if config.CFile.DebugPrints {
@@ -452,7 +462,23 @@ func PostGameResults(helper *helper.Helper) {
 	subCIndex := player.IndexOfChara(subC.ID)   // TODO: check if -1
 
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
-	response := responses.DefaultPostGameResults(baseInfo, player, playCharacters, incentives)
+	respPlayer := player
+	if request.Version == "1.1.4" { // must send fewer characters
+		// only get first 21 characters
+		// TODO: enforce order 300000 to 300020?
+		//cState = cState[:len(cState)-(len(cState)-10)]
+		cState := respPlayer.CharacterState
+		cState = cState[:16]
+		if config.CFile.DebugPrints {
+			helper.Out("cState length: " + strconv.Itoa(len(cState)))
+			helper.Out("Sent character IDs: ")
+			for _, char := range cState {
+				helper.Out(char.ID)
+			}
+		}
+		respPlayer.CharacterState = cState
+	}
+	response := responses.DefaultPostGameResults(baseInfo, respPlayer, playCharacters, incentives, respPlayer.EventState)
 	// apply the save after the response so that we don't break the leveling
 	player.CharacterState[mainCIndex] = mainC
 	player.CharacterState[subCIndex] = subC

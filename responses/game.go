@@ -255,9 +255,10 @@ type PostGameResultsResponse struct {
 	MileageIncentiveList []obj.MileageIncentive `json:"mileageIncentiveList"`
 	EventIncentiveList   []obj.Item             `json:"eventIncentiveList"`
 	WheelOptions         netobj.WheelOptions    `json:"wheelOptions"`
+	EventState           netobj.EventState      `json:"eventState,omitempty"`
 }
 
-func PostGameResults(base responseobjs.BaseInfo, player netobj.Player, dci []obj.Incentive, ml []obj.Message, oml []obj.OperatorMessage, pcs []netobj.Character, mms netobj.MileageMapState, mil []obj.MileageIncentive, eil []obj.Item, wo netobj.WheelOptions) PostGameResultsResponse {
+func PostGameResults(base responseobjs.BaseInfo, player netobj.Player, dci []obj.Incentive, ml []obj.Message, oml []obj.OperatorMessage, pcs []netobj.Character, mms netobj.MileageMapState, mil []obj.MileageIncentive, eil []obj.Item, wo netobj.WheelOptions, es netobj.EventState) PostGameResultsResponse {
 	baseResponse := NewBaseResponse(base)
 	playerState := player.PlayerState
 	chaoState := player.ChaoState
@@ -286,10 +287,11 @@ func PostGameResults(base responseobjs.BaseInfo, player netobj.Player, dci []obj
 		mil,
 		eil,
 		wo,
+		es,
 	}
 }
 
-func DefaultPostGameResults(base responseobjs.BaseInfo, player netobj.Player, pcs []netobj.Character, incentives []obj.MileageIncentive) PostGameResultsResponse {
+func DefaultPostGameResults(base responseobjs.BaseInfo, player netobj.Player, pcs []netobj.Character, incentives []obj.MileageIncentive, es netobj.EventState) PostGameResultsResponse {
 	qpgrr := DefaultQuickPostGameResults(base, player, pcs)
 	mms := player.MileageMapState
 	//mil := []obj.MileageIncentive{}
@@ -304,6 +306,7 @@ func DefaultPostGameResults(base responseobjs.BaseInfo, player netobj.Player, pc
 		incentives,
 		eil,
 		wo,
+		es,
 	}
 }
 

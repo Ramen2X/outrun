@@ -1,6 +1,10 @@
 package responses
 
 import (
+	"strconv"
+	
+	"github.com/fluofoxxo/outrun/enums"
+	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/obj"
 	"github.com/fluofoxxo/outrun/responses/responseobjs"
 )
@@ -37,4 +41,90 @@ func DefaultEventList(base responseobjs.BaseInfo) EventListResponse {
 			*/
 		},
 	)
+}
+
+// 1.1.4 support
+type EventRewardListResponse struct {
+	BaseResponse
+	EventRewardList []obj.EventReward `json:"eventRewardList"`
+}
+
+func EventRewardList(base responseobjs.BaseInfo, eventRewardList []obj.EventReward) EventRewardListResponse {
+	baseResponse := NewBaseResponse(base)
+	out := EventRewardListResponse{
+		baseResponse,
+		eventRewardList,
+	}
+	return out
+}
+
+func DefaultEventRewardList(base responseobjs.BaseInfo) EventRewardListResponse {
+	//TODO: Get this from the config, and/or on a per-event basis
+	return EventRewardList(
+		base,
+		[]obj.EventReward{
+			obj.NewEventReward(
+				1,
+				1500,
+				strconv.Itoa(int(enums.ItemIDAsteroid)),
+				10,
+			),
+			obj.NewEventReward(
+				2,
+				3000,
+				strconv.Itoa(int(enums.ItemIDTrampoline)),
+				10,
+			),
+			obj.NewEventReward(
+				3,
+				5000,
+				strconv.Itoa(int(enums.ItemIDDrill)),
+				10,
+			),
+			obj.NewEventReward(
+				4,
+				7500,
+				strconv.Itoa(int(enums.ItemIDLaser)),
+				15,
+			),
+			obj.NewEventReward(
+				5,
+				11000,
+				strconv.Itoa(int(enums.ItemIDInvincible)),
+				15,
+			),
+			obj.NewEventReward(
+				6,
+				20000,
+				strconv.Itoa(int(enums.ItemIDRing)),
+				50000,
+			),
+			obj.NewEventReward(
+				7,
+				30000,
+				strconv.Itoa(int(enums.ItemIDRedRing)),
+				500,
+			),
+			obj.NewEventReward(
+				8,
+				45000,
+				strconv.Itoa(int(enums.ChaoIDMotherWisp)),
+				1,
+			),
+		},
+	)
+}
+
+type EventStateResponse struct {
+	BaseResponse
+	netobj.EventState `json:"eventState"`
+}
+
+func EventState(base responseobjs.BaseInfo, eventState netobj.EventState) EventStateResponse {
+	baseResponse := NewBaseResponse(base)
+	out := EventStateResponse{
+		baseResponse,
+		eventState,
+	}
+	return out
 }

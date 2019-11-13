@@ -24,6 +24,8 @@ type PostGameResultsRequest struct {
 	GetChaoEgg    int64 `json:"getChaoEgg"`
 	NumBossAttack int64 `json:"numBossAttack,string"`
 	ReachPoint    int64 `json:"reachPoint,string"`
+	EventId       int64 `json:"eventId,string"`
+	EventValue    int64 `json:"eventValue,string"`
 }
 
 type QuickActStartRequest struct {

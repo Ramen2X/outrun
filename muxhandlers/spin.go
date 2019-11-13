@@ -163,7 +163,21 @@ func CommitWheelSpin(helper *helper.Helper) {
 	}
 
 	baseInfo := helper.BaseInfo(emess.OK, responseStatus)
-	response := responses.WheelSpin(baseInfo, player.PlayerState, player.CharacterState, player.ChaoState, player.LastWheelOptions)
+	cState := player.CharacterState
+	if request.Version == "1.1.4" { // must send fewer characters
+		// only get first 21 characters
+		// TODO: enforce order 300000 to 300020?
+		//cState = cState[:len(cState)-(len(cState)-10)]
+		cState = cState[:16]
+		if config.CFile.DebugPrints {
+			helper.Out("cState length: " + strconv.Itoa(len(cState)))
+			helper.Out("Sent character IDs: ")
+			for _, char := range cState {
+				helper.Out(char.ID)
+			}
+		}
+	}
+	response := responses.WheelSpin(baseInfo, player.PlayerState, cState, player.ChaoState, player.LastWheelOptions)
 
 	err = db.SavePlayer(player)
 	if err != nil {
@@ -180,4 +194,14 @@ func CommitWheelSpin(helper *helper.Helper) {
 	if err != nil {
 		helper.WarnErr("Error storing analytics (AnalyticTypeSpinItemRoulette)", err)
 	}
+}
+
+// 1.1.4 support
+func GetWheelSpinInfo(helper *helper.Helper) {
+    baseInfo := helper.BaseInfo(emess.OK, status.OK)
+    response := responses.DefaultWheelSpinInfo(baseInfo)
+    err := helper.SendResponse(response)
+    if err != nil {
+        helper.InternalErr("Error sending response", err)
+    }
 }

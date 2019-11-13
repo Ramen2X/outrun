@@ -1,6 +1,7 @@
 package responses
 
 import (
+    "github.com/fluofoxxo/outrun/netobj"
     "github.com/fluofoxxo/outrun/obj"
     "github.com/fluofoxxo/outrun/obj/constobjs"
     "github.com/fluofoxxo/outrun/responses/responseobjs"
@@ -66,12 +67,42 @@ func WeeklyLeaderboardEntries(base responseobjs.BaseInfo, pe obj.LeaderboardEntr
     return out
 }
 
-func DefaultWeeklyLeaderboardEntries(base responseobjs.BaseInfo, uid string, mode int64) WeeklyLeaderboardEntriesResponse {
+func DefaultWeeklyLeaderboardEntries(base responseobjs.BaseInfo, player netobj.Player, mode int64) WeeklyLeaderboardEntriesResponse {
     startTime := now.BeginningOfDay().UTC().Unix()
     resetTime := startTime + 86400 // +1 Day
+    highScore := int(player.PlayerState.HighScore)
+    league := player.PlayerState.RankingLeague
+    if mode == 1 {
+        highScore = int(player.PlayerState.TimedHighScore)
+        league = player.PlayerState.QuickRankingLeague
+    }
     return WeeklyLeaderboardEntries(
         base,
-        obj.DefaultLeaderboardEntry(uid),
+        //obj.DefaultLeaderboardEntry(player.ID),
+        obj.NewLeaderboardEntry(
+		player.ID,
+		player.Username,
+		"",
+		0,
+		1,
+		int64(highScore), //sloppy hack to prevent compiler error
+		0,
+		0,
+		0,
+		player.PlayerState.Rank,
+		player.LastLogin,
+		player.PlayerState.MainCharaID,
+		0,
+		player.PlayerState.SubCharaID,
+		0,
+		player.PlayerState.MainChaoID,
+		0,
+		player.PlayerState.SubChaoID,
+		0,
+		1,
+		league,
+		int64(highScore),
+	),
         -1,
         startTime,
         resetTime,
