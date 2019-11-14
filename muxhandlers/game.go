@@ -237,6 +237,9 @@ func QuickPostGameResults(helper *helper.Helper) {
 	// apply the save after the response so that we don't break the leveling
 	player.CharacterState[mainCIndex] = mainC
 	player.CharacterState[subCIndex] = subC
+	if config.CFile.DebugPrints {
+		helper.Out("CheatResult: "+request.CheatResult)
+	}
 	err = db.SavePlayer(player)
 	if err != nil {
 		helper.InternalErr("Error saving player", err)
@@ -482,6 +485,9 @@ func PostGameResults(helper *helper.Helper) {
 	// apply the save after the response so that we don't break the leveling
 	player.CharacterState[mainCIndex] = mainC
 	player.CharacterState[subCIndex] = subC
+	if config.CFile.DebugPrints {
+		helper.Out("CheatResult: "+request.CheatResult)
+	}
 	err = db.SavePlayer(player)
 	if err != nil {
 		helper.InternalErr("Error saving player", err)
