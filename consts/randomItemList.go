@@ -56,3 +56,5 @@ var NormalWheelItemAmountRange = map[string]AmountRange{
     strconv.Itoa(enums.IDTypeRedRing):         AmountRange{20, 100, 20},
     strconv.Itoa(enums.IDTypeItemRouletteWin): AmountRange{1, 1, 1},
 }
+
+

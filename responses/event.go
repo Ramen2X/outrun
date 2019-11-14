@@ -108,7 +108,7 @@ func DefaultEventRewardList(base responseobjs.BaseInfo) EventRewardListResponse 
 			obj.NewEventReward(
 				8,
 				45000,
-				strconv.Itoa(int(enums.ChaoIDMotherWisp)),
+				strconv.Itoa(int(enums.ChaoIDKingBoomBoo)),
 				1,
 			),
 		},

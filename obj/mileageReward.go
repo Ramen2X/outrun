@@ -21,7 +21,7 @@ func DefaultMileageReward(point int64) MileageReward {
         strconv.Itoa(int(enums.ItemIDInvincible)),
         1,
         point,
-        -1, // 11 minutes, 30 seconds
+        time.Now().UTC().Unix() + 690, // 11 minutes, 30 seconds
     }
 }
 
@@ -32,6 +32,6 @@ func NewMileageReward(itype, itemID, numItem, point int64) MileageReward {
         strconv.Itoa(int(itemID)),
         numItem,
         point,
-        time.Now().UTC().Unix() + 690, // 11 minutes, 30 seconds
+        -1, // no time limit
     }
 }
