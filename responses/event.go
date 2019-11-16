@@ -1,9 +1,9 @@
 package responses
 
 import (
-	"strconv"
+//	"strconv"
 	
-	"github.com/fluofoxxo/outrun/enums"
+//	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/obj"
 	"github.com/fluofoxxo/outrun/responses/responseobjs"
@@ -63,7 +63,7 @@ func DefaultEventRewardList(base responseobjs.BaseInfo) EventRewardListResponse 
 	return EventRewardList(
 		base,
 		[]obj.EventReward{
-			obj.NewEventReward(
+			/*obj.NewEventReward(
 				1,
 				1500,
 				strconv.Itoa(int(enums.ItemIDAsteroid)),
@@ -110,7 +110,7 @@ func DefaultEventRewardList(base responseobjs.BaseInfo) EventRewardListResponse 
 				45000,
 				strconv.Itoa(int(enums.ChaoIDKingBoomBoo)),
 				1,
-			),
+			),*/
 		},
 	)
 }
@@ -127,4 +127,18 @@ func EventState(base responseobjs.BaseInfo, eventState netobj.EventState) EventS
 		eventState,
 	}
 	return out
+}
+
+type EventUserRaidbossStateResponse struct {
+    BaseResponse
+    netobj.EventUserRaidbossState `json:"eventUserRaidboss"`
+}
+
+func EventUserRaidbossState(base responseobjs.BaseInfo, userRaidbossState netobj.EventUserRaidbossState) EventUserRaidbossStateResponse {
+    baseResponse := NewBaseResponse(base)
+    out := EventUserRaidbossStateResponse{
+        baseResponse,
+        userRaidbossState,
+    }
+    return out
 }

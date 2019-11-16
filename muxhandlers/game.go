@@ -90,8 +90,37 @@ func ActStart(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
-	baseInfo := helper.BaseInfo(emess.OK, status.OK)
-	response := responses.DefaultActStart(baseInfo, player)
+	src := helper.GetGameRequest()
+	var request requests.Base
+	err = json.Unmarshal(src, &request)
+	if err != nil {
+		helper.Err("Error unmarshalling", err)
+		return
+	}
+	responseStatus := status.OK
+	if player.PlayerState.Energy > 0 {
+		// lives are not decremented yet
+	} else {
+		responseStatus = status.NotEnoughEnergy
+	}
+	baseInfo := helper.BaseInfo(emess.OK, responseStatus)
+	respPlayer := player
+	if request.Version == "1.1.4" { // must send fewer characters
+		// only get first 21 characters
+		// TODO: enforce order 300000 to 300020?
+		//cState = cState[:len(cState)-(len(cState)-10)]
+		cState := respPlayer.CharacterState
+		cState = cState[:16]
+		if config.CFile.DebugPrints {
+			helper.Out("cState length: " + strconv.Itoa(len(cState)))
+			helper.Out("Sent character IDs: ")
+			for _, char := range cState {
+				helper.Out(char.ID)
+			}
+		}
+		respPlayer.CharacterState = cState
+	}
+	response := responses.DefaultActStart(baseInfo, respPlayer)
 	err = helper.SendResponse(response)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
@@ -109,13 +138,18 @@ func ActRetry(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
-	player.PlayerState.NumRedRings -= 5
-	err = db.SavePlayer(player)
-	if err != nil {
-		helper.InternalErr("Error saving player", err)
-		return
+	responseStatus := status.OK
+	if player.PlayerState.NumRedRings >= player.PlayerVarious.OnePlayContinueCount { //does the player actually have enough red rings to be revived?
+		player.PlayerState.NumRedRings -= player.PlayerVarious.OnePlayContinueCount
+		err = db.SavePlayer(player)
+		if err != nil {
+			helper.InternalErr("Error saving player", err)
+			return
+		}
+	} else {
+		responseStatus = status.NotEnoughRedRings
 	}
-	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	baseInfo := helper.BaseInfo(emess.OK, responseStatus)
 	response := responses.NewBaseResponse(baseInfo)
 	err = helper.SendResponse(response)
 	if err != nil {
@@ -362,7 +396,7 @@ func PostGameResults(helper *helper.Helper) {
 				helper.Out("Player got " + strconv.Itoa(int(request.EventValue))+ " event object(s)")
 			}
 			player.EventState.Param += request.EventValue
-			//TODO: Add event incentives
+			//TODO: Actually store rewards 
 		} else {
 			player.MileageMapState.StageTotalScore += request.Score
 

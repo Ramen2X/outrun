@@ -144,6 +144,7 @@ func main() {
 	//1.1.4
 	router.HandleFunc(prefix+"/Event/getEventReward/", h(muxhandlers.GetEventReward, LogExecutionTime))
 	router.HandleFunc(prefix+"/Event/getEventState/", h(muxhandlers.GetEventState, LogExecutionTime))
+	router.HandleFunc(prefix+"/Event/getEventUserRaidboss/", h(muxhandlers.GetEventUserRaidbossState, LogExecutionTime))
 	router.HandleFunc(prefix+"/Spin/getWheelSpinInfo/", h(muxhandlers.GetWheelSpinInfo, LogExecutionTime))
 
 	// Server information
