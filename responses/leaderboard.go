@@ -69,53 +69,53 @@ func WeeklyLeaderboardEntries(base responseobjs.BaseInfo, pe obj.LeaderboardEntr
 }
 
 func DefaultWeeklyLeaderboardEntries(base responseobjs.BaseInfo, player netobj.Player, mode int64) WeeklyLeaderboardEntriesResponse {
-/* //old code
-    startTime := now.BeginningOfDay().UTC().Unix()
-    resetTime := startTime + 86400 // +1 Day
-    highScore := int(player.PlayerState.HighScore)
-    league := player.PlayerState.RankingLeague
-    if mode == 1 {
-        highScore = int(player.PlayerState.TimedHighScore)
-        league = player.PlayerState.QuickRankingLeague
-    }
-    return WeeklyLeaderboardEntries(
-        base,
-        //obj.DefaultLeaderboardEntry(player.ID),
-        obj.NewLeaderboardEntry(
-		player.ID,
-		player.Username,
-		"",
-		0,
-		1,
-		int64(highScore), //sloppy hack to prevent compiler error
-		0,
-		0,
-		0,
-		player.PlayerState.Rank,
-		player.LastLogin,
-		player.PlayerState.MainCharaID,
-		0,
-		player.PlayerState.SubCharaID,
-		0,
-		player.PlayerState.MainChaoID,
-		0,
-		player.PlayerState.SubChaoID,
-		0,
-		1,
-		league,
-		int64(highScore),
-	),
-        -1,
-        startTime,
-        resetTime,
-        1,
-        mode,
-        0,
-        []obj.LeaderboardEntry{},
-    )*/
+	/* //old code
+	       startTime := now.BeginningOfDay().UTC().Unix()
+	       resetTime := startTime + 86400 // +1 Day
+	       highScore := int(player.PlayerState.HighScore)
+	       league := player.PlayerState.RankingLeague
+	       if mode == 1 {
+	           highScore = int(player.PlayerState.TimedHighScore)
+	           league = player.PlayerState.QuickRankingLeague
+	       }
+	       return WeeklyLeaderboardEntries(
+	           base,
+	           //obj.DefaultLeaderboardEntry(player.ID),
+	           obj.NewLeaderboardEntry(
+	   		player.ID,
+	   		player.Username,
+	   		"",
+	   		0,
+	   		1,
+	   		int64(highScore), //sloppy hack to prevent compiler error
+	   		0,
+	   		0,
+	   		0,
+	   		player.PlayerState.Rank,
+	   		player.LastLogin,
+	   		player.PlayerState.MainCharaID,
+	   		0,
+	   		player.PlayerState.SubCharaID,
+	   		0,
+	   		player.PlayerState.MainChaoID,
+	   		0,
+	   		player.PlayerState.SubChaoID,
+	   		0,
+	   		1,
+	   		league,
+	   		int64(highScore),
+	   	),
+	           -1,
+	           startTime,
+	           resetTime,
+	           1,
+	           mode,
+	           0,
+	           []obj.LeaderboardEntry{},
+	       )*/
 	startTime := now.BeginningOfDay().UTC().Unix()
 	resetTime := startTime + 86400 // +1 Day
-	myEntry := conversion.PlayerToLeaderboardEntry(player)
+	myEntry := conversion.PlayerToLeaderboardEntry(player, int64(1), mode)
 	return WeeklyLeaderboardEntries(
 		base,
 		//obj.DefaultLeaderboardEntry(uid),

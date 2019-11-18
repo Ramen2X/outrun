@@ -8,26 +8,26 @@ import (
 	"github.com/fluofoxxo/outrun/obj"
 )
 
-func PlayerToLeaderboardEntry(player netobj.Player) obj.LeaderboardEntry {
-	friendID := player.ID // TODO: is this right?
+func PlayerToLeaderboardEntry(player netobj.Player, place, mode int64) obj.LeaderboardEntry {
+	friendID := player.ID
 	name := player.Username
 	url := player.Username + "_findme" // TODO: only used for testing right now
-	grade := player.PlayerState.Rank   // TODO: _probably_ what this is, but unsure
+	grade := place
 	exposeOnline := int64(0)
 	rankingScore := player.PlayerState.HighScore // TODO: this probably differs based on mode...
 	rankChanged := int64(2)
 	isSentEnergy := int64(0)
-	expireTime := time.Now().UTC().Unix() + 12345
+	expireTime := time.Now().UTC().Unix() + 86400
 	numRank := player.PlayerState.Rank
 	loginTime := player.LastLogin
 	mainCharaID := player.PlayerState.MainCharaID
-	mainCharaLevel := int64(12) // TODO: remove testing
+	mainCharaLevel := player.CharacterState[0].Level // TODO: Is this right?
 	subCharaID := player.PlayerState.SubCharaID
-	subCharaLevel := int64(34) // TODO: remove testing
+	subCharaLevel := player.CharacterState[1].Level
 	mainChaoID := player.PlayerState.MainChaoID
-	mainChaoLevel := int64(5) // TODO: remove testing
+	mainChaoLevel := player.ChaoState[0].Level
 	subChaoID := player.PlayerState.SubChaoID
-	subChaoLevel := int64(6) // TODO: remove testing
+	subChaoLevel := player.ChaoState[1].Level
 	language := int64(enums.LangEnglish)
 	league := player.PlayerState.RankingLeague // TODO: This should be changed to QuickRankingLeague when in that mode
 	maxScore := player.PlayerState.HighScore
