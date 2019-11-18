@@ -2,9 +2,7 @@ package muxhandlers
 
 import (
 	"encoding/json"
-	"fmt"
 
-	"github.com/fluofoxxo/outrun/config"
 	"github.com/fluofoxxo/outrun/config/eventconf"
 	"github.com/fluofoxxo/outrun/db"
 	"github.com/fluofoxxo/outrun/emess"
@@ -39,11 +37,9 @@ func GetEventList(helper *helper.Helper) {
 			}
 		}
 	}
-	if config.CFile.DebugPrints {
-		helper.Out("Personal event list: " + fmt.Sprintln(player.PersonalEvents))
-		helper.Out("Global event list: " + fmt.Sprintln(eventconf.CFile.CurrentEvents))
-		helper.Out("Event list: " + fmt.Sprintln(eventList))
-	}
+	helper.DebugOut("Personal event list: %v", player.PersonalEvents)
+	helper.DebugOut("Global event list: %v", eventconf.CFile.CurrentEvents)
+	helper.DebugOut("Event list: %v", eventList)
 	response := responses.EventList(baseInfo, eventList)
 	err = helper.SendResponse(response)
 	if err != nil {
@@ -86,7 +82,7 @@ func GetEventState(helper *helper.Helper) {
 		player.EventState.PreviousEventID = request.EventID
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
-	response := responses.EventState(baseInfo, player.EventState)	
+	response := responses.EventState(baseInfo, player.EventState)
 	err = db.SavePlayer(player)
 	if err != nil {
 		helper.InternalErr("Error saving player", err)

@@ -147,6 +147,9 @@ func main() {
 	router.HandleFunc(prefix+"/Event/getEventUserRaidboss/", h(muxhandlers.GetEventUserRaidbossState, LogExecutionTime))
 	router.HandleFunc(prefix+"/Spin/getWheelSpinInfo/", h(muxhandlers.GetWheelSpinInfo, LogExecutionTime))
 
+	// Character transactions
+	router.HandleFunc(prefix+"/Character/unlockedCharacter/", h(muxhandlers.UnlockedCharacter, LogExecutionTime))
+
 	// Server information
 	if config.CFile.EnablePublicStats {
 		router.HandleFunc("/outrunInfo/stats", inforeporters.Stats)

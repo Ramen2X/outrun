@@ -78,10 +78,8 @@ func EquipChao(helper *helper.Helper) {
 			helper.WarnErr("Error storing analytics (AnalyticTypeChangeSubChao)", err)
 		}
 	}
-	if config.CFile.DebugPrints {
-		helper.Out("Main Chao: " + mainChaoID)
-		helper.Out("Sub Chao: " + subChaoID)
-	}
+	helper.DebugOut("Main Chao: %s", mainChaoID)
+	helper.DebugOut("Sub Chao: %s", subChaoID)
 	if config.CFile.Debug {
 		// TODO: remove
 		player.PlayerState.NumRedRings += 150
@@ -117,24 +115,17 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 	prize := netobj.CharacterIDToChaoSpinPrize("0") // This will almost certainly give the game errors if improperly counting payment!
 	spinResults := []netobj.ChaoSpinResult{}        // TODO: Find out why it's an array
 
-	if config.CFile.DebugPrints {
-		spf := func(a ...interface{}) string {
-			return fmt.Sprintf("%v", a...)
-		}
-		helper.Out("PRE")
-		helper.Out("Items: " + spf(items))
-		helper.Out("Weights: " + spf(weights))
-		helper.Out("Chao Eggs (Player): " + spf(player.PlayerState.ChaoEggs))
-		helper.Out("Chao Eggs (ChaoWheelOptions): " + spf(player.ChaoRouletteGroup.ChaoWheelOptions.NumSpecialEgg))
-		helper.Out("Chao Roulette tickets (Player): " + spf(player.PlayerState.NumChaoRouletteTicket))
-		helper.Out("Chao Roulette tickets (ChaoWheelOptions): " + spf(player.ChaoRouletteGroup.ChaoWheelOptions.NumChaoRouletteToken))
-		helper.Out("Chao Roulette spin cost: " + spf(player.ChaoRouletteGroup.ChaoWheelOptions.SpinCost))
-		helper.Out("Tails stars: " + spf(player.CharacterState[1].Star)) // TODO: volatile, remove
-		helper.Out("Red Rings: " + spf(player.PlayerState.NumRedRings))
-		helper.Out("Bought red rings: " + spf(player.PlayerState.NumBuyRedRings))
-		helper.Out("Spin count: " + spf(request.Count))
-		helper.Out("---------------------------------------")
-	}
+	helper.DebugOut("PRE")
+	helper.DebugOut("Items: %s", items)
+	helper.DebugOut("Weights: %s", items)
+	helper.DebugOut("Chao Eggs (Player): %v", player.PlayerState.ChaoEggs)
+	helper.DebugOut("Chao Eggs (ChaoWheelOptions): %v", player.ChaoRouletteGroup.ChaoWheelOptions.NumSpecialEgg)
+	helper.DebugOut("Chao Roulette tickets (Player): %v", player.PlayerState.NumChaoRouletteTicket)
+	helper.DebugOut("Chao Roulette tickets (ChaoWheelOptions): %v", player.ChaoRouletteGroup.ChaoWheelOptions.NumChaoRouletteToken)
+	helper.DebugOut("Chao Roulette spin cost: %v", player.ChaoRouletteGroup.ChaoWheelOptions.SpinCost)
+	helper.DebugOut("Red Rings: %v", player.PlayerState.NumRedRings)
+	helper.DebugOut("Bought red rings: %v", player.PlayerState.NumBuyRedRings)
+	helper.DebugOut("Spin count: %v", request.Count)
 
 	// reset ChaoRouletteInfo if needed
 	rightNow := time.Now().Unix()
@@ -242,10 +233,8 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 		// create a new wheel; must be done after ALL player operations are done
 		chaoCanBeLevelled := !player.AllChaoMaxLevel()
 		charactersCanBeLevelled := !player.AllCharactersMaxLevel()
-		if config.CFile.DebugPrints {
-			helper.Out("Chao can be levelled: " + strconv.FormatBool(chaoCanBeLevelled))
-			helper.Out("Characters can be levelled: " + strconv.FormatBool(charactersCanBeLevelled))
-		}
+		helper.DebugOut("Chao can be levelled: %v", chaoCanBeLevelled)
+		helper.DebugOut("Characters can be levelled: %v", charactersCanBeLevelled)
 		fixRarities := func(rarities []int64) ([]int64, bool) {
 			newRarities := []int64{}
 			if !chaoCanBeLevelled && !charactersCanBeLevelled {
@@ -293,9 +282,7 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 		}
 		player.ChaoRouletteGroup.WheelChao = newItems
 		player.ChaoRouletteGroup.ChaoWheelOptions.Rarity = newRarities
-		if config.CFile.DebugPrints {
-			helper.Out(fmt.Sprintf("%v", newRarities))
-		}
+		helper.DebugOut("Rarities: %v", newRarities)
 		if config.CFile.Debug {
 			player.ChaoRouletteGroup.WheelChao = []string{enums.CTStrTails, enums.CTStrTails, enums.CTStrTails, enums.CTStrTails, enums.CTStrTails, enums.CTStrTails, enums.CTStrTails, enums.CTStrTails}
 		}
@@ -312,20 +299,14 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 		availStatus = status.RouletteUseLimit
 	}
 
-	if config.CFile.DebugPrints {
-		spf := func(a ...interface{}) string {
-			return fmt.Sprintf("%v", a...)
-		}
-		helper.Out("POST")
-		helper.Out("Items: " + spf(player.ChaoRouletteGroup.WheelChao))
-		helper.Out("Weights: " + spf(player.ChaoRouletteGroup.ChaoWheelOptions.ItemWeight))
-		helper.Out("Chao Eggs (Player): " + spf(player.PlayerState.ChaoEggs))
-		helper.Out("Chao Eggs (ChaoWheelOptions): " + spf(player.ChaoRouletteGroup.ChaoWheelOptions.NumSpecialEgg))
-		helper.Out("Chao Roulette tickets (Player): " + spf(player.PlayerState.NumChaoRouletteTicket))
-		helper.Out("Chao Roulette tickets (ChaoWheelOptions): " + spf(player.ChaoRouletteGroup.ChaoWheelOptions.NumChaoRouletteToken))
-		helper.Out("Chao Roulette spin cost: " + spf(player.ChaoRouletteGroup.ChaoWheelOptions.SpinCost))
-		helper.Out("Tails stars: " + spf(player.CharacterState[1].Star)) // TODO: volatile, remove
-	}
+	helper.DebugOut("POST")
+	helper.DebugOut("Items: %s", items)
+	helper.DebugOut("Weights: %s", items)
+	helper.DebugOut("Chao Eggs (Player): %v", player.PlayerState.ChaoEggs)
+	helper.DebugOut("Chao Eggs (ChaoWheelOptions): %v", player.ChaoRouletteGroup.ChaoWheelOptions.NumSpecialEgg)
+	helper.DebugOut("Chao Roulette tickets (Player): %v", player.PlayerState.NumChaoRouletteTicket)
+	helper.DebugOut("Chao Roulette tickets (ChaoWheelOptions): %v", player.ChaoRouletteGroup.ChaoWheelOptions.NumChaoRouletteToken)
+	helper.DebugOut("Chao Roulette spin cost: %v", player.ChaoRouletteGroup.ChaoWheelOptions.SpinCost)
 
 	baseInfo := helper.BaseInfo(emess.OK, availStatus)
 	cState := player.CharacterState

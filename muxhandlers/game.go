@@ -272,7 +272,7 @@ func QuickPostGameResults(helper *helper.Helper) {
 	player.CharacterState[mainCIndex] = mainC
 	player.CharacterState[subCIndex] = subC
 	if config.CFile.DebugPrints {
-		helper.Out("CheatResult: "+request.CheatResult)
+		helper.Out("CheatResult: " + request.CheatResult)
 	}
 	err = db.SavePlayer(player)
 	if err != nil {
@@ -319,14 +319,12 @@ func PostGameResults(helper *helper.Helper) {
 		mainC,
 		subC,
 	}
-	if config.CFile.DebugPrints {
-		helper.Out("Pre-function")
-		helper.Out(strconv.Itoa(int(player.MileageMapState.Chapter)))
-		helper.Out(strconv.Itoa(int(player.MileageMapState.Episode)))
-		helper.Out(strconv.Itoa(int(player.MileageMapState.StageTotalScore)))
-		helper.Out(strconv.Itoa(int(player.MileageMapState.Point)))
-		helper.Out(strconv.Itoa(int(request.Score)))
-	}
+	helper.DebugOut("Pre-function")
+	helper.DebugOut("Chapter: %v", player.MileageMapState.Chapter)
+	helper.DebugOut("Episode: %v", player.MileageMapState.Episode)
+	helper.DebugOut("StageTotalScore: %v", player.MileageMapState.StageTotalScore)
+	helper.DebugOut("Point: %v", player.MileageMapState.Point)
+	helper.DebugOut("request.Score: %v", request.Score)
 
 	incentives := constobjs.GetMileageIncentives(player.MileageMapState.Episode, player.MileageMapState.Chapter) // Game wants incentives in _current_ episode-chapter
 	var oldRewardEpisode, newRewardEpisode int64
@@ -389,14 +387,11 @@ func PostGameResults(helper *helper.Helper) {
 			subC,
 		}
 
-		if(request.EventId != 0) { // Is this an event stage?
-			
-			if config.CFile.DebugPrints {
-				helper.Out("Event ID: " + strconv.Itoa(int(request.EventId)))
-				helper.Out("Player got " + strconv.Itoa(int(request.EventValue))+ " event object(s)")
-			}
+		if request.EventId != 0 { // Is this an event stage?
+			helper.DebugOut("Event ID: " + strconv.Itoa(int(request.EventId)))
+			helper.DebugOut("Player got " + strconv.Itoa(int(request.EventValue)) + " event object(s)")
 			player.EventState.Param += request.EventValue
-			//TODO: Actually store rewards 
+			//TODO: Actually store rewards
 		} else {
 			player.MileageMapState.StageTotalScore += request.Score
 
@@ -418,29 +413,25 @@ func PostGameResults(helper *helper.Helper) {
 						goToNextEpisode = true
 					}
 				}
-				if goToNextEpisode {
-					player.MileageMapState.Episode++
-					player.MileageMapState.Chapter = 1
-					player.MileageMapState.Point = 0
-					player.MileageMapState.StageTotalScore = 0
-					if config.CFile.DebugPrints {
-						helper.Out(strconv.Itoa(int(player.MileageMapState.Episode)))
-					}
-					if config.CFile.Debug {
-						player.MileageMapState.Episode = 15
-					}
-				}
-				if player.MileageMapState.Episode > 50 { // if beat game, reset to 50-1
-					player.MileageMapState.Episode = 50
-					player.MileageMapState.Chapter = 1
-					player.MileageMapState.Point = 0
-					player.MileageMapState.StageTotalScore = 0
-					if config.CFile.DebugPrints {
-						helper.Out("Player (" + player.ID + ") beat the game!")
-					}
+			}
+			if goToNextEpisode {
+				player.MileageMapState.Episode++
+				player.MileageMapState.Chapter = 1
+				player.MileageMapState.Point = 0
+				player.MileageMapState.StageTotalScore = 0
+				helper.DebugOut("goToNextEpisode -> Episode: %v", player.MileageMapState.Episode)
+				if config.CFile.Debug {
+					player.MileageMapState.Episode = 15
 				}
 			} else {
 				player.MileageMapState.Point = newPoint
+			}
+			if player.MileageMapState.Episode > 50 { // if beat game, reset to 50-1
+				player.MileageMapState.Episode = 50
+				player.MileageMapState.Chapter = 1
+				player.MileageMapState.Point = 0
+				player.MileageMapState.StageTotalScore = 0
+				helper.DebugOut("goToNextEpisode: Player (%s) beat the game!", player.ID)
 			}
 			if config.CFile.Debug {
 				if player.MileageMapState.Episode < 14 {
@@ -452,16 +443,12 @@ func PostGameResults(helper *helper.Helper) {
 			newRewardPoint = player.MileageMapState.Point
 			// add rewards to PlayerState
 			wonRewards := campaign.GetWonRewards(oldRewardEpisode, oldRewardChapter, oldRewardPoint, newRewardEpisode, newRewardChapter, newRewardPoint)
-			if config.CFile.DebugPrints {
-				helper.Out("wonRewards length: " + strconv.Itoa(len(wonRewards)))
-				helper.Out("Previous rings: " + strconv.Itoa(int(player.PlayerState.NumRings)))
-			}
+			helper.DebugOut("wonRewards length: %v", wonRewards)
+			helper.DebugOut("Previous rings: %v", player.PlayerState.NumRings)
 			newItems := player.PlayerState.Items
 			for _, reward := range wonRewards { // TODO: This is O(n^2). Maybe alleviate this?
-				if config.CFile.DebugPrints {
-					helper.Out("Reward: " + reward.ItemID)
-					helper.Out("Reward amount: " + strconv.Itoa(int(reward.NumItem)))
-				}
+				helper.DebugOut("Reward: %s", reward.ItemID)
+				helper.DebugOut("Reward amount: %v", reward.NumItem)
 				if reward.ItemID[2:] == "12" { // ID is an item
 					// check if the item is already in the player's inventory
 					for _, item := range player.PlayerState.Items {
@@ -479,21 +466,16 @@ func PostGameResults(helper *helper.Helper) {
 				}
 				// TODO: allow for characters to join the cast, like Tails on 11-1.1
 			}
-			if config.CFile.DebugPrints {
-				helper.Out("Current rings: " + strconv.Itoa(int(player.PlayerState.NumRings)))
-			}
+			helper.DebugOut("Current rings: %v", player.PlayerState.NumRings)
 			player.PlayerState.Items = newItems
 		}
 	}
 
-	if config.CFile.DebugPrints {
-		helper.Out("AFTER")
-		helper.Out(strconv.Itoa(int(player.MileageMapState.Chapter)))
-		helper.Out(strconv.Itoa(int(player.MileageMapState.Episode)))
-		helper.Out(strconv.Itoa(int(player.MileageMapState.StageTotalScore)))
-		helper.Out(strconv.Itoa(int(player.MileageMapState.Point)))
-		helper.Out(strconv.Itoa(int(request.Score)))
-	}
+	helper.DebugOut("Chapter: %v", player.MileageMapState.Chapter)
+	helper.DebugOut("Episode: %v", player.MileageMapState.Episode)
+	helper.DebugOut("StageTotalScore: %v", player.MileageMapState.StageTotalScore)
+	helper.DebugOut("Point: %v", player.MileageMapState.Point)
+	helper.DebugOut("request.Score: %v", request.Score)
 
 	mainCIndex := player.IndexOfChara(mainC.ID) // TODO: check if -1
 	subCIndex := player.IndexOfChara(subC.ID)   // TODO: check if -1
@@ -520,7 +502,7 @@ func PostGameResults(helper *helper.Helper) {
 	player.CharacterState[mainCIndex] = mainC
 	player.CharacterState[subCIndex] = subC
 	if config.CFile.DebugPrints {
-		helper.Out("CheatResult: "+request.CheatResult)
+		helper.Out("CheatResult: " + request.CheatResult)
 	}
 	err = db.SavePlayer(player)
 	if err != nil {
