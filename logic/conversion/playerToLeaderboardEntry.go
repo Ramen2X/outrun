@@ -18,7 +18,7 @@ func PlayerToLeaderboardEntry(player netobj.Player) obj.LeaderboardEntry {
 	rankChanged := int64(2)
 	isSentEnergy := int64(0)
 	expireTime := time.Now().UTC().Unix() + 12345
-	numRank := player.PlayerState.Rank + 1
+	numRank := player.PlayerState.Rank
 	loginTime := player.LastLogin
 	mainCharaID := player.PlayerState.MainCharaID
 	mainCharaLevel := int64(12) // TODO: remove testing
@@ -29,7 +29,7 @@ func PlayerToLeaderboardEntry(player netobj.Player) obj.LeaderboardEntry {
 	subChaoID := player.PlayerState.SubChaoID
 	subChaoLevel := int64(6) // TODO: remove testing
 	language := int64(enums.LangEnglish)
-	league := player.PlayerState.Rank // TODO: check if this is right
+	league := player.PlayerState.RankingLeague // TODO: This should be changed to QuickRankingLeague when in that mode
 	maxScore := player.PlayerState.HighScore
 	return obj.LeaderboardEntry{
 		friendID,
