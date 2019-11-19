@@ -93,6 +93,11 @@ func UpgradeWheelOptions(origWheel WheelOptions, numRouletteTicket, rouletteCoun
 			}
 			newWheel.RouletteRank = enums.WheelRankNormal
 		}
+	} else {
+		if config.CFile.DebugPrints {
+			log.Println("Didn't land on RouletteWin; reverting to Normal roulette")
+		}
+		newWheel.RouletteRank = enums.WheelRankNormal
 	}
 	return newWheel
 }
