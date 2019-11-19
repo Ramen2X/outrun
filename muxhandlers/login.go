@@ -2,6 +2,7 @@ package muxhandlers
 
 import (
 	"encoding/json"
+	"time"
 
 	"github.com/fluofoxxo/outrun/analytics"
 	"github.com/fluofoxxo/outrun/analytics/factors"
@@ -90,6 +91,12 @@ func Login(helper *helper.Helper) {
 		player, err := db.GetPlayer(uid)
 		if err != nil {
 			helper.InternalErr("Error getting player", err)
+			return
+		}
+		player.LastLogin = time.Now().UTC().Unix()
+		err = db.SavePlayer(player)
+		if err != nil {
+			helper.InternalErr("Error saving player", err)
 			return
 		}
 		response := responses.LoginSuccess(baseInfo, sid, player.Username)

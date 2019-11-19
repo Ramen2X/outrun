@@ -2,6 +2,7 @@ package muxhandlers
 
 import (
 	"encoding/json"
+	"strconv"
 
 	"github.com/fluofoxxo/outrun/emess"
 	"github.com/fluofoxxo/outrun/helper"
@@ -41,8 +42,13 @@ func GetWeeklyLeaderboardEntries(helper *helper.Helper) {
 		return
 	}
 	mode := request.Mode
+	first := request.First
+	lbtype := request.Type
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
-	response := responses.DefaultWeeklyLeaderboardEntries(baseInfo, player, mode)
+	helper.DebugOut("Start from: " + strconv.Itoa(int(first)))
+	helper.DebugOut("Mode: " + strconv.Itoa(int(mode)))
+	helper.DebugOut("Type: " + strconv.Itoa(int(lbtype)))
+	response := responses.DefaultWeeklyLeaderboardEntries(baseInfo, player, mode, lbtype, first)
 	err = helper.SendResponse(response)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)

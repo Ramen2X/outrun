@@ -18,6 +18,10 @@ type WeeklyLeaderboardOptionsResponse struct {
 	ResetTime int64 `json:"resetTime"`
 }
 
+/******************************************
+ *            Notes about type            *
+ ******************************************/
+
 func WeeklyLeaderboardOptions(base responseobjs.BaseInfo, mode, ltype, param, startTime, resetTime int64) WeeklyLeaderboardOptionsResponse {
 	baseResponse := NewBaseResponse(base)
 	return WeeklyLeaderboardOptionsResponse{
@@ -32,7 +36,7 @@ func WeeklyLeaderboardOptions(base responseobjs.BaseInfo, mode, ltype, param, st
 
 func DefaultWeeklyLeaderboardOptions(base responseobjs.BaseInfo, mode int64) WeeklyLeaderboardOptionsResponse {
 	startTime := now.BeginningOfDay().UTC().Unix()
-	resetTime := startTime + 86400 // + 1 Day
+	resetTime := now.EndOfWeek().UTC().Unix()
 	//ltype := int64(1)
 	ltype := int64(0)
 	//param := int64(0)
@@ -68,7 +72,7 @@ func WeeklyLeaderboardEntries(base responseobjs.BaseInfo, pe obj.LeaderboardEntr
 	return out
 }
 
-func DefaultWeeklyLeaderboardEntries(base responseobjs.BaseInfo, player netobj.Player, mode int64) WeeklyLeaderboardEntriesResponse {
+func DefaultWeeklyLeaderboardEntries(base responseobjs.BaseInfo, player netobj.Player, mode, lbtype, startfrom int64) WeeklyLeaderboardEntriesResponse {
 	/* //old code
 	       startTime := now.BeginningOfDay().UTC().Unix()
 	       resetTime := startTime + 86400 // +1 Day
@@ -114,8 +118,8 @@ func DefaultWeeklyLeaderboardEntries(base responseobjs.BaseInfo, player netobj.P
 	           []obj.LeaderboardEntry{},
 	       )*/
 	startTime := now.BeginningOfDay().UTC().Unix()
-	resetTime := startTime + 86400 // +1 Day
-	myEntry := conversion.PlayerToLeaderboardEntry(player, int64(1), mode)
+	resetTime := now.EndOfWeek().UTC().Unix()
+	myEntry := conversion.PlayerToLeaderboardEntry(player, int64(1), mode, lbtype)
 	return WeeklyLeaderboardEntries(
 		base,
 		//obj.DefaultLeaderboardEntry(uid),
@@ -126,7 +130,9 @@ func DefaultWeeklyLeaderboardEntries(base responseobjs.BaseInfo, player netobj.P
 		1,
 		mode,
 		0,
-		[]obj.LeaderboardEntry{},
+		[]obj.LeaderboardEntry{
+			myEntry,
+		},
 	)
 }
 

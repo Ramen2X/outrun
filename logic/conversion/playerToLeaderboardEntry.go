@@ -1,14 +1,13 @@
 package conversion
 
 import (
-	"time"
-
 	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/obj"
+	"github.com/jinzhu/now"
 )
 
-func PlayerToLeaderboardEntry(player netobj.Player, place, mode int64) obj.LeaderboardEntry {
+func PlayerToLeaderboardEntry(player netobj.Player, place, mode, lbtype int64) obj.LeaderboardEntry {
 	friendID := player.ID
 	name := player.Username
 	url := player.Username + "_findme" // TODO: only used for testing right now
@@ -17,7 +16,7 @@ func PlayerToLeaderboardEntry(player netobj.Player, place, mode int64) obj.Leade
 	rankingScore := player.PlayerState.HighScore // TODO: this probably differs based on mode...
 	rankChanged := int64(2)
 	isSentEnergy := int64(0)
-	expireTime := time.Now().UTC().Unix() + 86400
+	expireTime := now.EndOfWeek().UTC().Unix()
 	numRank := player.PlayerState.Rank
 	loginTime := player.LastLogin
 	mainCharaID := player.PlayerState.MainCharaID
