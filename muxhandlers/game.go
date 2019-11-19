@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/jinzhu/now"
+
 	"github.com/fluofoxxo/outrun/analytics"
 	"github.com/fluofoxxo/outrun/analytics/factors"
 	"github.com/fluofoxxo/outrun/config"
@@ -205,6 +207,7 @@ func QuickPostGameResults(helper *helper.Helper) {
 		if time.Now().Unix() > player.PlayerState.TotalScoreExpiresAt {
 			player.PlayerState.TotalScore = 0
 			player.PlayerState.TimedTotalScore = 0
+			player.PlayerState.TotalScoreExpiresAt = now.EndOfWeek().UTC().Unix()
 		}
 		player.PlayerState.TimedTotalScore += request.Score
 		//player.PlayerState.TotalDistance += request.Distance  // We don't do this in timed mode!
@@ -353,6 +356,7 @@ func PostGameResults(helper *helper.Helper) {
 		if time.Now().Unix() > player.PlayerState.TotalScoreExpiresAt {
 			player.PlayerState.TotalScore = 0
 			player.PlayerState.TimedTotalScore = 0
+			player.PlayerState.TotalScoreExpiresAt = now.EndOfWeek().UTC().Unix()
 		}
 		player.PlayerState.TotalScore += request.Score
 		// increase character(s)'s experience
