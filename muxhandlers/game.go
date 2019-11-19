@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"strconv"
+	"time"
 
 	"github.com/fluofoxxo/outrun/analytics"
 	"github.com/fluofoxxo/outrun/analytics/factors"
@@ -201,6 +202,11 @@ func QuickPostGameResults(helper *helper.Helper) {
 		if request.Score > playerTimedHighScore {
 			player.PlayerState.TimedHighScore = request.Score
 		}
+		if time.Now().Unix() > player.PlayerState.TotalScoreExpiresAt {
+			player.PlayerState.TotalScore = 0
+			player.PlayerState.TimedTotalScore = 0
+		}
+		player.PlayerState.TimedTotalScore += request.Score
 		//player.PlayerState.TotalDistance += request.Distance  // We don't do this in timed mode!
 		// increase character(s)'s experience
 		expIncrease := request.Rings + request.FailureRings // all rings collected
@@ -344,6 +350,11 @@ func PostGameResults(helper *helper.Helper) {
 			player.PlayerState.HighScore = request.Score
 		}
 		player.PlayerState.TotalDistance += request.Distance
+		if time.Now().Unix() > player.PlayerState.TotalScoreExpiresAt {
+			player.PlayerState.TotalScore = 0
+			player.PlayerState.TimedTotalScore = 0
+		}
+		player.PlayerState.TotalScore += request.Score
 		// increase character(s)'s experience
 		expIncrease := request.Rings + request.FailureRings // all rings collected
 		abilityIndex := 1
