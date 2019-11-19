@@ -1,6 +1,8 @@
 package conversion
 
 import (
+	"time"
+
 	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/obj"
@@ -34,6 +36,11 @@ func PlayerToLeaderboardEntry(player netobj.Player, place, mode, lbtype int64) o
 		rankingScore = player.PlayerState.TimedHighScore
 		league = player.PlayerState.QuickRankingLeague
 		maxScore = player.PlayerState.TimedHighScore
+	}
+	if time.Now().UTC().Unix() > player.PlayerState.TotalScoreExpiresAt {
+		//if expired, show 0 for total scores
+		player.PlayerState.TotalScore = 0
+		player.PlayerState.TimedTotalScore = 0
 	}
 	switch lbtype {
 	case 0:
