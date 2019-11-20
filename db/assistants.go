@@ -13,6 +13,7 @@ import (
 	"github.com/fluofoxxo/outrun/config/eventconf"
 	"github.com/fluofoxxo/outrun/consts"
 	"github.com/fluofoxxo/outrun/db/dbaccess"
+	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/netobj/constnetobjs"
 
@@ -44,7 +45,7 @@ func NewAccountWithID(uid string) netobj.Player {
 	mileageFriends := []netobj.MileageFriend{}
 	playerVarious := netobj.DefaultPlayerVarious()
 	rouletteInfo := netobj.DefaultRouletteInfo()
-	wheelOptions := netobj.DefaultWheelOptions(playerState.NumRouletteTicket, rouletteInfo.RouletteCountInPeriod)
+	wheelOptions := netobj.DefaultWheelOptions(playerState.NumRouletteTicket, rouletteInfo.RouletteCountInPeriod, enums.WheelRankNormal)
 	// TODO: get rid of logic here?
 	allowedCharacters := []string{}
 	allowedChao := []string{}
