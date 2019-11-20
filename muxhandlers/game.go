@@ -433,8 +433,6 @@ func PostGameResults(helper *helper.Helper) {
 					if config.CFile.Debug {
 						player.MileageMapState.Episode = 15
 					}
-				} else {
-					player.MileageMapState.Point = newPoint
 				}
 				if player.MileageMapState.Episode > 50 { // if beat game, reset to 50-1
 					player.MileageMapState.Episode = 50
@@ -443,6 +441,8 @@ func PostGameResults(helper *helper.Helper) {
 					player.MileageMapState.StageTotalScore = 0
 					helper.DebugOut("goToNextEpisode: Player (%s) beat the game!", player.ID)
 				}
+			} else {
+				player.MileageMapState.Point = newPoint
 			}
 			if config.CFile.Debug {
 				if player.MileageMapState.Episode < 14 {
