@@ -114,12 +114,10 @@ func ActStart(helper *helper.Helper) {
 		//cState = cState[:len(cState)-(len(cState)-10)]
 		cState := respPlayer.CharacterState
 		cState = cState[:16]
-		if config.CFile.DebugPrints {
-			helper.Out("cState length: " + strconv.Itoa(len(cState)))
-			helper.Out("Sent character IDs: ")
-			for _, char := range cState {
-				helper.Out(char.ID)
-			}
+		helper.DebugOut("cState length: " + strconv.Itoa(len(cState)))
+		helper.DebugOut("Sent character IDs: ")
+		for _, char := range cState {
+			helper.DebugOut(char.ID)
 		}
 		respPlayer.CharacterState = cState
 	}
@@ -204,7 +202,7 @@ func QuickPostGameResults(helper *helper.Helper) {
 		if request.Score > playerTimedHighScore {
 			player.PlayerState.TimedHighScore = request.Score
 		}
-		if time.Now().Unix() > player.PlayerState.TotalScoreExpiresAt {
+		if time.Now().UTC().Unix() > player.PlayerState.TotalScoreExpiresAt {
 			player.PlayerState.TotalScore = 0
 			player.PlayerState.TimedTotalScore = 0
 			player.PlayerState.TotalScoreExpiresAt = now.EndOfWeek().UTC().Unix()
@@ -280,9 +278,7 @@ func QuickPostGameResults(helper *helper.Helper) {
 	// apply the save after the response so that we don't break the leveling
 	player.CharacterState[mainCIndex] = mainC
 	player.CharacterState[subCIndex] = subC
-	if config.CFile.DebugPrints {
-		helper.Out("CheatResult: " + request.CheatResult)
-	}
+	helper.DebugOut("CheatResult: " + request.CheatResult)
 	err = db.SavePlayer(player)
 	if err != nil {
 		helper.InternalErr("Error saving player", err)
@@ -353,7 +349,7 @@ func PostGameResults(helper *helper.Helper) {
 			player.PlayerState.HighScore = request.Score
 		}
 		player.PlayerState.TotalDistance += request.Distance
-		if time.Now().Unix() > player.PlayerState.TotalScoreExpiresAt {
+		if time.Now().UTC().Unix() > player.PlayerState.TotalScoreExpiresAt {
 			player.PlayerState.TotalScore = 0
 			player.PlayerState.TimedTotalScore = 0
 			player.PlayerState.TotalScoreExpiresAt = now.EndOfWeek().UTC().Unix()
@@ -428,25 +424,25 @@ func PostGameResults(helper *helper.Helper) {
 						goToNextEpisode = true
 					}
 				}
-			}
-			if goToNextEpisode {
-				player.MileageMapState.Episode++
-				player.MileageMapState.Chapter = 1
-				player.MileageMapState.Point = 0
-				player.MileageMapState.StageTotalScore = 0
-				helper.DebugOut("goToNextEpisode -> Episode: %v", player.MileageMapState.Episode)
-				if config.CFile.Debug {
-					player.MileageMapState.Episode = 15
+				if goToNextEpisode {
+					player.MileageMapState.Episode++
+					player.MileageMapState.Chapter = 1
+					player.MileageMapState.Point = 0
+					player.MileageMapState.StageTotalScore = 0
+					helper.DebugOut("goToNextEpisode -> Episode: %v", player.MileageMapState.Episode)
+					if config.CFile.Debug {
+						player.MileageMapState.Episode = 15
+					}
+				} else {
+					player.MileageMapState.Point = newPoint
 				}
-			} else {
-				player.MileageMapState.Point = newPoint
-			}
-			if player.MileageMapState.Episode > 50 { // if beat game, reset to 50-1
-				player.MileageMapState.Episode = 50
-				player.MileageMapState.Chapter = 1
-				player.MileageMapState.Point = 0
-				player.MileageMapState.StageTotalScore = 0
-				helper.DebugOut("goToNextEpisode: Player (%s) beat the game!", player.ID)
+				if player.MileageMapState.Episode > 50 { // if beat game, reset to 50-1
+					player.MileageMapState.Episode = 50
+					player.MileageMapState.Chapter = 1
+					player.MileageMapState.Point = 0
+					player.MileageMapState.StageTotalScore = 0
+					helper.DebugOut("goToNextEpisode: Player (%s) beat the game!", player.ID)
+				}
 			}
 			if config.CFile.Debug {
 				if player.MileageMapState.Episode < 14 {
@@ -503,12 +499,10 @@ func PostGameResults(helper *helper.Helper) {
 		//cState = cState[:len(cState)-(len(cState)-10)]
 		cState := respPlayer.CharacterState
 		cState = cState[:16]
-		if config.CFile.DebugPrints {
-			helper.Out("cState length: " + strconv.Itoa(len(cState)))
-			helper.Out("Sent character IDs: ")
-			for _, char := range cState {
-				helper.Out(char.ID)
-			}
+		helper.DebugOut("cState length: " + strconv.Itoa(len(cState)))
+		helper.DebugOut("Sent character IDs: ")
+		for _, char := range cState {
+			helper.DebugOut(char.ID)
 		}
 		respPlayer.CharacterState = cState
 	}
@@ -516,9 +510,7 @@ func PostGameResults(helper *helper.Helper) {
 	// apply the save after the response so that we don't break the leveling
 	player.CharacterState[mainCIndex] = mainC
 	player.CharacterState[subCIndex] = subC
-	if config.CFile.DebugPrints {
-		helper.Out("CheatResult: " + request.CheatResult)
-	}
+	helper.DebugOut("CheatResult: " + request.CheatResult)
 	err = db.SavePlayer(player)
 	if err != nil {
 		helper.InternalErr("Error saving player", err)

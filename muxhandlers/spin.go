@@ -7,7 +7,6 @@ import (
 
 	"github.com/fluofoxxo/outrun/analytics"
 	"github.com/fluofoxxo/outrun/analytics/factors"
-	"github.com/fluofoxxo/outrun/config"
 	"github.com/fluofoxxo/outrun/consts"
 	"github.com/fluofoxxo/outrun/db"
 	"github.com/fluofoxxo/outrun/emess"
@@ -145,12 +144,10 @@ func CommitWheelSpin(helper *helper.Helper) {
 		// TODO: enforce order 300000 to 300020?
 		//cState = cState[:len(cState)-(len(cState)-10)]
 		cState = cState[:16]
-		if config.CFile.DebugPrints {
-			helper.Out("cState length: " + strconv.Itoa(len(cState)))
-			helper.Out("Sent character IDs: ")
-			for _, char := range cState {
-				helper.Out(char.ID)
-			}
+		helper.DebugOut("cState length: " + strconv.Itoa(len(cState)))
+		helper.DebugOut("Sent character IDs: ")
+		for _, char := range cState {
+			helper.DebugOut(char.ID)
 		}
 	}
 	response := responses.WheelSpin(baseInfo, player.PlayerState, cState, player.ChaoState, player.LastWheelOptions)
