@@ -418,6 +418,7 @@ func PostGameResults(helper *helper.Helper) {
 				if episodeHasMultipleChapters {
 					goToNextEpisode = false
 					player.MileageMapState.Chapter++
+					player.MileageMapState.Point = 0
 					player.MileageMapState.StageTotalScore = 0
 					if player.MileageMapState.Chapter > maxChapters {
 						// there's no more chapters for this episode!
