@@ -38,13 +38,13 @@ type PlayerState struct {
 	HighScore              int64      `json:"totalHighScore,string"`
 	TimedHighScore         int64      `json:"quickTotalHighScore,string"`
 	TotalDistance          int64      `json:"totalDistance,string"`
-	HighDistance           int64      `json:"maximumDistance,string"` // high distance in one go?
+	HighDistance           int64      `json:"maximumDistance,string"` // high distance in one go? (appears as "Longest Run (m)" in user stats)
 	DailyMissionID         int64      `json:"dailyMissionId,string"`
 	DailyMissionEndTime    int64      `json:"dailyMissionEndTime"` // 11:59 pm of current day
 	DailyChallengeValue    int64      `json:"dailyChallengeValue"` // internally listed as ProgressStatus... Current day of the challenge?
 	DailyChallengeComplete int64      `json:"dailyChallengeComplete"`
 	NumDailyChallenge      int64      `json:"numDailyChalCont"`
-	NumPlaying             int64      `json:"numPlaying,string"` // ?
+	NumPlaying             int64      `json:"numPlaying,string"` // possibly the number of times played?
 	Animals                int64      `json:"numAnimals,string"`
 	Rank                   int64      `json:"numRank,string"`
 	TotalScore             int64
@@ -62,13 +62,13 @@ func DefaultPlayerState() PlayerState {
 	subCharaID := enums.CTStrTails
 	mainChaoID := ChaoIDs[0]
 	subChaoID := ChaoIDs[5] // changed from [1]...
-	numRings := int64(9001)
+	numRings := int64(10000)
 	//numBuyRings := int64(1)
 	numBuyRings := int64(0)
-	numRedRings := int64(1337)
+	numRedRings := int64(50)
 	//numBuyRedRings := int64(7)
 	numBuyRedRings := int64(0)
-	energy := int64(6)
+	energy := int64(20)
 	energyBuy := int64(0)
 	energyRenewsAt := time.Now().Unix() + 600 // in ten minutes
 	mumMessages := int64(0)
@@ -81,8 +81,8 @@ func DefaultPlayerState() PlayerState {
 	timedHighScore := int64(0)
 	totalDistance := int64(0)
 	highDistance := int64(0)
-	dailyMissionID := int64(enums.DailyMissionDontKnowYet)
-	dailyMissionEndTime := time.Now().Unix() + 120 // two minutes from now
+	dailyMissionID := int64(enums.DailyMissionDontKnowYet) //TODO: Research this.
+	dailyMissionEndTime := time.Now().Unix() + 120         // two minutes from now
 	dailyChallengeValue := int64(28282)
 	dailyChallengeComplete := int64(0)
 	numDailyChallenge := int64(0)

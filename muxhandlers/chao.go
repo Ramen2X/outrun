@@ -315,12 +315,10 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 		// TODO: enforce order 300000 to 300020?
 		//cState = cState[:len(cState)-(len(cState)-10)]
 		cState = cState[:16]
-		if config.CFile.DebugPrints {
-			helper.Out("cState length: " + strconv.Itoa(len(cState)))
-			helper.Out("Sent character IDs: ")
-			for _, char := range cState {
-				helper.Out(char.ID)
-			}
+		helper.DebugOut("cState length: " + strconv.Itoa(len(cState)))
+		helper.DebugOut("Sent character IDs: ")
+		for _, char := range cState {
+			helper.DebugOut(char.ID)
 		}
 	}
 	response := responses.ChaoWheelSpin(baseInfo, player.PlayerState, cState, player.ChaoState, player.ChaoRouletteGroup.ChaoWheelOptions, spinResults)

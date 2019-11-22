@@ -41,6 +41,7 @@ func NewAccountWithID(uid string) netobj.Player {
 	characterState := netobj.DefaultCharacterState()
 	chaoState := constnetobjs.NetChaoList
 	eventState := netobj.DefaultEventState()
+	optionUserResult := netobj.DefaultOptionUserResult()
 	mileageMapState := netobj.DefaultMileageMapState()
 	mileageFriends := []netobj.MileageFriend{}
 	playerVarious := netobj.DefaultPlayerVarious()
@@ -75,6 +76,7 @@ func NewAccountWithID(uid string) netobj.Player {
 		characterState,
 		chaoState,
 		eventState,
+		optionUserResult,
 		mileageMapState,
 		mileageFriends,
 		playerVarious,

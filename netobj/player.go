@@ -19,7 +19,8 @@ type Player struct {
 	PlayerState       PlayerState                 `json:"playerState"`
 	CharacterState    []Character                 `json:"characterState"`
 	ChaoState         []Chao                      `json:"chaoState"`
-	EventState        EventState
+	EventState        EventState                  `json:"eventState"`
+	OptionUserResult  OptionUserResult            // TODO: use `json:"optionUserResult"`
 	MileageMapState   MileageMapState             `json:"mileageMapState"`
 	MileageFriends    []MileageFriend             `json:"mileageFriendList"`
 	PlayerVarious     PlayerVarious               `json:"playerVarious"`
@@ -29,7 +30,7 @@ type Player struct {
 	PersonalEvents    []eventconf.ConfiguredEvent `json:"ORN_personalEvents"`
 }
 
-func NewPlayer(id, username, password, key string, playerState PlayerState, characterState []Character, chaoState []Chao, eventState EventState, mileageMapState MileageMapState, mf []MileageFriend, playerVarious PlayerVarious, wheelOptions WheelOptions, rouletteInfo RouletteInfo, chaoRouletteGroup ChaoRouletteGroup, personalEvents []eventconf.ConfiguredEvent) Player {
+func NewPlayer(id, username, password, key string, playerState PlayerState, characterState []Character, chaoState []Chao, eventState EventState, optionUserResult OptionUserResult, mileageMapState MileageMapState, mf []MileageFriend, playerVarious PlayerVarious, wheelOptions WheelOptions, rouletteInfo RouletteInfo, chaoRouletteGroup ChaoRouletteGroup, personalEvents []eventconf.ConfiguredEvent) Player {
 	return Player{
 		id,
 		username,
@@ -40,6 +41,7 @@ func NewPlayer(id, username, password, key string, playerState PlayerState, char
 		characterState,
 		chaoState,
 		eventState,
+		optionUserResult,
 		mileageMapState,
 		mf,
 		playerVarious,

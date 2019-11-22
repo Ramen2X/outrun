@@ -103,6 +103,13 @@ func ActStart(helper *helper.Helper) {
 	responseStatus := status.OK
 	if player.PlayerState.Energy > 0 {
 		// lives are not decremented yet
+
+		player.PlayerState.NumPlaying++ // TODO: see if this is correct
+		err = db.SavePlayer(player)
+		if err != nil {
+			helper.InternalErr("Error saving player", err)
+			return
+		}
 	} else {
 		responseStatus = status.NotEnoughEnergy
 	}
@@ -140,8 +147,8 @@ func ActRetry(helper *helper.Helper) {
 		return
 	}
 	responseStatus := status.OK
-	if player.PlayerState.NumRedRings >= player.PlayerVarious.OnePlayContinueCount { //does the player actually have enough red rings to be revived?
-		player.PlayerState.NumRedRings -= player.PlayerVarious.OnePlayContinueCount
+	if player.PlayerState.NumRedRings >= 5 { //does the player actually have enough red rings to be revived?
+		player.PlayerState.NumRedRings -= 5
 		err = db.SavePlayer(player)
 		if err != nil {
 			helper.InternalErr("Error saving player", err)
@@ -341,12 +348,18 @@ func PostGameResults(helper *helper.Helper) {
 		oldRewardChapter = player.MileageMapState.Chapter
 		oldRewardPoint = player.MileageMapState.Point
 		player.PlayerState.NumRings += request.Rings
+		player.OptionUserResult.NumTakeAllRings += request.Rings
 		player.PlayerState.NumRedRings += request.RedRings
+		player.OptionUserResult.NumTakeAllRedRings += request.RedRings
 		player.PlayerState.NumRouletteTicket += request.RedRings // TODO: URGENT! Remove as soon as possible!
 		player.PlayerState.Animals += request.Animals
 		playerHighScore := player.PlayerState.HighScore
 		if request.Score > playerHighScore {
 			player.PlayerState.HighScore = request.Score
+		}
+		playerHighDistance := player.PlayerState.HighDistance
+		if request.Distance > playerHighDistance {
+			player.PlayerState.HighDistance = request.Distance
 		}
 		player.PlayerState.TotalDistance += request.Distance
 		if time.Now().UTC().Unix() > player.PlayerState.TotalScoreExpiresAt {

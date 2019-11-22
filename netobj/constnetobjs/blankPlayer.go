@@ -34,6 +34,7 @@ var BlankPlayer = func() netobj.Player {
 	characterState := netobj.DefaultCharacterState()
 	chaoState := GetAllNetChaoList() // needed for chaoRouletteAllowed
 	eventState := netobj.DefaultEventState()
+	optionUserResult := netobj.DefaultOptionUserResult()
 	mileageMapState := netobj.DefaultMileageMapState()
 	mileageFriends := []netobj.MileageFriend{}
 	playerVarious := netobj.DefaultPlayerVarious()
@@ -63,6 +64,7 @@ var BlankPlayer = func() netobj.Player {
 		characterState,
 		chaoState,
 		eventState,
+		optionUserResult,
 		mileageMapState,
 		mileageFriends,
 		playerVarious,
