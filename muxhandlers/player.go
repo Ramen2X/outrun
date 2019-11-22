@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"strconv"
 
-	"github.com/fluofoxxo/outrun/config"
 	"github.com/fluofoxxo/outrun/db"
 	"github.com/fluofoxxo/outrun/emess"
 	"github.com/fluofoxxo/outrun/helper"
@@ -44,12 +43,10 @@ func GetCharacterState(helper *helper.Helper) {
 		// TODO: enforce order 300000 to 300020?
 		//cState = cState[:len(cState)-(len(cState)-10)]
 		cState = cState[:16]
-		if config.CFile.DebugPrints {
-			helper.Out("cState length: " + strconv.Itoa(len(cState)))
-			helper.Out("Sent character IDs: ")
-			for _, char := range cState {
-				helper.Out(char.ID)
-			}
+		helper.DebugOut("cState length: " + strconv.Itoa(len(cState)))
+		helper.DebugOut("Sent character IDs: ")
+		for _, char := range cState {
+			helper.DebugOut(char.ID)
 		}
 	}
 	response := responses.CharacterState(baseInfo, cState)
