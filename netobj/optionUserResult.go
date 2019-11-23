@@ -14,8 +14,9 @@ type OptionUserResult struct {
 
 func DefaultOptionUserResult() OptionUserResult {
 	totalSumHighScore := int64(0)
-	numTakeAllRings := int64(10000)
-	numTakeAllRedRings := int64(50)
+	quickTotalSumHighScore := int64(0)
+	numTakeAllRings := int64(0) // TODO: should the starting rings and red rings count?
+	numTakeAllRedRings := int64(0)
 	numChaoRoulette := int64(0)
 	numItemRoulette := int64(0)
 	numJackpot := int64(0)
@@ -23,6 +24,7 @@ func DefaultOptionUserResult() OptionUserResult {
 	numSupport := int64(19191)
 	return OptionUserResult{
 		totalSumHighScore,
+		quickTotalSumHighScore,
 		numTakeAllRings,
 		numTakeAllRedRings,
 		numChaoRoulette,
