@@ -215,6 +215,9 @@ func QuickPostGameResults(helper *helper.Helper) {
 			player.PlayerState.TotalScoreExpiresAt = now.EndOfWeek().UTC().Unix()
 		}
 		player.PlayerState.TimedTotalScore += request.Score
+		if player.PlayerState.TimedTotalScore > player.OptionUserResult.QuickTotalSumHighScore {
+			player.OptionUserResult.QuickTotalSumHighScore = player.PlayerState.TimedTotalScore
+		}
 		//player.PlayerState.TotalDistance += request.Distance  // We don't do this in timed mode!
 		// increase character(s)'s experience
 		expIncrease := request.Rings + request.FailureRings // all rings collected
@@ -368,6 +371,9 @@ func PostGameResults(helper *helper.Helper) {
 			player.PlayerState.TotalScoreExpiresAt = now.EndOfWeek().UTC().Unix()
 		}
 		player.PlayerState.TotalScore += request.Score
+		if player.PlayerState.TotalScore > player.OptionUserResult.TotalSumHighScore {
+			player.OptionUserResult.TotalSumHighScore = player.PlayerState.TotalScore
+		}
 		// increase character(s)'s experience
 		expIncrease := request.Rings + request.FailureRings // all rings collected
 		abilityIndex := 1

@@ -1,14 +1,15 @@
 package netobj
 
 type OptionUserResult struct {
-	TotalSumHighScore      int64 `json:"totalSumHightScore"`     //
-	NumTakeAllRings        int64 `json:"numTakeAllRings"`        //
-	NumTakeAllRedRings     int64 `json:"numTakeAllRedRings"`     //
-	NumChaoRoulette        int64 `json:"numChaoRoulette"`        //
-	NumItemRoulette        int64 `json:"numItemRoulette"`        //
-	NumJackpot             int64 `json:"numJackPot"`             //
-	NumMaximumJackpotRings int64 `json:"numMaximumJackPotRings"` //
-	NumSupport             int64 `json:"numSupport"`             //
+	TotalSumHighScore      int64 `json:"totalSumHightScore"`      // highest total score recorded
+	QuickTotalSumHighScore int64 `json:"quickTotalSumHightScore"` // same as above but for timed mode
+	NumTakeAllRings        int64 `json:"numTakeAllRings"`         // total number of rings acquired ever
+	NumTakeAllRedRings     int64 `json:"numTakeAllRedRings"`      // total number of red rings acquired ever
+	NumChaoRoulette        int64 `json:"numChaoRoulette"`         // total times the chao roulette was spun
+	NumItemRoulette        int64 `json:"numItemRoulette"`         // total times the item roulette was spun
+	NumJackpot             int64 `json:"numJackPot"`              // total number of jackpots won ever
+	NumMaximumJackpotRings int64 `json:"numMaximumJackPotRings"`  // biggest jackpot won
+	NumSupport             int64 `json:"numSupport"`              // ?
 }
 
 func DefaultOptionUserResult() OptionUserResult {
