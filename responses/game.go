@@ -3,6 +3,7 @@ package responses
 import (
 	"strconv"
 
+	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/logic"
 	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/obj"
@@ -21,8 +22,8 @@ type DailyChallengeDataResponse struct {
 }
 
 func DailyChallengeData(base responseobjs.BaseInfo) DailyChallengeDataResponse {
-	//ilSrc := []int64{enums.ItemIDMagnet, enums.ItemIDMagnet, enums.ItemIDMagnet, enums.ItemIDMagnet, enums.ItemIDMagnet, enums.ItemIDMagnet, enums.ItemIDMagnet} // must be length of seven!
-	ilSrc := []int64{900000, 900000, 900000, 900000, 900000, 900000, 900000} // TODO: good candidate for discovering item IDs
+	ilSrc := []int64{enums.ItemIDRing, enums.ItemIDBarrier, enums.ItemIDMagnet, enums.ItemIDTrampoline, enums.ItemIDAsteroid, enums.ItemIDDrill, enums.ItemIDRedRing} // must be length of seven!
+	//ilSrc := []int64{900000, 900000, 900000, 900000, 900000, 900000, 900000} // TODO: good candidate for discovering item IDs
 	incentiveList := []obj.Incentive{}
 	for amountSrc, id := range ilSrc {
 		item := obj.NewItem(strconv.Itoa(int(id)), int64(amountSrc+1))

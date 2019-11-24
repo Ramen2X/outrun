@@ -3,15 +3,15 @@ package netobj
 type PlayerVarious struct {
 	CmSkipCount          int64 `json:"cmSkipCount"` // no clear purpose
 	EnergyRecoveryMax    int64 `json:"energyRecoveryMax"`
-	EnergyRecoveryTime   int64 `json:"energyRecveryTime"` // time until...?
-	OnePlayCmCount       int64 `json:"onePlayCmCount"` // number of ads for free revive?
-	OnePlayContinueCount int64 `json:"onePlayContinueCount"`
+	EnergyRecoveryTime   int64 `json:"energyRecveryTime"`
+	OnePlayCmCount       int64 `json:"onePlayCmCount"`
+	OnePlayContinueCount int64 `json:"onePlayContinueCount"` // number of continues allowed
 	IsPurchased          int64 `json:"isPurchased"`
 }
 
 func DefaultPlayerVarious() PlayerVarious {
 	cmSkipCount := int64(5)
-	energyRecoveryMax := int64(5)  //max lives should be five
+	energyRecoveryMax := int64(5)    //max lives should be five
 	energyRecoveryTime := int64(660) // eleven minutes
 	onePlayCmCount := int64(0)
 	onePlayContinueCount := int64(5)
@@ -25,4 +25,3 @@ func DefaultPlayerVarious() PlayerVarious {
 		isPurchased,
 	}
 }
-

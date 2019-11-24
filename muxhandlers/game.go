@@ -235,56 +235,47 @@ func QuickPostGameResults(helper *helper.Helper) {
 			helper.InternalErr("Error getting upgrade increase", fmt.Errorf("no key '%s' in consts.UpgradeIncreases", subC.ID))
 			return
 		}
-		if mainC.Level < 100 {
-			mainC.Exp += expIncrease
-			for mainC.Exp >= mainC.Cost {
+		if playCharacters[0].Level < 100 {
+			playCharacters[0].Exp += expIncrease
+			for playCharacters[0].Exp >= playCharacters[0].Cost {
 				// more exp than cost = level up
-				mainC.Level++                                   // increase level
-				mainC.AbilityLevel[abilityIndex]++              // increase ability level
-				mainC.Exp -= mainC.Cost                         // remove cost from exp
-				mainC.Cost += consts.UpgradeIncreases[mainC.ID] // increase cost
+				playCharacters[0].Level++                                               // increase level
+				playCharacters[0].AbilityLevel[abilityIndex]++                          // increase ability level
+				playCharacters[0].Exp -= playCharacters[0].Cost                         // remove cost from exp
+				playCharacters[0].Cost += consts.UpgradeIncreases[playCharacters[0].ID] // increase cost
 			}
 		}
-		// TODO: Add limit breaking
-		/*
-			player.CharacterState[charIndex].Level = 0
-			player.CharacterState[charIndex].AbilityLevel = []int64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-			player.CharacterState[charIndex].AbilityNumRings = []int64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-			player.CharacterState[charIndex].AbilityLevelUpExp = []int64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-			player.CharacterState[charIndex].Star++
-			if player.CharacterState[charIndex].Star >= player.CharacterState[charIndex].StarMax { // if exceeded max amount of stars
-				// TODO: then what?
-				player.CharacterState[charIndex].Star = player.CharacterState[charIndex].StarMax
-			}
-		*/
-		if subC.Level < 100 {
-			subC.Exp += expIncrease
-			for subC.Exp >= subC.Cost {
+		if playCharacters[1].Level < 100 {
+			playCharacters[1].Exp += expIncrease
+			for playCharacters[1].Exp >= playCharacters[1].Cost {
 				// more exp than cost = level up
-				subC.Level++                                  // increase level
-				subC.AbilityLevel[abilityIndex]++             // increase ability level
-				subC.Exp -= subC.Cost                         // remove cost from exp
-				subC.Cost += consts.UpgradeIncreases[subC.ID] // increase cost
+				playCharacters[1].Level++                                               // increase level
+				playCharacters[1].AbilityLevel[abilityIndex]++                          // increase ability level
+				playCharacters[1].Exp -= playCharacters[1].Cost                         // remove cost from exp
+				playCharacters[1].Cost += consts.UpgradeIncreases[playCharacters[1].ID] // increase cost
 			}
 		}
 
-		playCharacters = []netobj.Character{ // TODO: check if this redefinition is needed
+		helper.DebugOut("Old mainC Exp: %v / %v", mainC.Exp, mainC.Cost)
+		helper.DebugOut("Old mainC Level: %v", mainC.Level)
+		helper.DebugOut("Old subC Exp: %v / %v", subC.Exp, subC.Cost)
+		helper.DebugOut("Old subC Level: %v", subC.Level)
+		helper.DebugOut("New mainC Exp: %v / %v", playCharacters[0].Exp, playCharacters[0].Cost)
+		helper.DebugOut("New mainC Level: %v", playCharacters[0].Level)
+		helper.DebugOut("New subC Exp: %v / %v", playCharacters[1].Exp, playCharacters[1].Cost)
+		helper.DebugOut("New subC Level: %v", playCharacters[1].Level)
+
+		/*playCharacters = []netobj.Character{ // TODO: check if this redefinition is needed
 			mainC,
 			subC,
-		}
-		//err = db.SavePlayer(player)
+		}*/
 	}
-
-	/*
-		if err != nil {
-			helper.InternalErr("Error saving player", err)
-			return
-		}
-	*/
 
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.DefaultQuickPostGameResults(baseInfo, player, playCharacters)
 	// apply the save after the response so that we don't break the leveling
+	mainC = playCharacters[0]
+	subC = playCharacters[1]
 	player.CharacterState[mainCIndex] = mainC
 	player.CharacterState[subCIndex] = subC
 	helper.DebugOut("CheatResult: " + request.CheatResult)
@@ -411,14 +402,14 @@ func PostGameResults(helper *helper.Helper) {
 			}
 		}
 
-		helper.DebugOut("Old mainC Exp: " + strconv.Itoa(int(mainC.Exp)) + " / " + strconv.Itoa(int(mainC.Cost)))
-		helper.DebugOut("Old mainC Level: " + strconv.Itoa(int(mainC.Level)))
-		helper.DebugOut("Old subC Exp: " + strconv.Itoa(int(subC.Exp)) + " / " + strconv.Itoa(int(subC.Cost)))
-		helper.DebugOut("Old subC Level: " + strconv.Itoa(int(subC.Level)))
-		helper.DebugOut("New mainC Exp: " + strconv.Itoa(int(playCharacters[0].Exp)) + " / " + strconv.Itoa(int(playCharacters[0].Cost)))
-		helper.DebugOut("New mainC Level: " + strconv.Itoa(int(playCharacters[0].Level)))
-		helper.DebugOut("New subC Exp: " + strconv.Itoa(int(playCharacters[1].Exp)) + " / " + strconv.Itoa(int(playCharacters[1].Cost)))
-		helper.DebugOut("New subC Level: " + strconv.Itoa(int(playCharacters[1].Level)))
+		helper.DebugOut("Old mainC Exp: %v / %v", mainC.Exp, mainC.Cost)
+		helper.DebugOut("Old mainC Level: %v", mainC.Level)
+		helper.DebugOut("Old subC Exp: %v / %v", subC.Exp, subC.Cost)
+		helper.DebugOut("Old subC Level: %v", subC.Level)
+		helper.DebugOut("New mainC Exp: %v / %v", playCharacters[0].Exp, playCharacters[0].Cost)
+		helper.DebugOut("New mainC Level: %v", playCharacters[0].Level)
+		helper.DebugOut("New subC Exp: %v / %v", playCharacters[1].Exp, playCharacters[1].Cost)
+		helper.DebugOut("New subC Level: %v", playCharacters[1].Level)
 
 		/*playCharacters = []netobj.Character{ // TODO: check if this redefinition is needed
 			mainC,
@@ -426,8 +417,8 @@ func PostGameResults(helper *helper.Helper) {
 		}*/
 
 		if request.EventId != 0 { // Is this an event stage?
-			helper.DebugOut("Event ID: " + strconv.Itoa(int(request.EventId)))
-			helper.DebugOut("Player got " + strconv.Itoa(int(request.EventValue)) + " event object(s)")
+			helper.DebugOut("Event ID: %v", request.EventId)
+			helper.DebugOut("Player got %v event object(s)", request.EventValue)
 			player.EventState.Param += request.EventValue
 			//TODO: Actually store rewards
 		} else {
@@ -527,7 +518,7 @@ func PostGameResults(helper *helper.Helper) {
 		//cState = cState[:len(cState)-(len(cState)-10)]
 		cState := respPlayer.CharacterState
 		cState = cState[:16]
-		helper.DebugOut("cState length: " + strconv.Itoa(len(cState)))
+		helper.DebugOut("cState length: %v", len(cState))
 		helper.DebugOut("Sent character IDs: ")
 		for _, char := range cState {
 			helper.DebugOut(char.ID)
@@ -545,7 +536,8 @@ func PostGameResults(helper *helper.Helper) {
 	subC = playCharacters[1]
 	player.CharacterState[mainCIndex] = mainC
 	player.CharacterState[subCIndex] = subC
-	helper.DebugOut("CheatResult: " + request.CheatResult)
+	helper.DebugOut("CheatResult: %s", request.CheatResult)
+
 	err = db.SavePlayer(player)
 	if err != nil {
 		helper.InternalErr("Error saving player", err)
