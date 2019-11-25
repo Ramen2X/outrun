@@ -279,6 +279,12 @@ func QuickPostGameResults(helper *helper.Helper) {
 		}*/
 	}
 
+	mainCIndex := player.IndexOfChara(mainC.ID) // TODO: check if -1
+	subCIndex := -1
+	if hasSubCharacter {
+		subCIndex = player.IndexOfChara(subC.ID) // TODO: check if -1
+	}
+
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.DefaultQuickPostGameResults(baseInfo, player, playCharacters)
 	// apply the save after the response so that we don't break the leveling
