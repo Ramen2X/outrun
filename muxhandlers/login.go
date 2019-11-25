@@ -2,6 +2,7 @@ package muxhandlers
 
 import (
 	"encoding/json"
+	"math/rand"
 	"time"
 
 	"github.com/fluofoxxo/outrun/analytics"
@@ -173,6 +174,44 @@ func GetCountry(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.DefaultGetCountry(baseInfo)
 	err := helper.SendResponse(response)
+	if err != nil {
+		helper.InternalErr("Error sending response", err)
+	}
+}
+
+func GetMigrationPassword(helper *helper.Helper) {
+	randChar := func(charset string, length int64) string {
+		runes := []rune(charset)
+		final := make([]rune, 10)
+		for i := range final {
+			final[i] = runes[rand.Intn(len(runes))]
+		}
+		return string(final)
+	}
+	player, err := helper.GetCallingPlayer()
+	if err != nil {
+		helper.InternalErr("Error getting calling player", err)
+		return
+	}
+	responseStatus := status.OK
+	//TODO: the game seems to send the user password for this; add a check eventually?
+	if len(player.MigrationPassword) != 10 {
+		helper.DebugOut("User does not appear to have a migration password yet, or the current one is invalid. Generating one...")
+		player.MigrationPassword = randChar("abcdefghijklmnopqrstuvwxyz1234567890", 10)
+		err = db.SavePlayer(player)
+		if err != nil {
+			helper.InternalErr("Error saving player", err)
+			return
+		}
+	}
+	baseInfo := helper.BaseInfo(emess.OK, responseStatus)
+	responseFail := responses.NewBaseResponse(baseInfo)
+	response := responses.MigrationPassword(baseInfo, player)
+	if responseStatus == status.OK {
+		err = helper.SendResponse(response)
+	} else {
+		err = helper.SendResponse(responseFail)
+	}
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}

@@ -265,3 +265,16 @@ func DefaultLoginBonus(base responseobjs.BaseInfo) LoginBonusResponse {
 	frd := int64(-1)
 	return LoginBonus(base, lbs, lbrl, flbrl, st, et, rid, rd, frd)
 }
+
+type MigrationPasswordResponse struct {
+	BaseResponse
+	Password string `json:"password"`
+}
+
+func MigrationPassword(base responseobjs.BaseInfo, player netobj.Player) MigrationPasswordResponse {
+	baseResponse := NewBaseResponse(base)
+	return MigrationPasswordResponse{
+		baseResponse,
+		player.MigrationPassword,
+	}
+}
