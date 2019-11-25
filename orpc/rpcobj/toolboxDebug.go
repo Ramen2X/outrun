@@ -2,9 +2,11 @@ package rpcobj
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
 
+	"github.com/fluofoxxo/outrun/config/gameconf"
 	"github.com/fluofoxxo/outrun/consts"
 	"github.com/fluofoxxo/outrun/db"
 	"github.com/fluofoxxo/outrun/db/dbaccess"
@@ -207,5 +209,51 @@ func (t *Toolbox) Debug_RawPlayer(uid string, reply *ToolboxReply) error {
 	}
 	reply.Status = StatusOK
 	reply.Info = string(playerSrc)
+	return nil
+}
+
+func (t *Toolbox) Debug_ResetCharacterState(uid string, reply *ToolboxReply) error {
+	player, err := db.GetPlayer(uid)
+	if err != nil {
+		reply.Status = StatusOtherError
+		reply.Info = "unable to get player: " + err.Error()
+		return err
+	}
+	player.CharacterState = netobj.DefaultCharacterState()
+	err = db.SavePlayer(player)
+	if err != nil {
+		reply.Status = StatusOtherError
+		reply.Info = err.Error()
+		return err
+	}
+	reply.Status = StatusOK
+	reply.Info = "OK"
+	return nil
+}
+
+func (t *Toolbox) Debug_MatchPlayersToGameConf(uids string, reply *ToolboxReply) error {
+	allUIDs := strings.Split(uids, ",")
+	for _, uid := range allUIDs {
+		player, err := db.GetPlayer(uid)
+		if err != nil {
+			reply.Status = StatusOtherError
+			reply.Info = fmt.Sprintf("unable to get player %s: ", uid) + err.Error()
+			return err
+		}
+		player.CharacterState = netobj.DefaultCharacterState() // already uses AllCharactersUnlocked
+		player.PlayerState.MainCharaID = gameconf.CFile.DefaultMainCharacter
+		player.PlayerState.SubCharaID = gameconf.CFile.DefaultSubCharacter
+		player.PlayerState.NumRings = gameconf.CFile.StartingRings
+		player.PlayerState.NumRedRings = gameconf.CFile.StartingRedRings
+		player.PlayerState.Energy = gameconf.CFile.StartingEnergy
+		err = db.SavePlayer(player)
+		if err != nil {
+			reply.Status = StatusOtherError
+			reply.Info = fmt.Sprintf("error saving player %s: ", uid) + err.Error()
+			return err
+		}
+	}
+	reply.Status = StatusOK
+	reply.Info = "OK"
 	return nil
 }
