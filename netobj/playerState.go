@@ -88,7 +88,7 @@ func DefaultPlayerState() PlayerState {
 	numDailyChallenge := int64(0)
 	numPlayer := int64(0)
 	animals := int64(0)
-	rank := int64(1)
+	rank := int64(0) //appears to be offset by 1?
 	totalScore := int64(0)
 	timedTotalScore := int64(0)
 	totalScoreExpiresAt := now.EndOfWeek().UTC().Unix()

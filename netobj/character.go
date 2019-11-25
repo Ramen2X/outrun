@@ -23,7 +23,7 @@ type Character struct { // Can also be used as PlayCharacter
 	CampaignList      []obj.Campaign `json:"campaignList"`
 	AbilityLevel      []int64        `json:"abilityLevel"`    // levels for each ability
 	AbilityNumRings   []int64        `json:"abilityNumRings"` // where is this being checked? I can't find the string using dnSpy...
-	AbilityLevelUp    []int64        `json:"abilityLevelup"`  // this is a list of items using enums.ItemID*
+	AbilityLevelUp    []int64        `json:"abilityLevelup"`  // according to the game code, this is supposed to be a list of ability IDs?
 	AbilityLevelUpExp []int64        `json:"abilityLevelupExp,omitempty"`
 }
 
@@ -39,7 +39,7 @@ func DefaultCharacter(char obj.Character) Character {
 	campaignList := []obj.Campaign{}
 	abilityLevel := []int64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} // 11 abilities?
 	abilityNumRings := []int64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	abilityLevelUp := []int64{enums.ItemIDInvincible}
+	abilityLevelUp := []int64{-1}
 	abilityLevelUpExp := []int64{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	return Character{
 		char,

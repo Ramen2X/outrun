@@ -381,24 +381,38 @@ func PostGameResults(helper *helper.Helper) {
 			helper.InternalErr("Error getting upgrade increase", fmt.Errorf("no key '%s' in consts.UpgradeIncreases", subC.ID))
 			return
 		}
+		//playCharacters[0].AbilityLevelUp[0] = int64(-1)
+		//playCharacters[1].AbilityLevelUp[0] = int64(-1)
 		if playCharacters[0].Level < 100 {
 			playCharacters[0].Exp += expIncrease
 			for playCharacters[0].Exp >= playCharacters[0].Cost {
 				// more exp than cost = level up
-				playCharacters[0].Level++                                               // increase level
-				playCharacters[0].AbilityLevel[abilityIndex]++                          // increase ability level
-				playCharacters[0].Exp -= playCharacters[0].Cost                         // remove cost from exp
+				playCharacters[0].Level++                       // increase level
+				playCharacters[0].AbilityLevel[abilityIndex]++  // increase ability level
+				playCharacters[0].Exp -= playCharacters[0].Cost // remove cost from exp
+				//playCharacters[0].AbilityLevelUp[0] = int64(abilityIndex) // TODO: this may not work right when a character levels up more than once
+				//playCharacters[0].AbilityLevelUpExp[abilityIndex] = playCharacters[0].Cost
 				playCharacters[0].Cost += consts.UpgradeIncreases[playCharacters[0].ID] // increase cost
+				abilityIndex = 1
+				for abilityIndex == 1 { // unused ability is at index 1
+					abilityIndex = rand.Intn(len(mainC.AbilityLevel))
+				}
 			}
 		}
 		if playCharacters[1].Level < 100 {
 			playCharacters[1].Exp += expIncrease
 			for playCharacters[1].Exp >= playCharacters[1].Cost {
 				// more exp than cost = level up
-				playCharacters[1].Level++                                               // increase level
-				playCharacters[1].AbilityLevel[abilityIndex]++                          // increase ability level
-				playCharacters[1].Exp -= playCharacters[1].Cost                         // remove cost from exp
+				playCharacters[1].Level++                       // increase level
+				playCharacters[1].AbilityLevel[abilityIndex]++  // increase ability level
+				playCharacters[1].Exp -= playCharacters[1].Cost // remove cost from exp
+				//playCharacters[1].AbilityLevelUp[0] = int64(abilityIndex) // TODO: this may not work right when a character levels up more than once
+				//playCharacters[1].AbilityLevelUpExp[abilityIndex] = playCharacters[1].Cost
 				playCharacters[1].Cost += consts.UpgradeIncreases[playCharacters[1].ID] // increase cost
+				abilityIndex = 1
+				for abilityIndex == 1 { // unused ability is at index 1
+					abilityIndex = rand.Intn(len(subC.AbilityLevel))
+				}
 			}
 		}
 
@@ -432,6 +446,9 @@ func PostGameResults(helper *helper.Helper) {
 			goToNextEpisode := true
 			if goToNextChapter {
 				// Assumed this just means next episode...
+				if player.PlayerState.Rank < 998 {
+					player.PlayerState.Rank++ //TODO: This should be looked into more.
+				}
 				maxChapters, episodeHasMultipleChapters := consts.EpisodeWithChapters[player.MileageMapState.Episode]
 				if episodeHasMultipleChapters {
 					goToNextEpisode = false
