@@ -447,13 +447,16 @@ func PostGameResults(helper *helper.Helper) {
 
 		helper.DebugOut("Old mainC Exp: %v / %v", mainC.Exp, mainC.Cost)
 		helper.DebugOut("Old mainC Level: %v", mainC.Level)
-		helper.DebugOut("Old subC Exp: %v / %v", subC.Exp, subC.Cost)
-		helper.DebugOut("Old subC Level: %v", subC.Level)
+		if hasSubCharacter {
+			helper.DebugOut("Old subC Exp: %v / %v", subC.Exp, subC.Cost)
+			helper.DebugOut("Old subC Level: %v", subC.Level)
+		}
 		helper.DebugOut("New mainC Exp: %v / %v", playCharacters[0].Exp, playCharacters[0].Cost)
 		helper.DebugOut("New mainC Level: %v", playCharacters[0].Level)
-		helper.DebugOut("New subC Exp: %v / %v", playCharacters[1].Exp, playCharacters[1].Cost)
-		helper.DebugOut("New subC Level: %v", playCharacters[1].Level)
-
+		if hasSubCharacter {
+			helper.DebugOut("New subC Exp: %v / %v", playCharacters[1].Exp, playCharacters[1].Cost)
+			helper.DebugOut("New subC Level: %v", playCharacters[1].Level)
+		}
 		/*playCharacters = []netobj.Character{ // TODO: check if this redefinition is needed
 			mainC,
 			subC,
