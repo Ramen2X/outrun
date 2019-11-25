@@ -7,7 +7,7 @@ import (
 type EventUserRaidbossState struct {
 	NumRaidbossRings       int64 `json:"numRaidbossRings"`
 	RaidBossEnergy         int64 `json:"raidbossEnergy"`
-	RaidBossEnergyBuy      int64 `json:"raidbossEnergyBuy"`   // ?
+	RaidBossEnergyBuy      int64 `json:"raidbossEnergyBuy"`
 	NumBeatedEncounter     int64 `json:"numBeatedEncounter"`  // number of times the boss has been defeated?
 	NumBeatedEnterprise    int64 `json:"numBeatedEnterprise"` // ?
 	NumRaidBossEncountered int64 `json:"numTotalEncountered"`

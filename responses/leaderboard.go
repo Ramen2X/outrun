@@ -1,6 +1,7 @@
 package responses
 
 import (
+	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/logic/conversion"
 	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/obj"
@@ -73,53 +74,33 @@ func WeeklyLeaderboardEntries(base responseobjs.BaseInfo, pe obj.LeaderboardEntr
 }
 
 func DefaultWeeklyLeaderboardEntries(base responseobjs.BaseInfo, player netobj.Player, mode, lbtype, startfrom int64) WeeklyLeaderboardEntriesResponse {
-	/* //old code
-	       startTime := now.BeginningOfDay().UTC().Unix()
-	       resetTime := startTime + 86400 // +1 Day
-	       highScore := int(player.PlayerState.HighScore)
-	       league := player.PlayerState.RankingLeague
-	       if mode == 1 {
-	           highScore = int(player.PlayerState.TimedHighScore)
-	           league = player.PlayerState.QuickRankingLeague
-	       }
-	       return WeeklyLeaderboardEntries(
-	           base,
-	           //obj.DefaultLeaderboardEntry(player.ID),
-	           obj.NewLeaderboardEntry(
-	   		player.ID,
-	   		player.Username,
-	   		"",
-	   		0,
-	   		1,
-	   		int64(highScore), //sloppy hack to prevent compiler error
-	   		0,
-	   		0,
-	   		0,
-	   		player.PlayerState.Rank,
-	   		player.LastLogin,
-	   		player.PlayerState.MainCharaID,
-	   		0,
-	   		player.PlayerState.SubCharaID,
-	   		0,
-	   		player.PlayerState.MainChaoID,
-	   		0,
-	   		player.PlayerState.SubChaoID,
-	   		0,
-	   		1,
-	   		league,
-	   		int64(highScore),
-	   	),
-	           -1,
-	           startTime,
-	           resetTime,
-	           1,
-	           mode,
-	           0,
-	           []obj.LeaderboardEntry{},
-	       )*/
 	startTime := now.BeginningOfDay().UTC().Unix()
 	resetTime := now.EndOfWeek().UTC().Unix()
 	myEntry := conversion.PlayerToLeaderboardEntry(player, int64(1), mode, lbtype)
+	dummyEntry := obj.NewLeaderboardEntry(
+		"1234567890",
+		"test entry",
+		"",
+		2,
+		1,
+		0,
+		0,
+		0,
+		0,
+		0,
+		now.BeginningOfYear().UTC().Unix(),
+		enums.CharaTypeSonic,
+		1,
+		-1,
+		0,
+		enums.ChaoIDGoldChao,
+		1,
+		-1,
+		0,
+		1,
+		enums.RankingLeagueF_M,
+		0,
+	)
 	return WeeklyLeaderboardEntries(
 		base,
 		//obj.DefaultLeaderboardEntry(uid),
@@ -132,6 +113,7 @@ func DefaultWeeklyLeaderboardEntries(base responseobjs.BaseInfo, player netobj.P
 		0,
 		[]obj.LeaderboardEntry{
 			myEntry,
+			dummyEntry,
 		},
 	)
 }
