@@ -3,6 +3,7 @@ package rpcobj
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 
@@ -10,6 +11,7 @@ import (
 	"github.com/fluofoxxo/outrun/consts"
 	"github.com/fluofoxxo/outrun/db"
 	"github.com/fluofoxxo/outrun/db/dbaccess"
+	"github.com/fluofoxxo/outrun/logic"
 	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/netobj/constnetobjs"
 )
@@ -241,7 +243,10 @@ func (t *Toolbox) Debug_MatchPlayersToGameConf(uids string, reply *ToolboxReply)
 			return err
 		}
 		player.CharacterState = netobj.DefaultCharacterState() // already uses AllCharactersUnlocked
+		player.ChaoState = constnetobjs.DefaultChaoState()     // already uses AllChaoUnlocked
 		player.PlayerState.MainCharaID = gameconf.CFile.DefaultMainCharacter
+		player.PlayerState.SubChaoID = gameconf.CFile.DefaultSubChao
+		player.PlayerState.MainChaoID = gameconf.CFile.DefaultMainChao
 		player.PlayerState.SubCharaID = gameconf.CFile.DefaultSubCharacter
 		player.PlayerState.NumRings = gameconf.CFile.StartingRings
 		player.PlayerState.NumRedRings = gameconf.CFile.StartingRedRings
@@ -255,5 +260,65 @@ func (t *Toolbox) Debug_MatchPlayersToGameConf(uids string, reply *ToolboxReply)
 	}
 	reply.Status = StatusOK
 	reply.Info = "OK"
+	return nil
+}
+
+func (t *Toolbox) Debug_PrepTag1p0(uids string, reply *ToolboxReply) error {
+	allUIDs := strings.Split(uids, ",")
+	sqrt := func(n int64) int64 {
+		fn := float64(n)
+		result := math.Sqrt(fn)
+		return int64(result)
+	}
+
+	for _, uid := range allUIDs {
+		player, err := db.GetPlayer(uid)
+		if err != nil {
+			reply.Status = StatusOtherError
+			reply.Info = fmt.Sprintf("unable to get player %s: ", uid) + err.Error()
+			return err
+		}
+		// conditions for exemption
+		if player.MileageMapState.Episode >= 25 { // player is exempt from reset
+			continue
+		}
+		player.CharacterState = netobj.DefaultCharacterState() // already uses AllCharactersUnlocked
+		player.ChaoState = constnetobjs.DefaultChaoState()     // already uses AllChaoUnlocked
+		player.PlayerState.MainCharaID = gameconf.CFile.DefaultMainCharacter
+		player.PlayerState.SubChaoID = gameconf.CFile.DefaultSubChao
+		player.PlayerState.MainChaoID = gameconf.CFile.DefaultMainChao
+		player.PlayerState.SubCharaID = gameconf.CFile.DefaultSubCharacter
+		player.PlayerState.NumRings = sqrt(player.PlayerState.NumRings) * 3
+		player.PlayerState.NumRedRings = sqrt(player.PlayerState.NumRedRings)
+		player.PlayerState.Energy = gameconf.CFile.StartingEnergy
+
+		player.MileageMapState = netobj.DefaultMileageMapState() // reset campaign
+
+		err = db.SavePlayer(player)
+		if err != nil {
+			reply.Status = StatusOtherError
+			reply.Info = fmt.Sprintf("error saving player %s: ", uid) + err.Error()
+			return err
+		}
+	}
+	reply.Status = StatusOK
+	reply.Info = "OK"
+	return nil
+}
+
+func (t *Toolbox) Debug_PlayersByPassword(password string, reply *ToolboxReply) error {
+	foundPlayers, err := logic.FindPlayersByPassword(password, false)
+	if err != nil {
+		reply.Status = StatusOtherError
+		reply.Info = "error finding players by password: " + err.Error()
+		return err
+	}
+	playerIDs := []string{}
+	for _, player := range foundPlayers {
+		playerIDs = append(playerIDs, player.ID)
+	}
+	final := strings.Join(playerIDs, ",")
+	reply.Status = StatusOK
+	reply.Info = final
 	return nil
 }

@@ -40,7 +40,7 @@ func NewAccountWithID(uid string) netobj.Player {
 	key := randChar("abcdefghijklmnopqrstuvwxyz1234567890", 10)
 	playerState := netobj.DefaultPlayerState()
 	characterState := netobj.DefaultCharacterState()
-	chaoState := constnetobjs.NetChaoList
+	chaoState := constnetobjs.DefaultChaoState()
 	eventState := netobj.DefaultEventState()
 	optionUserResult := netobj.DefaultOptionUserResult()
 	mileageMapState := netobj.DefaultMileageMapState()
