@@ -221,11 +221,12 @@ func Migration(helper *helper.Helper) {
 		helper.Err("Error unmarshalling", err)
 		return
 	}
-	password := request.LineAuth.Password
-	migrationUserPassword := request.LineAuth.MigrationPassword
+	password := request.LineAuth.MigrationPassword
+	migrationUserPassword := request.LineAuth.MigrationUserPassword
 
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 
+	helper.DebugOut("Transfer ID: %s", password)
 	foundPlayers, err := logic.FindPlayersByPassword(password, false)
 	if err != nil {
 		helper.Err("Error finding players by password", err)
@@ -256,17 +257,21 @@ func Migration(helper *helper.Helper) {
 				helper.InternalErr("Error assigning session ID", err)
 				return
 			}
+			helper.DebugOut("User ID: %s", migratePlayer.ID)
+			helper.DebugOut("Username: %s", migratePlayer.Username)
 			response := responses.MigrationSuccess(baseInfo, sid, migratePlayer.ID, migratePlayer.Username, migratePlayer.Password)
 			helper.SendResponse(response)
 		} else {
-			response := responses.NewBaseResponse(baseInfo)
 			baseInfo.StatusCode = status.InvalidPassword
 			baseInfo.SetErrorMessage(emess.BadPassword)
+			helper.DebugOut("Incorrect password for user ID %s", migratePlayer.ID)
+			response := responses.NewBaseResponse(baseInfo)
 			helper.SendResponse(response)
 		}
 	} else {
+		helper.DebugOut("Failed to find player")
+		baseInfo.StatusCode = status.MissingPlayer
 		response := responses.NewBaseResponse(baseInfo)
-		baseInfo.StatusCode = status.MissingPlayer // TODO: Is this the correct error code?
 		helper.SendResponse(response)
 	}
 }
