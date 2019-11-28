@@ -259,6 +259,7 @@ func Migration(helper *helper.Helper) {
 			}
 			helper.DebugOut("User ID: %s", migratePlayer.ID)
 			helper.DebugOut("Username: %s", migratePlayer.Username)
+			helper.DebugOut("New Transfer ID: %s", migratePlayer.Password)
 			response := responses.MigrationSuccess(baseInfo, sid, migratePlayer.ID, migratePlayer.Username, migratePlayer.Password)
 			helper.SendResponse(response)
 		} else {
