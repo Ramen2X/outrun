@@ -275,6 +275,6 @@ func MigrationPassword(base responseobjs.BaseInfo, player netobj.Player) Migrati
 	baseResponse := NewBaseResponse(base)
 	return MigrationPasswordResponse{
 		baseResponse,
-		player.MigrationPassword,
+		player.Password,
 	}
 }

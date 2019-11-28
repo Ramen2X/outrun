@@ -1,7 +1,6 @@
 package responses
 
 import (
-	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/logic/conversion"
 	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/obj"
@@ -77,7 +76,7 @@ func DefaultWeeklyLeaderboardEntries(base responseobjs.BaseInfo, player netobj.P
 	startTime := now.BeginningOfDay().UTC().Unix()
 	resetTime := now.EndOfWeek().UTC().Unix()
 	myEntry := conversion.PlayerToLeaderboardEntry(player, int64(1), mode, lbtype)
-	dummyEntry := obj.NewLeaderboardEntry(
+	/*dummyEntry := obj.NewLeaderboardEntry(
 		"1234567890",
 		"test entry",
 		"",
@@ -100,7 +99,7 @@ func DefaultWeeklyLeaderboardEntries(base responseobjs.BaseInfo, player netobj.P
 		1,
 		enums.RankingLeagueF_M,
 		0,
-	)
+	)*/
 	return WeeklyLeaderboardEntries(
 		base,
 		//obj.DefaultLeaderboardEntry(uid),
@@ -113,7 +112,7 @@ func DefaultWeeklyLeaderboardEntries(base responseobjs.BaseInfo, player netobj.P
 		0,
 		[]obj.LeaderboardEntry{
 			myEntry,
-			dummyEntry,
+			//dummyEntry,
 		},
 	)
 }

@@ -365,9 +365,13 @@ func PostGameResults(helper *helper.Helper) {
 		oldRewardEpisode = player.MileageMapState.Episode
 		oldRewardChapter = player.MileageMapState.Chapter
 		oldRewardPoint = player.MileageMapState.Point
+		helper.DebugOut("Old player ring count: %v", player.PlayerState.NumRings)
 		player.PlayerState.NumRings += request.Rings
 		player.OptionUserResult.NumTakeAllRings += request.Rings
+		helper.DebugOut("Old player red ring count: %v", player.PlayerState.NumRedRings)
 		player.PlayerState.NumRedRings += request.RedRings
+		helper.DebugOut("New player ring count: %v", player.PlayerState.NumRings)
+		helper.DebugOut("New player red ring count: %v", player.PlayerState.NumRedRings)
 		player.OptionUserResult.NumTakeAllRedRings += request.RedRings
 		player.PlayerState.NumRouletteTicket += request.RedRings // TODO: URGENT! Remove as soon as possible!
 		player.PlayerState.Animals += request.Animals

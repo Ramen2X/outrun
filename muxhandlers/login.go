@@ -2,7 +2,6 @@ package muxhandlers
 
 import (
 	"encoding/json"
-	"math/rand"
 	"time"
 
 	"github.com/fluofoxxo/outrun/analytics"
@@ -180,39 +179,42 @@ func GetCountry(helper *helper.Helper) {
 }
 
 func GetMigrationPassword(helper *helper.Helper) {
-	randChar := func(charset string, length int64) string {
-		runes := []rune(charset)
-		final := make([]rune, 10)
-		for i := range final {
-			final[i] = runes[rand.Intn(len(runes))]
-		}
-		return string(final)
+	recv := helper.GetGameRequest()
+	var request requests.GetMigrationPasswordRequest
+	err := json.Unmarshal(recv, &request)
+	if err != nil {
+		helper.Err("Error unmarshalling", err)
+		return
 	}
 	player, err := helper.GetCallingPlayer()
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
-	responseStatus := status.OK
-	//TODO: the game seems to send the user password for this; add a check eventually?
-	if len(player.MigrationPassword) != 10 {
-		helper.DebugOut("User does not appear to have a migration password yet, or the current one is invalid. Generating one...")
-		player.MigrationPassword = randChar("abcdefghijklmnopqrstuvwxyz1234567890", 10)
-		err = db.SavePlayer(player)
-		if err != nil {
-			helper.InternalErr("Error saving player", err)
-			return
-		}
-	}
-	baseInfo := helper.BaseInfo(emess.OK, responseStatus)
-	responseFail := responses.NewBaseResponse(baseInfo)
+	player.UserPassword = request.UserPassword // TODO: Confirm that this is the right behavior
+	db.SavePlayer(player)
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.MigrationPassword(baseInfo, player)
-	if responseStatus == status.OK {
-		err = helper.SendResponse(response)
-	} else {
-		err = helper.SendResponse(responseFail)
-	}
+	err = helper.SendResponse(response)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
 }
+
+/*
+func Migration(helper *helper.Helper) {
+	recv := helper.GetGameRequest()
+	var request requests.LoginRequest
+	err := json.Unmarshal(recv, &request)
+	if err != nil {
+		helper.Err("Error unmarshalling", err)
+		return
+	}
+	password := request.LineAuth.Password
+	migrationUserPassword := request.LineAuth.MigrationPassword
+
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+
+	// TODO: finish this
+}
+*/
