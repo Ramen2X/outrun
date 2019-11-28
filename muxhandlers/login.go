@@ -2,6 +2,7 @@ package muxhandlers
 
 import (
 	"encoding/json"
+	"math/rand"
 	"time"
 
 	"github.com/fluofoxxo/outrun/analytics"
@@ -10,6 +11,7 @@ import (
 	"github.com/fluofoxxo/outrun/db"
 	"github.com/fluofoxxo/outrun/emess"
 	"github.com/fluofoxxo/outrun/helper"
+	"github.com/fluofoxxo/outrun/logic"
 	"github.com/fluofoxxo/outrun/logic/conversion"
 	"github.com/fluofoxxo/outrun/obj"
 	"github.com/fluofoxxo/outrun/requests"
@@ -202,8 +204,16 @@ func GetMigrationPassword(helper *helper.Helper) {
 	}
 }
 
-/*
 func Migration(helper *helper.Helper) {
+	randChar := func(charset string, length int64) string {
+		runes := []rune(charset)
+		final := make([]rune, 10)
+		for i := range final {
+			final[i] = runes[rand.Intn(len(runes))]
+		}
+		return string(final)
+	}
+
 	recv := helper.GetGameRequest()
 	var request requests.LoginRequest
 	err := json.Unmarshal(recv, &request)
@@ -216,6 +226,47 @@ func Migration(helper *helper.Helper) {
 
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 
-	// TODO: finish this
+	foundPlayers, err := logic.FindPlayersByPassword(password, false)
+	if err != nil {
+		helper.Err("Error finding players by password", err)
+		return
+	}
+	playerIDs := []string{}
+	for _, player := range foundPlayers {
+		playerIDs = append(playerIDs, player.ID)
+	}
+	if len(playerIDs) > 0 {
+		migratePlayer, err := db.GetPlayer(playerIDs[0])
+		if err != nil {
+			helper.InternalErr("Error getting player", err)
+			return
+		}
+		if migrationUserPassword == migratePlayer.UserPassword {
+			baseInfo.StatusCode = status.OK
+			baseInfo.SetErrorMessage(emess.OK)
+			migratePlayer.SetPassword(randChar("abcdefghijklmnopqrstuvwxyz1234567890", 10)) //generate a brand new password
+			migratePlayer.LastLogin = time.Now().UTC().Unix()
+			err = db.SavePlayer(migratePlayer)
+			if err != nil {
+				helper.InternalErr("Error saving player", err)
+				return
+			}
+			sid, err := db.AssignSessionID(migratePlayer.ID)
+			if err != nil {
+				helper.InternalErr("Error assigning session ID", err)
+				return
+			}
+			response := responses.MigrationSuccess(baseInfo, sid, migratePlayer.ID, migratePlayer.Username, migratePlayer.Password)
+			helper.SendResponse(response)
+		} else {
+			response := responses.NewBaseResponse(baseInfo)
+			baseInfo.StatusCode = status.InvalidPassword
+			baseInfo.SetErrorMessage(emess.BadPassword)
+			helper.SendResponse(response)
+		}
+	} else {
+		response := responses.NewBaseResponse(baseInfo)
+		baseInfo.StatusCode = status.MissingPlayer // TODO: Is this the correct error code?
+		helper.SendResponse(response)
+	}
 }
-*/
