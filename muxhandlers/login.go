@@ -245,7 +245,8 @@ func Migration(helper *helper.Helper) {
 		if migrationUserPassword == migratePlayer.UserPassword {
 			baseInfo.StatusCode = status.OK
 			baseInfo.SetErrorMessage(emess.OK)
-			migratePlayer.SetPassword(randChar("abcdefghijklmnopqrstuvwxyz1234567890", 10)) //generate a brand new password
+			migratePlayer.SetPassword(randChar("abcdefghijklmnopqrstuvwxyz1234567890", 10)) //generate a brand new transfer ID
+			migratePlayer.UserPassword = ""                                                 //clear user password
 			migratePlayer.LastLogin = time.Now().UTC().Unix()
 			err = db.SavePlayer(migratePlayer)
 			if err != nil {
