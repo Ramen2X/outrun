@@ -278,3 +278,16 @@ func MigrationPassword(base responseobjs.BaseInfo, player netobj.Player) Migrati
 		player.Password,
 	}
 }
+
+type MigrationSuccessResponse struct {
+	BaseResponse
+	UserID                   string   `json:"userId"`
+	Username                 string   `json:"userName"`
+	Password                 string   `json:"password"`
+	SessionID                string   `json:"sessionId"`
+	SessionTimeLimit         int64    `json:"sessionTimeLimit"`         // game will log in again after this (non-UTC apparently) time
+	EnergyRecoveryTime       int64    `json:"energyRecveryTime,string"` // seconds until energy regenerates (misspelling is _actually_ in the game!)
+	EnergyRecoveryMax        int64    `json:"energyRecoveryMax,string"` // maximum energy recoverable over time
+	InviteBasicIncentive     obj.Item `json:"inviteBasicIncentiv"`
+	ChaoRentalBasicIncentive obj.Item `json:"chaoRentalBasicIncentiv"`
+}
