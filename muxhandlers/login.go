@@ -272,7 +272,7 @@ func Migration(helper *helper.Helper) {
 		}
 	} else {
 		helper.DebugOut("Failed to find player")
-		baseInfo.StatusCode = status.MissingPlayer
+		baseInfo.StatusCode = status.InvalidPassword
 		response := responses.NewBaseResponse(baseInfo)
 		helper.SendResponse(response)
 	}
