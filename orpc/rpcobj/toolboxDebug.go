@@ -14,6 +14,7 @@ import (
 	"github.com/fluofoxxo/outrun/logic"
 	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/netobj/constnetobjs"
+	"github.com/fluofoxxo/outrun/obj/constobjs"
 )
 
 func (t *Toolbox) Debug_GetCampaignStatus(uid string, reply *ToolboxReply) error {
@@ -291,6 +292,8 @@ func (t *Toolbox) Debug_PrepTag1p0(uids string, reply *ToolboxReply) error {
 		player.PlayerState.NumRings = sqrt(player.PlayerState.NumRings) * 3
 		player.PlayerState.NumRedRings = sqrt(player.PlayerState.NumRedRings)
 		player.PlayerState.Energy = gameconf.CFile.StartingEnergy
+		player.PlayerState.Items = constobjs.DefaultPlayerStateItems
+		player.PlayerState.Rank = 0 // for some reason, this gets incremented 1 by the game
 
 		player.MileageMapState = netobj.DefaultMileageMapState() // reset campaign
 
@@ -320,5 +323,27 @@ func (t *Toolbox) Debug_PlayersByPassword(password string, reply *ToolboxReply) 
 	final := strings.Join(playerIDs, ",")
 	reply.Status = StatusOK
 	reply.Info = final
+	return nil
+}
+
+func (t *Toolbox) Debug_ResetPlayersRank(uids string, reply *ToolboxReply) error {
+	allUIDs := strings.Split(uids, ",")
+	for _, uid := range allUIDs {
+		player, err := db.GetPlayer(uid)
+		if err != nil {
+			reply.Status = StatusOtherError
+			reply.Info = fmt.Sprintf("unable to get player %s: ", uid) + err.Error()
+			return err
+		}
+		player.PlayerState.Rank = 0 // for some reason, this gets incremented 1 by the game
+		err = db.SavePlayer(player)
+		if err != nil {
+			reply.Status = StatusOtherError
+			reply.Info = fmt.Sprintf("error saving player %s: ", uid) + err.Error()
+			return err
+		}
+	}
+	reply.Status = StatusOK
+	reply.Info = "OK"
 	return nil
 }
