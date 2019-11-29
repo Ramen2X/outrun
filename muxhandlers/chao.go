@@ -92,7 +92,7 @@ func EquipChao(helper *helper.Helper) {
 		if chaoIndex != -1 {
 			chao := player.ChaoState[chaoIndex]
 			if chao.Acquired != 0 && chao.Status != enums.ChaoStatusNotOwned {
-				player.PlayerState.MainChaoID = subChaoID
+				player.PlayerState.SubChaoID = subChaoID
 			} else {
 				helper.Warn("Bad Chao state: chao.Acquired = %v, should = 0; chao.Status = %v, should NOT equal enums.ChaoStatusNotOwned (%v)", chao.Acquired, chao.Status, enums.ChaoStatusNotOwned)
 			}
