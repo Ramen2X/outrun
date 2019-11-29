@@ -238,7 +238,7 @@ func Migration(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 
 	helper.DebugOut("Transfer ID: %s", password)
-	foundPlayers, err := logic.FindPlayersByPassword(password, false)
+	foundPlayers, err := logic.FindPlayersByMigrationPassword(password, false)
 	if err != nil {
 		helper.Err("Error finding players by password", err)
 		return
