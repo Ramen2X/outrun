@@ -14,7 +14,8 @@ type Player struct {
 	ID                string                      `json:"userID"`
 	Username          string                      `json:"username"`
 	Password          string                      `json:"password"`
-	UserPassword      string                      `json:"userPassword"` // used in migration
+	MigrationPassword string                      `json:"migrationPassword"` // used in migration
+	UserPassword      string                      `json:"userPassword"`      // used in migration
 	Key               string                      `json:"key"`
 	LastLogin         int64                       // TODO: use `json:"lastLogin"`
 	PlayerState       PlayerState                 `json:"playerState"`
@@ -31,11 +32,12 @@ type Player struct {
 	PersonalEvents    []eventconf.ConfiguredEvent `json:"ORN_personalEvents"`
 }
 
-func NewPlayer(id, username, password, userPassword, key string, playerState PlayerState, characterState []Character, chaoState []Chao, eventState EventState, optionUserResult OptionUserResult, mileageMapState MileageMapState, mf []MileageFriend, playerVarious PlayerVarious, wheelOptions WheelOptions, rouletteInfo RouletteInfo, chaoRouletteGroup ChaoRouletteGroup, personalEvents []eventconf.ConfiguredEvent) Player {
+func NewPlayer(id, username, password, migrationPassword, userPassword, key string, playerState PlayerState, characterState []Character, chaoState []Chao, eventState EventState, optionUserResult OptionUserResult, mileageMapState MileageMapState, mf []MileageFriend, playerVarious PlayerVarious, wheelOptions WheelOptions, rouletteInfo RouletteInfo, chaoRouletteGroup ChaoRouletteGroup, personalEvents []eventconf.ConfiguredEvent) Player {
 	return Player{
 		id,
 		username,
 		password,
+		migrationPassword,
 		userPassword,
 		key,
 		time.Now().Unix(),

@@ -347,6 +347,10 @@ func QuickPostGameResults(helper *helper.Helper) {
 				playCharacters[0].Cost += consts.UpgradeIncreases[playCharacters[0].ID] // increase cost
 				playCharacters[0].AbilityLevelUp = append(playCharacters[0].AbilityLevelUp, int64(abilityIndex))
 				playCharacters[0].AbilityLevelUpExp = append(playCharacters[0].AbilityLevelUpExp, playCharacters[0].Cost)
+				abilityIndex = 1
+				for abilityIndex == 1 { // unused ability is at index 1
+					abilityIndex = rand.Intn(len(mainC.AbilityLevel))
+				}
 			}
 		}
 		if hasSubCharacter {
@@ -362,6 +366,10 @@ func QuickPostGameResults(helper *helper.Helper) {
 					playCharacters[1].Cost += consts.UpgradeIncreases[playCharacters[1].ID] // increase cost
 					playCharacters[1].AbilityLevelUp = append(playCharacters[1].AbilityLevelUp, int64(abilityIndex))
 					playCharacters[1].AbilityLevelUpExp = append(playCharacters[1].AbilityLevelUpExp, playCharacters[1].Cost)
+					abilityIndex = 1
+					for abilityIndex == 1 { // unused ability is at index 1
+						abilityIndex = rand.Intn(len(mainC.AbilityLevel))
+					}
 				}
 			}
 		}
@@ -514,17 +522,18 @@ func PostGameResults(helper *helper.Helper) {
 				return
 			}
 		}
-		//playCharacters[0].AbilityLevelUp[0] = int64(-1)
+		playCharacters[0].AbilityLevelUp = []int64{}
+		playCharacters[0].AbilityLevelUpExp = []int64{}
 		if playCharacters[0].Level < 100 {
 			playCharacters[0].Exp += expIncrease
 			for playCharacters[0].Exp >= playCharacters[0].Cost {
 				// more exp than cost = level up
-				playCharacters[0].Level++                       // increase level
-				playCharacters[0].AbilityLevel[abilityIndex]++  // increase ability level
-				playCharacters[0].Exp -= playCharacters[0].Cost // remove cost from exp
-				//playCharacters[0].AbilityLevelUp[0] = int64(abilityIndex) // TODO: this may not work right when a character levels up more than once
-				//playCharacters[0].AbilityLevelUpExp[abilityIndex] = playCharacters[0].Cost
+				playCharacters[0].Level++                                               // increase level
+				playCharacters[0].AbilityLevel[abilityIndex]++                          // increase ability level
+				playCharacters[0].Exp -= playCharacters[0].Cost                         // remove cost from exp
 				playCharacters[0].Cost += consts.UpgradeIncreases[playCharacters[0].ID] // increase cost
+				playCharacters[0].AbilityLevelUp = append(playCharacters[0].AbilityLevelUp, int64(abilityIndex))
+				playCharacters[0].AbilityLevelUpExp = append(playCharacters[0].AbilityLevelUpExp, playCharacters[0].Cost)
 				abilityIndex = 1
 				for abilityIndex == 1 { // unused ability is at index 1
 					abilityIndex = rand.Intn(len(mainC.AbilityLevel))
@@ -532,17 +541,18 @@ func PostGameResults(helper *helper.Helper) {
 			}
 		}
 		if hasSubCharacter {
-			//playCharacters[1].AbilityLevelUp[0] = int64(-1)
+			playCharacters[1].AbilityLevelUp = []int64{}
+			playCharacters[1].AbilityLevelUpExp = []int64{}
 			if playCharacters[1].Level < 100 {
 				playCharacters[1].Exp += expIncrease
 				for playCharacters[1].Exp >= playCharacters[1].Cost {
 					// more exp than cost = level up
-					playCharacters[1].Level++                       // increase level
-					playCharacters[1].AbilityLevel[abilityIndex]++  // increase ability level
-					playCharacters[1].Exp -= playCharacters[1].Cost // remove cost from exp
-					//playCharacters[1].AbilityLevelUp[0] = int64(abilityIndex) // TODO: this may not work right when a character levels up more than once
-					//playCharacters[1].AbilityLevelUpExp[abilityIndex] = playCharacters[1].Cost
+					playCharacters[1].Level++                                               // increase level
+					playCharacters[1].AbilityLevel[abilityIndex]++                          // increase ability level
+					playCharacters[1].Exp -= playCharacters[1].Cost                         // remove cost from exp
 					playCharacters[1].Cost += consts.UpgradeIncreases[playCharacters[1].ID] // increase cost
+					playCharacters[1].AbilityLevelUp = append(playCharacters[1].AbilityLevelUp, int64(abilityIndex))
+					playCharacters[1].AbilityLevelUpExp = append(playCharacters[1].AbilityLevelUpExp, playCharacters[1].Cost)
 					abilityIndex = 1
 					for abilityIndex == 1 { // unused ability is at index 1
 						abilityIndex = rand.Intn(len(subC.AbilityLevel))

@@ -182,6 +182,14 @@ func GetCountry(helper *helper.Helper) {
 }
 
 func GetMigrationPassword(helper *helper.Helper) {
+	randChar := func(charset string, length int64) string {
+		runes := []rune(charset)
+		final := make([]rune, 10)
+		for i := range final {
+			final[i] = runes[rand.Intn(len(runes))]
+		}
+		return string(final)
+	}
 	recv := helper.GetGameRequest()
 	var request requests.GetMigrationPasswordRequest
 	err := json.Unmarshal(recv, &request)
@@ -194,7 +202,10 @@ func GetMigrationPassword(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
-	player.UserPassword = request.UserPassword // TODO: Confirm that this is the right behavior
+	if len(player.MigrationPassword) != 10 {
+		player.MigrationPassword = randChar("abcdefghijklmnopqrstuvwxyz1234567890", 10)
+	}
+	player.UserPassword = request.UserPassword
 	db.SavePlayer(player)
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.MigrationPassword(baseInfo, player)
@@ -245,8 +256,8 @@ func Migration(helper *helper.Helper) {
 		if migrationUserPassword == migratePlayer.UserPassword {
 			baseInfo.StatusCode = status.OK
 			baseInfo.SetErrorMessage(emess.OK)
-			migratePlayer.SetPassword(randChar("abcdefghijklmnopqrstuvwxyz1234567890", 10)) //generate a brand new transfer ID
-			migratePlayer.UserPassword = ""                                                 //clear user password
+			migratePlayer.MigrationPassword = randChar("abcdefghijklmnopqrstuvwxyz1234567890", 10) //generate a brand new transfer ID
+			migratePlayer.UserPassword = ""                                                        //clear user password
 			migratePlayer.LastLogin = time.Now().UTC().Unix()
 			err = db.SavePlayer(migratePlayer)
 			if err != nil {
@@ -260,7 +271,7 @@ func Migration(helper *helper.Helper) {
 			}
 			helper.DebugOut("User ID: %s", migratePlayer.ID)
 			helper.DebugOut("Username: %s", migratePlayer.Username)
-			helper.DebugOut("New Transfer ID: %s", migratePlayer.Password)
+			helper.DebugOut("New Transfer ID: %s", migratePlayer.MigrationPassword)
 			response := responses.MigrationSuccess(baseInfo, sid, migratePlayer.ID, migratePlayer.Username, migratePlayer.Password)
 			helper.SendResponse(response)
 		} else {
