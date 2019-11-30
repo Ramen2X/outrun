@@ -77,6 +77,7 @@ func CommitWheelSpin(helper *helper.Helper) {
 	helper.DebugOut("Number of tickets: %v", player.PlayerState.NumRouletteTicket)
 	helper.DebugOut("Has free spins: %v", hasFreeSpins)
 	helper.DebugOut("Roulette count: %v", player.RouletteInfo.RouletteCountInPeriod)
+	landedOnUpgrade := false
 	if hasTickets || hasFreeSpins {
 		//if player.LastWheelOptions.NumRemainingRoulette > 0 {
 		wonItem := player.LastWheelOptions.Items[player.LastWheelOptions.ItemWon]
@@ -94,6 +95,8 @@ func CommitWheelSpin(helper *helper.Helper) {
 				// BIG/SUPER/Jackpot
 				if player.LastWheelOptions.RouletteRank == enums.WheelRankSuper { // Don't award jackpot unless on super
 					player.PlayerState.NumRings += player.LastWheelOptions.NumJackpotRing
+				} else {
+					landedOnUpgrade = true
 				}
 			} else if wonItem == strconv.Itoa(enums.IDTypeRedRing) {
 				// Red rings
@@ -115,10 +118,13 @@ func CommitWheelSpin(helper *helper.Helper) {
 		}
 
 		// generate NEXT! wheel
-		player.RouletteInfo.RouletteCountInPeriod++ // we've spun an additional time
-		if player.RouletteInfo.RouletteCountInPeriod > consts.RouletteFreeSpins {
-			// we've run out of free spins for the period
-			player.PlayerState.NumRouletteTicket--
+		if !landedOnUpgrade {
+			//don't use up spin if we landed on an upgrade
+			player.RouletteInfo.RouletteCountInPeriod++ // we've spun an additional time
+			if player.RouletteInfo.RouletteCountInPeriod > consts.RouletteFreeSpins {
+				// we've run out of free spins for the period
+				player.PlayerState.NumRouletteTicket--
+			}
 		}
 		numRouletteTicket := player.PlayerState.NumRouletteTicket
 		player.OptionUserResult.NumItemRoulette++
