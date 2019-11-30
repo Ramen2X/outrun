@@ -11,28 +11,29 @@ import (
 )
 
 type Player struct {
-	ID                string                      `json:"userID"`
-	Username          string                      `json:"username"`
-	Password          string                      `json:"password"`
-	MigrationPassword string                      `json:"migrationPassword"` // used in migration
-	UserPassword      string                      `json:"userPassword"`      // used in migration
-	Key               string                      `json:"key"`
-	LastLogin         int64                       // TODO: use `json:"lastLogin"`
-	PlayerState       PlayerState                 `json:"playerState"`
-	CharacterState    []Character                 `json:"characterState"`
-	ChaoState         []Chao                      `json:"chaoState"`
-	EventState        EventState                  `json:"eventState"`
-	OptionUserResult  OptionUserResult            // TODO: use `json:"optionUserResult"`
-	MileageMapState   MileageMapState             `json:"mileageMapState"`
-	MileageFriends    []MileageFriend             `json:"mileageFriendList"`
-	PlayerVarious     PlayerVarious               `json:"playerVarious"`
-	LastWheelOptions  WheelOptions                `json:"ORN_wheelOptions"` // TODO: Make RouletteGroup to hold LastWheelOptions and RouletteInfo?
-	RouletteInfo      RouletteInfo                `json:"ORN_rouletteInfo"`
-	ChaoRouletteGroup ChaoRouletteGroup           `json:"ORN_chaoRouletteGroup"`
-	PersonalEvents    []eventconf.ConfiguredEvent `json:"ORN_personalEvents"`
+	ID                     string                      `json:"userID"`
+	Username               string                      `json:"username"`
+	Password               string                      `json:"password"`
+	MigrationPassword      string                      `json:"migrationPassword"` // used in migration
+	UserPassword           string                      `json:"userPassword"`      // used in migration
+	Key                    string                      `json:"key"`
+	LastLogin              int64                       // TODO: use `json:"lastLogin"`
+	PlayerState            PlayerState                 `json:"playerState"`
+	CharacterState         []Character                 `json:"characterState"`
+	ChaoState              []Chao                      `json:"chaoState"`
+	EventState             EventState                  `json:"eventState"`
+	EventUserRaidbossState EventUserRaidbossState      `json:"eventUserRaidboss"`
+	OptionUserResult       OptionUserResult            // TODO: use `json:"optionUserResult"`
+	MileageMapState        MileageMapState             `json:"mileageMapState"`
+	MileageFriends         []MileageFriend             `json:"mileageFriendList"`
+	PlayerVarious          PlayerVarious               `json:"playerVarious"`
+	LastWheelOptions       WheelOptions                `json:"ORN_wheelOptions"` // TODO: Make RouletteGroup to hold LastWheelOptions and RouletteInfo?
+	RouletteInfo           RouletteInfo                `json:"ORN_rouletteInfo"`
+	ChaoRouletteGroup      ChaoRouletteGroup           `json:"ORN_chaoRouletteGroup"`
+	PersonalEvents         []eventconf.ConfiguredEvent `json:"ORN_personalEvents"`
 }
 
-func NewPlayer(id, username, password, migrationPassword, userPassword, key string, playerState PlayerState, characterState []Character, chaoState []Chao, eventState EventState, optionUserResult OptionUserResult, mileageMapState MileageMapState, mf []MileageFriend, playerVarious PlayerVarious, wheelOptions WheelOptions, rouletteInfo RouletteInfo, chaoRouletteGroup ChaoRouletteGroup, personalEvents []eventconf.ConfiguredEvent) Player {
+func NewPlayer(id, username, password, migrationPassword, userPassword, key string, playerState PlayerState, characterState []Character, chaoState []Chao, eventState EventState, eventUserRaidbossState EventUserRaidbossState, optionUserResult OptionUserResult, mileageMapState MileageMapState, mf []MileageFriend, playerVarious PlayerVarious, wheelOptions WheelOptions, rouletteInfo RouletteInfo, chaoRouletteGroup ChaoRouletteGroup, personalEvents []eventconf.ConfiguredEvent) Player {
 	return Player{
 		id,
 		username,
@@ -45,6 +46,7 @@ func NewPlayer(id, username, password, migrationPassword, userPassword, key stri
 		characterState,
 		chaoState,
 		eventState,
+		eventUserRaidbossState,
 		optionUserResult,
 		mileageMapState,
 		mf,

@@ -1,9 +1,9 @@
 package responses
 
 import (
-//	"strconv"
-	
-//	"github.com/fluofoxxo/outrun/enums"
+	//	"strconv"
+
+	//	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/obj"
 	"github.com/fluofoxxo/outrun/responses/responseobjs"
@@ -130,15 +130,15 @@ func EventState(base responseobjs.BaseInfo, eventState netobj.EventState) EventS
 }
 
 type EventUserRaidbossStateResponse struct {
-    BaseResponse
-    netobj.EventUserRaidbossState `json:"eventUserRaidboss"`
+	BaseResponse
+	netobj.EventUserRaidbossState `json:"eventUserRaidboss"`
 }
 
 func EventUserRaidbossState(base responseobjs.BaseInfo, userRaidbossState netobj.EventUserRaidbossState) EventUserRaidbossStateResponse {
-    baseResponse := NewBaseResponse(base)
-    out := EventUserRaidbossStateResponse{
-        baseResponse,
-        userRaidbossState,
-    }
-    return out
+	baseResponse := NewBaseResponse(base)
+	out := EventUserRaidbossStateResponse{
+		baseResponse,
+		userRaidbossState,
+	}
+	return out
 }

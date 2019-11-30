@@ -8,7 +8,6 @@ import (
 	"github.com/fluofoxxo/outrun/emess"
 	"github.com/fluofoxxo/outrun/helper"
 	"github.com/fluofoxxo/outrun/logic/conversion"
-	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/obj"
 	"github.com/fluofoxxo/outrun/requests"
 	"github.com/fluofoxxo/outrun/responses"
@@ -96,9 +95,14 @@ func GetEventState(helper *helper.Helper) {
 
 // 1.1.4 raid bosses
 func GetEventUserRaidbossState(helper *helper.Helper) {
+	player, err := helper.GetCallingPlayer()
+	if err != nil {
+		helper.InternalErr("Error getting calling player", err)
+		return
+	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
-	response := responses.EventUserRaidbossState(baseInfo, netobj.DefaultUserRaidbossState())
-	err := helper.SendResponse(response)
+	response := responses.EventUserRaidbossState(baseInfo, player.EventUserRaidbossState)
+	err = helper.SendInsecureResponse(response)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
