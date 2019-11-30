@@ -160,6 +160,7 @@ func main() {
 	router.HandleFunc(prefix+"/Game/getMileageReward/", h(muxhandlers.GetMileageReward, LogExecutionTime))
 	// Retry
 	router.HandleFunc(prefix+"/Game/actRetry/", h(muxhandlers.ActRetry, LogExecutionTime))
+	router.HandleFunc(prefix+"/Game/actRetryFree/", h(muxhandlers.ActRetryFree, LogExecutionTime))
 	// Gameplay
 	router.HandleFunc(prefix+"/Game/getFreeItemList/", h(muxhandlers.GetFreeItemList, LogExecutionTime))
 	router.HandleFunc(prefix+"/Game/postGameResults/", h(muxhandlers.PostGameResults, LogExecutionTime))

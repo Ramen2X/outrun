@@ -47,31 +47,33 @@ var ChaoMap = enums.ChaoNameMap
 
 // defaults
 var Defaults = map[string]interface{}{
-	"DAllCharactersUnlocked": true,
-	"DAllChaoUnlocked":       true,
-	"DDefaultMainCharacter":  "sonic",
-	"DDefaultSubCharacter":   "empty",
-	"DDefaultMainChao":       "empty",
-	"DDefaultSubChao":        "empty",
-	"DStartingRings":         int64(5000),
-	"DStartingRedRings":      int64(25),
-	"DStartingEnergy":        int64(5),
-	"DAllItemsFree":          true,
+	"DAllCharactersUnlocked":   true,
+	"DAllChaoUnlocked":         true,
+	"DDefaultMainCharacter":    "sonic",
+	"DDefaultSubCharacter":     "empty",
+	"DDefaultMainChao":         "empty",
+	"DDefaultSubChao":          "empty",
+	"DStartingRings":           int64(5000),
+	"DStartingRedRings":        int64(25),
+	"DStartingEnergy":          int64(5),
+	"DAllItemsFree":            true,
+	"DEnableEnergyConsumption": false,
 }
 
 var CFile ConfigFile
 
 type ConfigFile struct {
-	AllCharactersUnlocked bool   `json:"allCharactersUnlocked,omitempty"`
-	AllChaoUnlocked       bool   `json:"allChaoUnlocked,omitempty"`
-	DefaultMainCharacter  string `json:"defaultMainCharacter,omitempty"`
-	DefaultSubCharacter   string `json:"defaultSubCharacter,omitempty"`
-	DefaultMainChao       string `json:"defaultMainChao,omitempty"`
-	DefaultSubChao        string `json:"defaultSubChao,omitempty"`
-	StartingRings         int64  `json:"startingRings,omitempty"`
-	StartingRedRings      int64  `json:"startingRedRings,omitempty"`
-	StartingEnergy        int64  `json:"startingEnergy,omitempty"`
-	AllItemsFree          bool   `json:"allItemsFree,omitempty"`
+	AllCharactersUnlocked   bool   `json:"allCharactersUnlocked,omitempty"`
+	AllChaoUnlocked         bool   `json:"allChaoUnlocked,omitempty"`
+	DefaultMainCharacter    string `json:"defaultMainCharacter,omitempty"`
+	DefaultSubCharacter     string `json:"defaultSubCharacter,omitempty"`
+	DefaultMainChao         string `json:"defaultMainChao,omitempty"`
+	DefaultSubChao          string `json:"defaultSubChao,omitempty"`
+	StartingRings           int64  `json:"startingRings,omitempty"`
+	StartingRedRings        int64  `json:"startingRedRings,omitempty"`
+	StartingEnergy          int64  `json:"startingEnergy,omitempty"`
+	AllItemsFree            bool   `json:"allItemsFree,omitempty"`
+	EnableEnergyConsumption bool   `json:"enableEnergyConsumption,omitempty"`
 }
 
 func Parse(filename string) error {
@@ -86,6 +88,7 @@ func Parse(filename string) error {
 		Defaults["DStartingRedRings"].(int64),
 		Defaults["DStartingEnergy"].(int64),
 		Defaults["DAllItemsFree"].(bool),
+		Defaults["DEnableEnergyConsumption"].(bool),
 	}
 	file, err := loadFile(filename)
 	if err != nil {

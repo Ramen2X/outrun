@@ -164,38 +164,42 @@ func ActStart(helper *helper.Helper) {
 		}
 		return result
 	}
-	if !gameconf.CFile.AllItemsFree {
-		consumedItems := modToStringSlice(request.Modifier)
-		consumedRings := gameplay.GetRequiredItemPayment(consumedItems)
-		for _, citemID := range consumedItems {
-			if citemID[:2] == "11" { // boosts, not items
-				continue
-			}
-			index := player.IndexOfItem(citemID)
-			if index == -1 {
-				helper.Uncatchable(fmt.Sprintf("Player sent bad item ID '%s', cannot continue", citemID))
-				helper.InvalidRequest()
-				return
-			}
-			if player.PlayerState.Items[index].Amount >= 1 { // can use item
-				player.PlayerState.Items[index].Amount -= 1
-			} else {
-				if player.PlayerState.NumRings < consumedRings { // not enough rings
-					responseStatus = status.NotEnoughRings
-					break
-				}
-				player.PlayerState.NumRings -= consumedRings
-			}
-		}
-	}
 	helper.DebugOut(fmt.Sprintf("%v", player.PlayerState.Items))
+	for time.Now().UTC().Unix() >= player.PlayerState.EnergyRenewsAt && player.PlayerState.Energy < player.PlayerVarious.EnergyRecoveryMax {
+		player.PlayerState.Energy++
+		player.PlayerState.EnergyRenewsAt += player.PlayerVarious.EnergyRecoveryTime
+	}
 	if player.PlayerState.Energy > 0 {
-		//player.PlayerState.Energy-- // TODO: Add option to turn this off in config.json!
+		if gameconf.CFile.EnableEnergyConsumption {
+			if player.PlayerState.Energy >= player.PlayerVarious.EnergyRecoveryMax {
+				player.PlayerState.EnergyRenewsAt = time.Now().UTC().Unix() + player.PlayerVarious.EnergyRecoveryTime
+			}
+			player.PlayerState.Energy--
+		}
 		player.PlayerState.NumPlaying++
-		err = db.SavePlayer(player)
-		if err != nil {
-			helper.InternalErr("Error saving player", err)
-			return
+		if !gameconf.CFile.AllItemsFree {
+			consumedItems := modToStringSlice(request.Modifier)
+			consumedRings := gameplay.GetRequiredItemPayment(consumedItems)
+			for _, citemID := range consumedItems {
+				if citemID[:2] == "11" { // boosts, not items
+					continue
+				}
+				index := player.IndexOfItem(citemID)
+				if index == -1 {
+					helper.Uncatchable(fmt.Sprintf("Player sent bad item ID '%s', cannot continue", citemID))
+					helper.InvalidRequest()
+					return
+				}
+				if player.PlayerState.Items[index].Amount >= 1 { // can use item
+					player.PlayerState.Items[index].Amount--
+				} else {
+					if player.PlayerState.NumRings < consumedRings { // not enough rings
+						responseStatus = status.NotEnoughRings
+						break
+					}
+					player.PlayerState.NumRings -= consumedRings
+				}
+			}
 		}
 	} else {
 		responseStatus = status.NotEnoughEnergy
@@ -262,6 +266,26 @@ func ActRetry(helper *helper.Helper) {
 	}
 }
 
+func ActRetryFree(helper *helper.Helper) {
+	player, err := helper.GetCallingPlayer()
+	if err != nil {
+		helper.InternalErr("Error getting calling player", err)
+		return
+	}
+	// more than likely used for ad-based revives
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	response := responses.NewBaseResponse(baseInfo)
+	err = helper.SendResponse(response)
+	if err != nil {
+		helper.InternalErr("Error sending response", err)
+		return
+	}
+	_, err = analytics.Store(player.ID, factors.AnalyticTypeRevives)
+	if err != nil {
+		helper.WarnErr("Error storing analytics (AnalyticTypeRevives)", err)
+	}
+}
+
 func QuickPostGameResults(helper *helper.Helper) {
 	recv := helper.GetGameRequest()
 	var request requests.QuickPostGameResultsRequest
@@ -274,6 +298,12 @@ func QuickPostGameResults(helper *helper.Helper) {
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
+	}
+
+	//update energy counter
+	for time.Now().UTC().Unix() >= player.PlayerState.EnergyRenewsAt && player.PlayerState.Energy < player.PlayerVarious.EnergyRecoveryMax {
+		player.PlayerState.Energy++
+		player.PlayerState.EnergyRenewsAt += player.PlayerVarious.EnergyRecoveryTime
 	}
 
 	hasSubCharacter := player.PlayerState.SubCharaID != "-1"
@@ -436,6 +466,12 @@ func PostGameResults(helper *helper.Helper) {
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
+	}
+
+	//update energy counter
+	for time.Now().UTC().Unix() >= player.PlayerState.EnergyRenewsAt && player.PlayerState.Energy < player.PlayerVarious.EnergyRecoveryMax {
+		player.PlayerState.Energy++
+		player.PlayerState.EnergyRenewsAt += player.PlayerVarious.EnergyRecoveryTime
 	}
 
 	hasSubCharacter := player.PlayerState.SubCharaID != "-1"

@@ -3,6 +3,7 @@ package muxhandlers
 import (
 	"encoding/json"
 	"strconv"
+	"time"
 
 	"github.com/fluofoxxo/outrun/db"
 	"github.com/fluofoxxo/outrun/emess"
@@ -18,22 +19,26 @@ func GetPlayerState(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
+	for time.Now().UTC().Unix() >= player.PlayerState.EnergyRenewsAt && player.PlayerState.Energy < player.PlayerVarious.EnergyRecoveryMax {
+		player.PlayerState.Energy++
+		player.PlayerState.EnergyRenewsAt += player.PlayerVarious.EnergyRecoveryTime
+	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.PlayerState(baseInfo, player.PlayerState)
 	helper.SendResponse(response)
 }
 
 func GetCharacterState(helper *helper.Helper) {
+	src := helper.GetGameRequest()
+	var request requests.Base
+	err := json.Unmarshal(src, &request)
+	if err != nil {
+		helper.Err("Error unmarshalling", err)
+		return
+	}
 	player, err := helper.GetCallingPlayer()
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
-		return
-	}
-	src := helper.GetGameRequest()
-	var request requests.Base
-	err = json.Unmarshal(src, &request)
-	if err != nil {
-		helper.Err("Error unmarshalling", err)
 		return
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
