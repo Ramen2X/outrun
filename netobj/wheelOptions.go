@@ -96,8 +96,8 @@ func DefaultWheelOptions(numRouletteTicket, rouletteCountInPeriod, rouletteRank 
 			item = append(item, randomItemAmount)
 		}
 		if rouletteGenMode == 2 && rouletteRank != enums.WheelRankSuper {
-			randomItem = consts.RandomItemListNormalWheel[rand.Intn(len(consts.RandomItemListNormalWheel))]
-			randomItemAmount = consts.NormalWheelItemAmountRange[randomItem].GetRandom()
+			randomItem := consts.RandomItemListNormalWheel[rand.Intn(len(consts.RandomItemListNormalWheel))]
+			randomItemAmount := consts.NormalWheelItemAmountRange[randomItem].GetRandom()
 			switch rouletteRank {
 			case enums.WheelRankNormal:
 				randomItem = consts.RandomItemListNormalWheel[rand.Intn(len(consts.RandomItemListNormalWheel))]

@@ -4,9 +4,38 @@ import (
 	"github.com/fluofoxxo/outrun/obj"
 )
 
+var RedStarItemsType0 = rsiDefaultsIT0() // Rings
 var RedStarItemsType1 = rsiDefaultsIT1() // Rings
 var RedStarItemsType2 = rsiDefaultsIT2() // Energies
-var RedStarItemsType4 = rsiDefaultsIT4() // Red Rings?? See ShopUI.ServerEexchangeType
+var RedStarItemsType4 = rsiDefaultsIT4() // Raid boss Energies
+
+func rsiDefaultsIT0() []obj.RedStarItem {
+	redstaritems := []obj.RedStarItem{}
+	storeItemIds := []string{"900010", "900030", "900060", "900210", "900380"}
+	itemIds := []string{"900000", "900000", "900000", "900000", "900000"}
+	numItems := []int64{10, 30, 60, 210, 380}
+	prices := []int64{0, 0, 0, 0, 0}
+	priceDisps := []string{"", "", "", "", ""}
+	productIds := []string{"", "", "", "", ""}
+	for i, storeItemId := range storeItemIds {
+		itemId := itemIds[i]
+		numItem := numItems[i]
+		price := prices[i]
+		priceDisp := priceDisps[i]
+		productId := productIds[i]
+		rsi := obj.NewRedStarItem(
+			storeItemId,
+			itemId,
+			priceDisp,
+			productId,
+			numItem,
+			price,
+			nil,
+		)
+		redstaritems = append(redstaritems, rsi)
+	}
+	return redstaritems
+}
 
 func rsiDefaultsIT1() []obj.RedStarItem {
 	redstaritems := []obj.RedStarItem{}

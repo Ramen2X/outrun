@@ -98,29 +98,48 @@ func QuickActStart(helper *helper.Helper) {
 		}
 		return result
 	}
-	if !gameconf.CFile.AllItemsFree {
-		consumedItems := modToStringSlice(request.Modifier)
-		consumedRings := gameplay.GetRequiredItemPayment(consumedItems)
-		for _, citemID := range consumedItems {
-			if citemID[:2] == "11" { // boosts, not items
-				continue
-			}
-			index := player.IndexOfItem(citemID)
-			if index == -1 {
-				helper.Uncatchable(fmt.Sprintf("Player sent bad item ID '%s', cannot continue", citemID))
-				helper.InvalidRequest()
-				return
-			}
-			if player.PlayerState.Items[index].Amount >= 1 { // can use item
-				player.PlayerState.Items[index].Amount -= 1
+	for time.Now().UTC().Unix() >= player.PlayerState.EnergyRenewsAt && player.PlayerState.Energy < player.PlayerVarious.EnergyRecoveryMax {
+		player.PlayerState.Energy++
+		player.PlayerState.EnergyRenewsAt += player.PlayerVarious.EnergyRecoveryTime
+	}
+	if player.PlayerState.Energy+player.PlayerState.EnergyBuy > 0 {
+		if gameconf.CFile.EnableEnergyConsumption {
+			if player.PlayerState.EnergyBuy > 0 {
+				player.PlayerState.EnergyBuy--
 			} else {
-				if player.PlayerState.NumRings < consumedRings { // not enough rings
-					responseStatus = status.NotEnoughRings
-					break
+				if player.PlayerState.Energy >= player.PlayerVarious.EnergyRecoveryMax {
+					player.PlayerState.EnergyRenewsAt = time.Now().UTC().Unix() + player.PlayerVarious.EnergyRecoveryTime
 				}
-				player.PlayerState.NumRings -= consumedRings
+				player.PlayerState.Energy--
 			}
 		}
+		player.PlayerState.NumPlaying++
+		if !gameconf.CFile.AllItemsFree {
+			consumedItems := modToStringSlice(request.Modifier)
+			consumedRings := gameplay.GetRequiredItemPayment(consumedItems)
+			for _, citemID := range consumedItems {
+				if citemID[:2] == "11" { // boosts, not items
+					continue
+				}
+				index := player.IndexOfItem(citemID)
+				if index == -1 {
+					helper.Uncatchable(fmt.Sprintf("Player sent bad item ID '%s', cannot continue", citemID))
+					helper.InvalidRequest()
+					return
+				}
+				if player.PlayerState.Items[index].Amount >= 1 { // can use item
+					player.PlayerState.Items[index].Amount--
+				} else {
+					if player.PlayerState.NumRings < consumedRings { // not enough rings
+						responseStatus = status.NotEnoughRings
+						break
+					}
+					player.PlayerState.NumRings -= consumedRings
+				}
+			}
+		}
+	} else {
+		responseStatus = status.NotEnoughEnergy
 	}
 	helper.DebugOut(fmt.Sprintf("%v", player.PlayerState.Items))
 	baseInfo := helper.BaseInfo(emess.OK, responseStatus)
@@ -169,12 +188,16 @@ func ActStart(helper *helper.Helper) {
 		player.PlayerState.Energy++
 		player.PlayerState.EnergyRenewsAt += player.PlayerVarious.EnergyRecoveryTime
 	}
-	if player.PlayerState.Energy > 0 {
+	if player.PlayerState.Energy+player.PlayerState.EnergyBuy > 0 {
 		if gameconf.CFile.EnableEnergyConsumption {
-			if player.PlayerState.Energy >= player.PlayerVarious.EnergyRecoveryMax {
-				player.PlayerState.EnergyRenewsAt = time.Now().UTC().Unix() + player.PlayerVarious.EnergyRecoveryTime
+			if player.PlayerState.EnergyBuy > 0 {
+				player.PlayerState.EnergyBuy--
+			} else {
+				if player.PlayerState.Energy >= player.PlayerVarious.EnergyRecoveryMax {
+					player.PlayerState.EnergyRenewsAt = time.Now().UTC().Unix() + player.PlayerVarious.EnergyRecoveryTime
+				}
+				player.PlayerState.Energy--
 			}
-			player.PlayerState.Energy--
 		}
 		player.PlayerState.NumPlaying++
 		if !gameconf.CFile.AllItemsFree {

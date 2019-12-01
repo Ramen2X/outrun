@@ -29,13 +29,17 @@ func GetRedStarExchangeList(helper *helper.Helper) {
 	var response responses.RedStarExchangeListResponse
 	var redStarItems []obj.RedStarItem
 	helper.Out("Recv ItemType " + strconv.Itoa(int(request.ItemType)))
-	if request.ItemType == 0 {
-		redStarItems = []obj.RedStarItem{}
-	} else if request.ItemType == 1 {
+	if request.ItemType == 0 { //red star rings
+		if request.Version == "1.1.4" {
+			redStarItems = constobjs.RedStarItemsType0
+		} else {
+			redStarItems = []obj.RedStarItem{}
+		}
+	} else if request.ItemType == 1 { // rings
 		redStarItems = constobjs.RedStarItemsType1
-	} else if request.ItemType == 2 {
+	} else if request.ItemType == 2 { // energy
 		redStarItems = constobjs.RedStarItemsType2
-	} else if request.ItemType == 4 {
+	} else if request.ItemType == 4 { // raid boss energy
 		redStarItems = constobjs.RedStarItemsType4
 	} else {
 		helper.Respond([]byte("Invalid request"))
@@ -94,6 +98,7 @@ func RedStarExchange(helper *helper.Helper) {
 			}
 			player.PlayerState.NumRedRings -= itemPrice
 			player.PlayerState.NumRings += constobjs.ShopRingAmounts[itemID]
+			//player.PlayerState.NumBuyRings += constobjs.ShopRingAmounts[itemID]
 			db.SavePlayer(player)
 			_, err = analytics.Store(player.ID, factors.AnalyticTypePurchaseRings)
 			if err != nil {
@@ -105,7 +110,8 @@ func RedStarExchange(helper *helper.Helper) {
 				return
 			}
 			player.PlayerState.NumRedRings -= itemPrice
-			player.PlayerState.Energy += constobjs.ShopEnergyAmounts[itemID]
+			//player.PlayerState.Energy += constobjs.ShopEnergyAmounts[itemID]
+			player.PlayerState.EnergyBuy += constobjs.ShopEnergyAmounts[itemID]
 			db.SavePlayer(player)
 			_, err = analytics.Store(player.ID, factors.AnalyticTypePurchaseEnergy)
 			if err != nil {
