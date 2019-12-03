@@ -187,8 +187,8 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 			} else { // paying with red ring(s)
 				player.PlayerState.NumRedRings -= consts.ChaoRouletteRedRingCost * request.Count // spend red ring(s)
 			}
-		} else {
-			// don't remove chao eggs yet
+		} else { //paying with chao eggs
+			player.PlayerState.ChaoEggs -= 10
 		}
 		player.OptionUserResult.NumChaoRoulette++
 		player.ChaoRouletteGroup.ChaoRouletteInfo.RouletteCountInPeriod++ // increment times spun in timer; TODO: Should we count request.Count?
@@ -208,7 +208,7 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 				[]obj.Item{},
 				int64(gottenItemIndex),
 			}
-			amtWon := 1
+			//amtWon := 1
 			if prize.Rarity == 100 { // Character
 				// increase character level by (amount)
 				charIndex := player.IndexOfChara(prize.ID)
@@ -242,7 +242,7 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 					highRange := int(consts.ChaoRouletteChaoLevelIncreaseHigh)
 					lowRange := int(consts.ChaoRouletteChaoLevelIncreaseLow)
 					prizeChaoLevel := int64(rand.Intn(highRange-lowRange+1) + lowRange) // This level is added to the current Chao level
-					amtWon = int(prizeChaoLevel)
+					//amtWon = int(prizeChaoLevel)
 					player.ChaoState[chaoIndex].Level += prizeChaoLevel
 					if player.ChaoState[chaoIndex].Level > 10 { // if max chao level (https://www.deviantart.com/vocaloidbrsfreak97/journal/So-Sonic-Runners-just-recently-updated-574789098)
 						excess := player.ChaoState[chaoIndex].Level - 10              // get amount gone over
@@ -255,11 +255,11 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 			} else { // Should never happen!
 				helper.InternalErr("unknown prize rarity '"+strconv.Itoa(int(prize.Rarity))+"'", fmt.Errorf("")) // TODO: Probably shouldn't use a blank error?
 			}
-			index := 0
+			/*index := 0
 			for index < len(items) {
 				spinResult.ItemList = append(spinResult.ItemList, obj.NewItem(items[index], int64(amtWon)))
 				index++
-			}
+			}*/
 			spinResults = append(spinResults, spinResult) // add spin result to results list (See spinResults declaration)
 		}
 		// create a new wheel; must be done after ALL player operations are done

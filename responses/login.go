@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/jinzhu/now"
+
 	"github.com/fluofoxxo/outrun/config/infoconf"
 	"github.com/fluofoxxo/outrun/logic/conversion"
 	"github.com/fluofoxxo/outrun/netobj"
@@ -255,11 +257,11 @@ func LoginBonus(base responseobjs.BaseInfo, lbs obj.LoginBonusStatus, lbrl, flbr
 }
 
 func DefaultLoginBonus(base responseobjs.BaseInfo) LoginBonusResponse {
-	lbs := obj.NewLoginBonusStatus(2, 2, 1465830000)
+	lbs := obj.NewLoginBonusStatus(1, 7, 0)
 	lbrl := constobjs.DefaultLoginBonusRewardList
 	flbrl := constobjs.DefaultFirstLoginBonusRewardList
-	st := int64(1465743600)
-	et := int64(1466348400)
+	st := int64(now.BeginningOfWeek().UTC().Unix())
+	et := int64(now.EndOfWeek().UTC().Unix())
 	rid := int64(-1)
 	rd := int64(-1)
 	frd := int64(-1)
