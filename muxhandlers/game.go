@@ -193,10 +193,10 @@ func ActStart(helper *helper.Helper) {
 			if player.PlayerState.EnergyBuy > 0 {
 				player.PlayerState.EnergyBuy--
 			} else {
-				if player.PlayerState.Energy >= player.PlayerVarious.EnergyRecoveryMax {
+				player.PlayerState.Energy--
+				if player.PlayerState.Energy < player.PlayerVarious.EnergyRecoveryMax {
 					player.PlayerState.EnergyRenewsAt = time.Now().UTC().Unix() + player.PlayerVarious.EnergyRecoveryTime
 				}
-				player.PlayerState.Energy--
 			}
 		}
 		player.PlayerState.NumPlaying++

@@ -142,3 +142,28 @@ func EventUserRaidbossState(base responseobjs.BaseInfo, userRaidbossState netobj
 	}
 	return out
 }
+
+type EventActStartResponse struct {
+	ActStartBaseResponse
+	netobj.EventUserRaidbossState `json:"eventUserRaidboss"`
+}
+
+func EventActStart(base responseobjs.BaseInfo, playerState netobj.PlayerState, campaignList []obj.Campaign, eventUserRaidbossState netobj.EventUserRaidbossState) EventActStartResponse {
+	actStartBase := ActStartBase(base, playerState, campaignList)
+	return EventActStartResponse{
+		actStartBase,
+		eventUserRaidbossState,
+	}
+}
+
+func DefaultEventActStart(base responseobjs.BaseInfo, player netobj.Player) EventActStartResponse {
+	campaignList := []obj.Campaign{}
+	playerState := player.PlayerState
+	eventUserRaidbossState := player.EventUserRaidbossState
+	return EventActStart(
+		base,
+		playerState,
+		campaignList,
+		eventUserRaidbossState,
+	)
+}
