@@ -355,6 +355,8 @@ func QuickPostGameResults(helper *helper.Helper) {
 		player.PlayerState.NumRedRings += request.RedRings
 		player.PlayerState.NumRouletteTicket += request.RedRings // TODO: URGENT! Remove as soon as possible!
 		player.PlayerState.Animals += request.Animals
+		player.OptionUserResult.NumTakeAllRings += request.Rings
+		player.OptionUserResult.NumTakeAllRedRings += request.RedRings
 		playerTimedHighScore := player.PlayerState.TimedHighScore
 		if request.Score > playerTimedHighScore {
 			player.PlayerState.TimedHighScore = request.Score
@@ -646,7 +648,11 @@ func PostGameResults(helper *helper.Helper) {
 			player.MileageMapState.StageTotalScore += request.Score
 
 			goToNextChapter := request.ChapterClear == 1
-			//chaoEggs := request.GetChaoEgg
+			chaoEggs := request.GetChaoEgg
+			if chaoEggs > 0 {
+				player.PlayerState.ChaoEggs += chaoEggs
+				player.ChaoRouletteGroup.ChaoWheelOptions = netobj.DefaultChaoWheelOptions(player.PlayerState)
+			}
 			// TODO: Add chao eggs to player
 			newPoint := request.ReachPoint
 

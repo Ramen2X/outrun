@@ -34,9 +34,13 @@ func DefaultWheelOptions(numRouletteTicket, rouletteCountInPeriod, rouletteRank 
 	rouletteGenMode := rand.Intn(3)
 	items := []string{strconv.Itoa(enums.IDTypeItemRouletteWin)} // first item is always jackpot/big/super
 	item := []int64{1}
+	// There are currently three roulette generation modes:
+	// Mode 0: Classic mode
+	// Mode 1: Vertical dual win (based off a pattern in the OG server)
+	// Mode 2: Classic mode but with two win spots placed horizontally instead of one win spot on the top
 	itemWeight := []int64{1250, 1250, 1250, 1250, 1250, 1250, 1250, 1250}
 	switch rouletteGenMode {
-	case 1: //dual roulette win
+	case 1:
 		randomItem1 := consts.RandomItemListNormalWheel[rand.Intn(len(consts.RandomItemListNormalWheel))]
 		randomItemAmount1 := consts.NormalWheelItemAmountRange[randomItem1].GetRandom()
 		randomItem2 := consts.RandomItemListNormalWheel[rand.Intn(len(consts.RandomItemListNormalWheel))]
@@ -77,7 +81,7 @@ func DefaultWheelOptions(numRouletteTicket, rouletteCountInPeriod, rouletteRank 
 		item = append(item, randomItemAmount2)
 		items = append(items, randomItem1)
 		item = append(item, randomItemAmount1)
-	default: //classic
+	default:
 		for _ = range make([]byte, 7) { // loop 7 times
 			randomItem := consts.RandomItemListNormalWheel[rand.Intn(len(consts.RandomItemListNormalWheel))]
 			randomItemAmount := consts.NormalWheelItemAmountRange[randomItem].GetRandom()
@@ -148,8 +152,7 @@ func DefaultWheelOptions(numRouletteTicket, rouletteCountInPeriod, rouletteRank 
 }
 
 func UpgradeWheelOptions(origWheel WheelOptions, numRouletteTicket, rouletteCountInPeriod int64) WheelOptions {
-	newWheel := DefaultWheelOptions(numRouletteTicket, rouletteCountInPeriod, origWheel.RouletteRank)
-	newWheel.RouletteRank = origWheel.RouletteRank
+	rouletteRank := origWheel.RouletteRank
 	if origWheel.Items[origWheel.ItemWon] == strconv.Itoa(enums.IDTypeItemRouletteWin) { // if landed on big/super or jackpot
 		landedOnUpgrade := origWheel.RouletteRank == enums.WheelRankNormal || origWheel.RouletteRank == enums.WheelRankBig
 		if config.CFile.DebugPrints {
@@ -160,19 +163,16 @@ func UpgradeWheelOptions(origWheel WheelOptions, numRouletteTicket, rouletteCoun
 			if config.CFile.DebugPrints {
 				log.Println("landedOnUpgrade")
 			}
-			newWheel.RouletteRank++ // increase the rank
+			rouletteRank++ // increase the rank
 		} else {
 			if config.CFile.DebugPrints {
 				log.Println("NOT landedOnUpgrade")
 			}
-			newWheel.RouletteRank = enums.WheelRankNormal
+			rouletteRank = enums.WheelRankNormal
 		}
 	} else {
-		if config.CFile.DebugPrints {
-			log.Println("Didn't land on RouletteWin; reverting to Normal roulette")
-		}
-		newWheel.RouletteRank = enums.WheelRankNormal
+		rouletteRank = enums.WheelRankNormal
 	}
-	newWheel = DefaultWheelOptions(numRouletteTicket, rouletteCountInPeriod, newWheel.RouletteRank)
+	newWheel := DefaultWheelOptions(numRouletteTicket, rouletteCountInPeriod, rouletteRank)
 	return newWheel
 }

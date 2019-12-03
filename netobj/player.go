@@ -23,7 +23,7 @@ type Player struct {
 	ChaoState              []Chao                      `json:"chaoState"`
 	EventState             EventState                  `json:"eventState"`
 	EventUserRaidbossState EventUserRaidbossState      `json:"eventUserRaidboss"`
-	OptionUserResult       OptionUserResult            // TODO: use `json:"optionUserResult"`
+	OptionUserResult       OptionUserResult            `json:"optionUserResult"`
 	MileageMapState        MileageMapState             `json:"mileageMapState"`
 	MileageFriends         []MileageFriend             `json:"mileageFriendList"`
 	PlayerVarious          PlayerVarious               `json:"playerVarious"`
