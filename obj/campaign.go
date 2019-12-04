@@ -1,7 +1,7 @@
 package obj
 
 import (
-	"github.com/fluofoxxo/outrun/config/campaignconf"
+	"github.com/fluofoxxo/outrun/enums"
 	"github.com/jinzhu/now"
 )
 
@@ -34,16 +34,7 @@ func DefaultCampaign(ctype, content, subcontent int64) Campaign {
 }
 
 func DefaultCampaigns() []Campaign {
-	campaignList := []Campaign{}
-	if campaignconf.CFile.AllowCampaigns {
-		for _, confCampaign := range campaignconf.CFile.CurrentCampaigns {
-			newCampaign := conversion.ConfiguredCampaignToCampaign(confCampaign)
-			campaignList = append(campaignList, newCampaign)
-		}
-	}
-	helper.DebugOut("Campaign list: %v", campaignList)
-	return campaignList
-	/*return []Campaign{
+	return []Campaign{
 		DefaultCampaign(enums.CampaignTypeBankedRingBonus, 250, 0), // 25 percent ring boost
-	}*/
+	}
 }

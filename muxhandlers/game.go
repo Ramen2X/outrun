@@ -12,6 +12,7 @@ import (
 	"github.com/fluofoxxo/outrun/analytics"
 	"github.com/fluofoxxo/outrun/analytics/factors"
 	"github.com/fluofoxxo/outrun/config"
+	"github.com/fluofoxxo/outrun/config/campaignconf"
 	"github.com/fluofoxxo/outrun/config/gameconf"
 	"github.com/fluofoxxo/outrun/consts"
 	"github.com/fluofoxxo/outrun/db"
@@ -19,6 +20,7 @@ import (
 	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/helper"
 	"github.com/fluofoxxo/outrun/logic/campaign"
+	"github.com/fluofoxxo/outrun/logic/conversion"
 	"github.com/fluofoxxo/outrun/logic/gameplay"
 	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/obj"
@@ -68,8 +70,16 @@ func GetMileageData(helper *helper.Helper) {
 }
 
 func GetCampaignList(helper *helper.Helper) {
+	campaignList := []obj.Campaign{}
+	if campaignconf.CFile.AllowCampaigns {
+		for _, confCampaign := range campaignconf.CFile.CurrentCampaigns {
+			newCampaign := conversion.ConfiguredCampaignToCampaign(confCampaign)
+			campaignList = append(campaignList, newCampaign)
+		}
+	}
+	helper.DebugOut("Campaign list: %v", campaignList)
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
-	response := responses.DefaultCampaignList(baseInfo)
+	response := responses.CampaignList(baseInfo, campaignList)
 	err := helper.SendResponse(response)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
@@ -89,6 +99,14 @@ func QuickActStart(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
+	campaignList := []obj.Campaign{}
+	if campaignconf.CFile.AllowCampaigns {
+		for _, confCampaign := range campaignconf.CFile.CurrentCampaigns {
+			newCampaign := conversion.ConfiguredCampaignToCampaign(confCampaign)
+			campaignList = append(campaignList, newCampaign)
+		}
+	}
+	helper.DebugOut("Campaign list: %v", campaignList)
 	responseStatus := status.OK
 	// consume items
 	modToStringSlice := func(ns []int64) []string {
@@ -143,7 +161,7 @@ func QuickActStart(helper *helper.Helper) {
 	}
 	helper.DebugOut(fmt.Sprintf("%v", player.PlayerState.Items))
 	baseInfo := helper.BaseInfo(emess.OK, responseStatus)
-	response := responses.DefaultQuickActStart(baseInfo, player)
+	response := responses.DefaultQuickActStart(baseInfo, player, campaignList)
 	err = helper.SendResponse(response)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
@@ -173,6 +191,14 @@ func ActStart(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
+	campaignList := []obj.Campaign{}
+	if campaignconf.CFile.AllowCampaigns {
+		for _, confCampaign := range campaignconf.CFile.CurrentCampaigns {
+			newCampaign := conversion.ConfiguredCampaignToCampaign(confCampaign)
+			campaignList = append(campaignList, newCampaign)
+		}
+	}
+	helper.DebugOut("Campaign list: %v", campaignList)
 	helper.DebugOut(fmt.Sprintf("%v", player.PlayerState.Items))
 	responseStatus := status.OK
 	// consume items
@@ -242,7 +268,7 @@ func ActStart(helper *helper.Helper) {
 		}
 		respPlayer.CharacterState = cState
 	}
-	response := responses.DefaultActStart(baseInfo, respPlayer)
+	response := responses.DefaultActStart(baseInfo, respPlayer, campaignList)
 	err = helper.SendResponse(response)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
