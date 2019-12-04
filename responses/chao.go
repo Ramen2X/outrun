@@ -46,7 +46,7 @@ func PrizeChaoWheel(base responseobjs.BaseInfo, prizeList []obj.ChaoPrize) Prize
 }
 
 func DefaultPrizeChaoWheel(base responseobjs.BaseInfo) PrizeChaoWheelResponse {
-	prizeList := constobjs.DefaultChaoPrizeWheelPrizeListOLD
+	prizeList := constobjs.DefaultChaoPrizeWheelPrizeList
 	return PrizeChaoWheel(base, prizeList)
 }
 

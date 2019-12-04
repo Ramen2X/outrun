@@ -41,13 +41,9 @@ func DefaultChaoWheelOptions(playerState PlayerState) ChaoWheelOptions {
 	rarity := []int64{2, 1, 100, 1, 2, 1, 100, 1} // l2 Chao, l1 Chao, character...
 	//rarity := []int64{0, 1, 2, 100, 0, 1, 2, 100}      // TODO: REMOVE!
 	itemWeight := []int64{6, 17, 5, 17, 16, 17, 5, 17} // Could possibly fake these, but the logic shouldn't allow it to happen
-	campaignList := []obj.Campaign{}
+	campaignList := obj.DefaultCampaigns()
 	chaoRouletteType := enums.ChaoWheelTypeNormal
 	numSpecialEgg := playerState.ChaoEggs
-	if numSpecialEgg >= 10 {
-		chaoRouletteType = enums.ChaoWheelTypeSpecial
-		itemWeight = []int64{1250, 1250, 1250, 1250, 1250, 1250, 1250, 1250}
-	}
 	rouletteAvailable := int64(1)
 	numChaoRouletteToken := playerState.NumChaoRouletteTicket
 	spinCost := consts.ChaoRouletteTicketCost

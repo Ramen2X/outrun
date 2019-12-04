@@ -13,6 +13,7 @@ import (
 
 	"github.com/fluofoxxo/outrun/bgtasks"
 	"github.com/fluofoxxo/outrun/config"
+	"github.com/fluofoxxo/outrun/config/campaignconf"
 	"github.com/fluofoxxo/outrun/config/eventconf"
 	"github.com/fluofoxxo/outrun/config/gameconf"
 	"github.com/fluofoxxo/outrun/config/infoconf"
@@ -113,6 +114,15 @@ func main() {
 		}
 	} else {
 		log.Printf("[INFO] Game config file (%s) loaded\n", config.CFile.GameConfigFilename)
+	}
+
+	err = campaignconf.Parse(config.CFile.CampaignConfigFilename)
+	if err != nil {
+		if !config.CFile.SilenceCampaignConfigErrors {
+			log.Printf("[INFO] Failure loading campaign config file %s (%s), using defaults\n", config.CFile.CampaignConfigFilename, err)
+		}
+	} else {
+		log.Printf("[INFO] Campaign config file (%s) loaded\n", config.CFile.CampaignConfigFilename)
 	}
 
 	if config.CFile.EnableRPC {

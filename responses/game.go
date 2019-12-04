@@ -112,9 +112,7 @@ func CampaignList(base responseobjs.BaseInfo, campaignList []obj.Campaign) Campa
 }
 
 func DefaultCampaignList(base responseobjs.BaseInfo) CampaignListResponse {
-	campaignList := []obj.Campaign{
-		obj.DefaultCampaign(enums.CampaignTypeBankedRingBonus, 250, 0), // 25 percent ring boost
-	}
+	campaignList := obj.DefaultCampaigns()
 	return CampaignList(
 		base,
 		campaignList,
@@ -148,9 +146,7 @@ func QuickActStart(base responseobjs.BaseInfo, playerState netobj.PlayerState, c
 }
 
 func DefaultQuickActStart(base responseobjs.BaseInfo, player netobj.Player) QuickActStartResponse {
-	campaignList := []obj.Campaign{
-		obj.DefaultCampaign(enums.CampaignTypeBankedRingBonus, 250, 0), // 25 percent ring boost
-	}
+	campaignList := obj.DefaultCampaigns()
 	playerState := player.PlayerState
 	return QuickActStart(
 		base,
@@ -173,9 +169,7 @@ func ActStart(base responseobjs.BaseInfo, playerState netobj.PlayerState, campai
 }
 
 func DefaultActStart(base responseobjs.BaseInfo, player netobj.Player) ActStartResponse {
-	campaignList := []obj.Campaign{
-		obj.DefaultCampaign(enums.CampaignTypeBankedRingBonus, 250, 0), // 25 percent ring boost
-	}
+	campaignList := obj.DefaultCampaigns()
 	playerState := player.PlayerState
 	distFriends := []netobj.MileageFriend{}
 	return ActStart(

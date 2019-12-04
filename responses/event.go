@@ -157,7 +157,7 @@ func EventActStart(base responseobjs.BaseInfo, playerState netobj.PlayerState, c
 }
 
 func DefaultEventActStart(base responseobjs.BaseInfo, player netobj.Player) EventActStartResponse {
-	campaignList := []obj.Campaign{}
+	campaignList := obj.DefaultCampaigns()
 	playerState := player.PlayerState
 	eventUserRaidbossState := player.EventUserRaidbossState
 	return EventActStart(
