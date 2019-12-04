@@ -1,6 +1,8 @@
 package obj
 
 import (
+	"time"
+
 	"github.com/fluofoxxo/outrun/enums"
 	"github.com/jinzhu/now"
 )
@@ -37,4 +39,8 @@ func DefaultCampaigns() []Campaign {
 	return []Campaign{
 		DefaultCampaign(enums.CampaignTypeBankedRingBonus, 250, 0), // 25 percent ring boost
 	}
+}
+
+func IsCampaignActive(campaign Campaign) bool {
+	return time.Now().UTC().Unix() >= campaign.StartTime && time.Now().UTC().Unix() < campaign.EndTime
 }

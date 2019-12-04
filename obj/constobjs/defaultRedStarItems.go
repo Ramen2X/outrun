@@ -4,7 +4,7 @@ import (
 	"github.com/fluofoxxo/outrun/obj"
 )
 
-var RedStarItemsType0 = rsiDefaultsIT0() // Rings
+var RedStarItemsType0 = rsiDefaultsIT0() // Red Rings
 var RedStarItemsType1 = rsiDefaultsIT1() // Rings
 var RedStarItemsType2 = rsiDefaultsIT2() // Energies
 var RedStarItemsType4 = rsiDefaultsIT4() // Raid boss Energies
@@ -79,7 +79,7 @@ func rsiDefaultsIT2() []obj.RedStarItem {
 		price := prices[i]
 		priceDisp := priceDisps[i]
 		productId := productIds[i]
-		campaign := obj.DefaultCampaign(8, 2000, 0) // WARN: is this a possibility for a memory leak?
+		//campaign := obj.DefaultCampaign(8, 2000, 0) // WARN: is this a possibility for a memory leak?
 		rsi := obj.NewRedStarItem(
 			storeItemId,
 			itemId,
@@ -87,7 +87,8 @@ func rsiDefaultsIT2() []obj.RedStarItem {
 			productId,
 			numItem,
 			price,
-			&campaign,
+			nil,
+			//&campaign,
 		)
 		redstaritems = append(redstaritems, rsi)
 	}

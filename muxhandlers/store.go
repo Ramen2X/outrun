@@ -6,9 +6,12 @@ import (
 
 	"github.com/fluofoxxo/outrun/analytics"
 	"github.com/fluofoxxo/outrun/analytics/factors"
+	"github.com/fluofoxxo/outrun/config/campaignconf"
 	"github.com/fluofoxxo/outrun/db"
 	"github.com/fluofoxxo/outrun/emess"
+	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/helper"
+	"github.com/fluofoxxo/outrun/logic/conversion"
 	"github.com/fluofoxxo/outrun/obj"
 	"github.com/fluofoxxo/outrun/obj/constobjs"
 	"github.com/fluofoxxo/outrun/requests"
@@ -24,7 +27,14 @@ func GetRedStarExchangeList(helper *helper.Helper) {
 		helper.Err("Error unmarshalling", err)
 		return
 	}
-
+	campaignList := []obj.Campaign{}
+	if campaignconf.CFile.AllowCampaigns {
+		for _, confCampaign := range campaignconf.CFile.CurrentCampaigns {
+			newCampaign := conversion.ConfiguredCampaignToCampaign(confCampaign)
+			campaignList = append(campaignList, newCampaign)
+		}
+	}
+	helper.DebugOut("Campaign list: %v", campaignList)
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	var response responses.RedStarExchangeListResponse
 	var redStarItems []obj.RedStarItem
@@ -45,7 +55,43 @@ func GetRedStarExchangeList(helper *helper.Helper) {
 		helper.Respond([]byte("Invalid request"))
 		return
 	}
-
+	index := 0
+	campaign := obj.DefaultCampaign(enums.CampaignTypeBankedRingBonus, 2000, 0)
+	campaignActive := false
+	for index < len(campaignList) {
+		if obj.IsCampaignActive(campaignList[index]) {
+			switch request.ItemType {
+			case 0: //red star rings
+				if campaignList[index].Type == enums.CampaignTypePurchaseAddRedRings {
+					campaign = campaignList[index]
+					campaignActive = true
+				}
+			case 1: //rings
+				if campaignList[index].Type == enums.CampaignTypePurchaseAddRings {
+					campaign = campaignList[index]
+					campaignActive = true
+				}
+			case 2: //energy
+				if campaignList[index].Type == enums.CampaignTypePurchaseAddEnergies {
+					campaign = campaignList[index]
+					campaignActive = true
+				}
+			case 4: //raid boss energy
+				if campaignList[index].Type == enums.CampaignTypePurchaseAddRaidEnergies {
+					campaign = campaignList[index]
+					campaignActive = true
+				}
+			}
+		}
+		index++
+	}
+	index = 0
+	for index < len(redStarItems) {
+		if campaignActive {
+			redStarItems[index].Campaign = &campaign
+		}
+		index++
+	}
 	response = responses.RedStarExchangeList(baseInfo, redStarItems, 0, "1900-1-1")
 	err = helper.SendResponse(response)
 	if err != nil {
