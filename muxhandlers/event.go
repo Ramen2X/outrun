@@ -416,6 +416,8 @@ func EventUpdateGameResults(helper *helper.Helper) {
 		helper.DebugOut("It took %v point(s) of damage", request.RaidbossDamage)
 		if request.RaidbossBeatFlg != 0 {
 			helper.DebugOut("It was defeated!")
+			player.EventUserRaidbossState.NumBeatedEncounter++
+			player.EventUserRaidbossState.NumBeatedEnterprise++ // TODO: is this right?
 		}
 	}
 
