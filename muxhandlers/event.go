@@ -451,3 +451,20 @@ func EventUpdateGameResults(helper *helper.Helper) {
 		return
 	}
 }
+
+func DrawRaidBoss(helper *helper.Helper) {
+	// TODO: move to muxhandlers/game.go?
+	recv := helper.GetGameRequest()
+	var request requests.DrawRaidBossRequest
+	err := json.Unmarshal(recv, &request)
+	if err != nil {
+		helper.Err("Error unmarshalling", err)
+		return
+	}
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	response := responses.DrawRaidBoss(baseInfo, netobj.DefaultRaidbossState())
+	err = helper.SendCompatibleResponse(response)
+	if err != nil {
+		helper.InternalErr("Error sending response", err)
+	}
+}

@@ -37,3 +37,9 @@ type EventUpdateGameResultsRequest struct {
 	RaidbossDamage         int64 `json:"raidbossDamage,string"`
 	RaidbossBeatFlg        int64 `json:"raidbossBeatFlg,string"`
 }
+
+type DrawRaidBossRequest struct {
+	Base
+	EventID int64 `json:"eventId,string"`
+	Score   int64 `json:"score,string"`
+}
