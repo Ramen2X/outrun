@@ -43,7 +43,7 @@ func DefaultRaidbossState() EventRaidbossState {
 	// TODO: establish as constants
 	id := int64(0)
 	level := int64(5)
-	rarity := int64(0)
+	rarity := int64(1)
 	encounterName := "(Test Entry)"
 	return NewRaidbossState(
 		id,

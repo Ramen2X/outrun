@@ -174,18 +174,18 @@ func EventActStart(helper *helper.Helper) {
 		player.EventUserRaidbossState.RaidBossEnergy++
 		player.EventUserRaidbossState.EnergyRenewsAt += 1200
 	}
-	if player.PlayerState.Energy+player.PlayerState.EnergyBuy >= request.EnergyExpend {
+	if player.EventUserRaidbossState.RaidBossEnergy+player.EventUserRaidbossState.RaidBossEnergyBuy >= request.EnergyExpend {
 		if gameconf.CFile.EnableEnergyConsumption {
-			if player.PlayerState.EnergyBuy > 0 {
+			if player.EventUserRaidbossState.RaidBossEnergyBuy > 0 {
 				player.EventUserRaidbossState.RaidBossEnergyBuy -= request.EnergyExpend
 				if player.EventUserRaidbossState.RaidBossEnergyBuy < 0 { //did we go negative?
 					player.EventUserRaidbossState.RaidBossEnergy += player.EventUserRaidbossState.RaidBossEnergyBuy
 					player.EventUserRaidbossState.RaidBossEnergyBuy = 0
 				}
 			} else {
-				player.PlayerState.Energy -= request.EnergyExpend
+				player.EventUserRaidbossState.RaidBossEnergy -= request.EnergyExpend
 				if player.EventUserRaidbossState.RaidBossEnergy < 20 {
-					player.PlayerState.EnergyRenewsAt = time.Now().UTC().Unix() + 1200
+					player.EventUserRaidbossState.EnergyRenewsAt = time.Now().UTC().Unix() + 1200
 				}
 			}
 		}
