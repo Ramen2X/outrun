@@ -166,7 +166,7 @@ func EventActStart(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
-	helper.DebugOut(fmt.Sprintf("%v", player.PlayerState.Items))
+	helper.DebugOut("Energy expended: %v", request.EnergyExpend)
 	responseStatus := status.OK
 	// consume items
 	helper.DebugOut(fmt.Sprintf("%v", player.PlayerState.Items))
@@ -262,11 +262,17 @@ func EventPostGameResults(helper *helper.Helper) {
 		player.EventUserRaidbossState.RaidBossEnergy++
 		player.EventUserRaidbossState.EnergyRenewsAt += 1200
 	}
+	player.EventUserRaidbossState.NumRaidbossRings += request.NumRaidbossRings
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.EventUserRaidbossState(baseInfo, player.EventUserRaidbossState)
 	err = helper.SendCompatibleResponse(response)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
+	}
+	err = db.SavePlayer(player)
+	if err != nil {
+		helper.InternalErr("Error saving player", err)
+		return
 	}
 }
 
@@ -288,6 +294,10 @@ func EventUpdateGameResults(helper *helper.Helper) {
 	for time.Now().UTC().Unix() >= player.PlayerState.EnergyRenewsAt && player.PlayerState.Energy < player.PlayerVarious.EnergyRecoveryMax {
 		player.PlayerState.Energy++
 		player.PlayerState.EnergyRenewsAt += player.PlayerVarious.EnergyRecoveryTime
+	}
+	for time.Now().UTC().Unix() >= player.EventUserRaidbossState.EnergyRenewsAt && player.EventUserRaidbossState.RaidBossEnergy < 20 {
+		player.EventUserRaidbossState.RaidBossEnergy++
+		player.EventUserRaidbossState.EnergyRenewsAt += 1200
 	}
 
 	hasSubCharacter := player.PlayerState.SubCharaID != "-1"

@@ -5,27 +5,22 @@ import "time"
 type EventRaidbossState struct {
 	ID               int64  `json:"raidbossId"`
 	Level            int64  `json:"raidbossLevel"`
-	Rarity           int64  `json:"raidbossRarity"` //TODO: research
+	Rarity           int64  `json:"raidbossRarity"` // TODO: research
 	HP               int64  `json:"raidbossHitPoint"`
 	MaxHP            int64  `json:"raidbossMaxHitPoint"`
-	Status           int64  `json:"raidbossStatus"`
-	EscapeAt         int64  `json:"raidbossEscapeAt"` //the time when the raid boss expires?
+	Status           int64  `json:"raidbossStatus"`   // TODO: research
+	EscapeAt         int64  `json:"raidbossEscapeAt"` // the time when the raid boss expires?
 	EncounterName    string `json:"encounterName"`
 	EncounterFlg     int64  `json:"encounterFlg"`
-	CrowdedFlg       int64  `json:"crowdedFlg"`       //raid boss is full?
-	ParticipateCount int64  `json:"participateCount"` //number of people taking on this raid boss?
+	CrowdedFlg       int64  `json:"crowdedFlg"`       // raid boss is full?
+	ParticipateCount int64  `json:"participateCount"` // number of people taking on this raid boss?
 }
 
-func DefaultRaidbossState() EventRaidbossState {
-	// TODO: establish as constants
-	id := int64(0)
-	level := int64(15)
-	rarity := int64(0)
-	hp := int64(100)
-	maxHp := int64(100)
+func NewRaidbossState(id, level, rarity int64, encounterName string) EventRaidbossState {
+	maxHp := int64((15*(level+3) - 50) * (rarity + 1)) //TODO: Preliminary algorithm
+	hp := maxHp
 	status := int64(0)
 	escapeAt := int64(time.Now().Unix() + 3600) // raid boss expires after 1 hour
-	encounterName := "TEST ENTRY"
 	encounterFlg := int64(0)
 	crowdedFlg := int64(0)
 	participateCount := int64(0)
@@ -42,4 +37,18 @@ func DefaultRaidbossState() EventRaidbossState {
 		crowdedFlg,
 		participateCount,
 	}
+}
+
+func DefaultRaidbossState() EventRaidbossState {
+	// TODO: establish as constants
+	id := int64(0)
+	level := int64(5)
+	rarity := int64(0)
+	encounterName := "(Test Entry)"
+	return NewRaidbossState(
+		id,
+		level,
+		rarity,
+		encounterName,
+	)
 }
