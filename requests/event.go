@@ -20,10 +20,20 @@ type EventPostGameResultsRequest struct {
 }
 
 type EventUpdateGameResultsRequest struct {
-	QuickPostGameResultsRequest
-	EventID         int64 `json:"eventId,string"`
-	EventValue      int64 `json:"eventValue,string"`
-	RaidbossID      int64 `json:"raidbossId,string"`
-	RaidbossDamage  int64 `json:"raidbossDamage,string"`
-	RaidbossBeatFlg int64 `json:"raidbossBeatFlg,string"`
+	Base
+	Score                  int64 `json:"score,string"`
+	Rings                  int64 `json:"numRings,string"`
+	FailureRings           int64 `json:"numFailureRings,string"`
+	RedRings               int64 `json:"numRedStarRings,string"`
+	Distance               int64 `json:"distance,string"`
+	DailyChallengeValue    int64 `json:"dailyChallengeValue,string"`
+	DailyChallengeComplete int64 `json:"dailyChallengeComplete,string"`
+	Animals                int64 `json:"numAnimals,string"`
+	MaxCombo               int64 `json:"maxCombo,string"`
+	Closed                 int64 `json:"closed,string"`
+	EventID                int64 `json:"eventId,string"`
+	EventValue             int64 `json:"eventValue,string"`
+	RaidbossID             int64 `json:"raidbossId,string"`
+	RaidbossDamage         int64 `json:"raidbossDamage,string"`
+	RaidbossBeatFlg        int64 `json:"raidbossBeatFlg,string"`
 }

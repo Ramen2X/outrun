@@ -202,10 +202,19 @@ func EventPostGameResults(base responseobjs.BaseInfo, userRaidbossState netobj.E
 }
 
 type EventUpdateGameResultsResponse struct {
-	QuickPostGameResultsResponse
-	EventIncentiveList []obj.Item          `json:"eventIncentiveList"`
-	WheelOptions       netobj.WheelOptions `json:"wheelOptions"`
-	EventState         netobj.EventState   `json:"eventState,omitempty"`
+	BaseResponse
+	PlayerState             netobj.PlayerState    `json:"playerState"`
+	ChaoState               []netobj.Chao         `json:"chaoState"`
+	DailyChallengeIncentive []obj.Incentive       `json:"dailyChallengeIncentive"` // should be obj.Item, but game doesn't care
+	CharacterState          []netobj.Character    `json:"characterState"`
+	MessageList             []obj.Message         `json:"messageList"`
+	OperatorMessageList     []obj.OperatorMessage `json:"operatorMessageList"`
+	TotalMessage            int64                 `json:"totalMessage"`
+	TotalOperatorMessage    int64                 `json:"totalOperatorMessage"`
+	PlayCharacterState      []netobj.Character    `json:"playCharacterState"`
+	EventIncentiveList      []obj.Item            `json:"eventIncentiveList"`
+	WheelOptions            netobj.WheelOptions   `json:"wheelOptions"`
+	EventState              netobj.EventState     `json:"eventState,omitempty"`
 }
 
 func EventUpdateGameResults(base responseobjs.BaseInfo, player netobj.Player, dci []obj.Incentive, ml []obj.Message, oml []obj.OperatorMessage, pcs []netobj.Character, eil []obj.Item, wo netobj.WheelOptions, es netobj.EventState) EventUpdateGameResultsResponse {
@@ -219,7 +228,7 @@ func EventUpdateGameResults(base responseobjs.BaseInfo, player netobj.Player, dc
 	totalMessage := int64(len(messageList))
 	totalOperatorMessage := int64(len(operatorMessageList))
 	playCharacterState := pcs
-	qpgrr := QuickPostGameResultsResponse{
+	return EventUpdateGameResultsResponse{
 		baseResponse,
 		playerState,
 		chaoState,
@@ -230,9 +239,6 @@ func EventUpdateGameResults(base responseobjs.BaseInfo, player netobj.Player, dc
 		totalMessage,
 		totalOperatorMessage,
 		playCharacterState,
-	}
-	return EventUpdateGameResultsResponse{
-		qpgrr,
 		eil,
 		wo,
 		es,
@@ -240,12 +246,29 @@ func EventUpdateGameResults(base responseobjs.BaseInfo, player netobj.Player, dc
 }
 
 func DefaultEventUpdateGameResults(base responseobjs.BaseInfo, player netobj.Player, pcs []netobj.Character, es netobj.EventState) EventUpdateGameResultsResponse {
-	qpgrr := DefaultQuickPostGameResults(base, player, pcs)
+	baseResponse := NewBaseResponse(base)
+	playerState := player.PlayerState
+	chaoState := player.ChaoState
+	dailyChallengeIncentive := []obj.Incentive{}
+	characterState := player.CharacterState
+	messageList := []obj.Message{}
+	operatorMessageList := []obj.OperatorMessage{}
+	totalMessage := int64(len(messageList))
+	totalOperatorMessage := int64(len(operatorMessageList))
 	eil := []obj.Item{}
 	player.LastWheelOptions = logic.WheelRefreshLogic(player, player.LastWheelOptions)
 	wo := player.LastWheelOptions
 	return EventUpdateGameResultsResponse{
-		qpgrr,
+		baseResponse,
+		playerState,
+		chaoState,
+		dailyChallengeIncentive,
+		characterState,
+		messageList,
+		operatorMessageList,
+		totalMessage,
+		totalOperatorMessage,
+		pcs,
 		eil,
 		wo,
 		es,
