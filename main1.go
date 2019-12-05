@@ -191,7 +191,10 @@ func main() {
 	router.HandleFunc(prefix+"/Event/getEventReward/", h(muxhandlers.GetEventReward, LogExecutionTime))
 	router.HandleFunc(prefix+"/Event/getEventState/", h(muxhandlers.GetEventState, LogExecutionTime))
 	router.HandleFunc(prefix+"/Event/getEventUserRaidboss/", h(muxhandlers.GetEventUserRaidbossState, LogExecutionTime))
+	router.HandleFunc(prefix+"/Event/getEventUserRaidbossList/", h(muxhandlers.GetEventUserRaidbossList, LogExecutionTime))
 	router.HandleFunc(prefix+"/Event/eventActStart/", h(muxhandlers.EventActStart, LogExecutionTime))
+	router.HandleFunc(prefix+"/Event/eventPostGameResults/", h(muxhandlers.EventPostGameResults, LogExecutionTime))
+	router.HandleFunc(prefix+"/Event/eventUpdateGameResults/", h(muxhandlers.EventUpdateGameResults, LogExecutionTime))
 	router.HandleFunc(prefix+"/Spin/getWheelSpinInfo/", h(muxhandlers.GetWheelSpinInfo, LogExecutionTime))
 
 	// Character transactions

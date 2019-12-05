@@ -4,6 +4,7 @@ import (
 	//	"strconv"
 
 	//	"github.com/fluofoxxo/outrun/enums"
+	"github.com/fluofoxxo/outrun/logic"
 	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/obj"
 	"github.com/fluofoxxo/outrun/responses/responseobjs"
@@ -143,6 +144,24 @@ func EventUserRaidbossState(base responseobjs.BaseInfo, userRaidbossState netobj
 	return out
 }
 
+type EventUserRaidbossListResponse struct {
+	BaseResponse
+	netobj.EventUserRaidbossState `json:"eventUserRaidboss"`
+	EventRaidbossStates           []netobj.EventRaidbossState `json:"eventUserRaidbossList"`
+}
+
+func DefaultEventUserRaidbossList(base responseobjs.BaseInfo, userRaidbossState netobj.EventUserRaidbossState) EventUserRaidbossListResponse {
+	baseResponse := NewBaseResponse(base)
+	out := EventUserRaidbossListResponse{
+		baseResponse,
+		userRaidbossState,
+		[]netobj.EventRaidbossState{
+			netobj.DefaultRaidbossState(),
+		},
+	}
+	return out
+}
+
 type EventActStartResponse struct {
 	ActStartBaseResponse
 	netobj.EventUserRaidbossState `json:"eventUserRaidboss"`
@@ -166,4 +185,69 @@ func DefaultEventActStart(base responseobjs.BaseInfo, player netobj.Player) Even
 		campaignList,
 		eventUserRaidbossState,
 	)
+}
+
+type EventPostGameResultsResponse struct {
+	BaseResponse
+	netobj.EventUserRaidbossState `json:"eventUserRaidboss"`
+}
+
+func EventPostGameResults(base responseobjs.BaseInfo, userRaidbossState netobj.EventUserRaidbossState) EventPostGameResultsResponse {
+	baseResponse := NewBaseResponse(base)
+	out := EventPostGameResultsResponse{
+		baseResponse,
+		userRaidbossState,
+	}
+	return out
+}
+
+type EventUpdateGameResultsResponse struct {
+	QuickPostGameResultsResponse
+	EventIncentiveList []obj.Item          `json:"eventIncentiveList"`
+	WheelOptions       netobj.WheelOptions `json:"wheelOptions"`
+	EventState         netobj.EventState   `json:"eventState,omitempty"`
+}
+
+func EventUpdateGameResults(base responseobjs.BaseInfo, player netobj.Player, dci []obj.Incentive, ml []obj.Message, oml []obj.OperatorMessage, pcs []netobj.Character, eil []obj.Item, wo netobj.WheelOptions, es netobj.EventState) EventUpdateGameResultsResponse {
+	baseResponse := NewBaseResponse(base)
+	playerState := player.PlayerState
+	chaoState := player.ChaoState
+	dailyChallengeIncentive := dci
+	characterState := player.CharacterState
+	messageList := []obj.Message{}
+	operatorMessageList := []obj.OperatorMessage{}
+	totalMessage := int64(len(messageList))
+	totalOperatorMessage := int64(len(operatorMessageList))
+	playCharacterState := pcs
+	qpgrr := QuickPostGameResultsResponse{
+		baseResponse,
+		playerState,
+		chaoState,
+		dailyChallengeIncentive,
+		characterState,
+		messageList,
+		operatorMessageList,
+		totalMessage,
+		totalOperatorMessage,
+		playCharacterState,
+	}
+	return EventUpdateGameResultsResponse{
+		qpgrr,
+		eil,
+		wo,
+		es,
+	}
+}
+
+func DefaultEventUpdateGameResults(base responseobjs.BaseInfo, player netobj.Player, pcs []netobj.Character, es netobj.EventState) EventUpdateGameResultsResponse {
+	qpgrr := DefaultQuickPostGameResults(base, player, pcs)
+	eil := []obj.Item{}
+	player.LastWheelOptions = logic.WheelRefreshLogic(player, player.LastWheelOptions)
+	wo := player.LastWheelOptions
+	return EventUpdateGameResultsResponse{
+		qpgrr,
+		eil,
+		wo,
+		es,
+	}
 }

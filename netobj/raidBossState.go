@@ -19,13 +19,13 @@ type EventRaidbossState struct {
 func DefaultRaidbossState() EventRaidbossState {
 	// TODO: establish as constants
 	id := int64(0)
-	level := int64(1)
+	level := int64(15)
 	rarity := int64(0)
-	hp := int64(10)
-	maxHp := int64(10)
+	hp := int64(100)
+	maxHp := int64(100)
 	status := int64(0)
 	escapeAt := int64(time.Now().Unix() + 3600) // raid boss expires after 1 hour
-	encounterName := "Zazz"
+	encounterName := "TEST ENTRY"
 	encounterFlg := int64(0)
 	crowdedFlg := int64(0)
 	participateCount := int64(0)
