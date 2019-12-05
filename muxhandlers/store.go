@@ -123,9 +123,15 @@ func RedStarExchange(helper *helper.Helper) {
 			// it's not a ring item
 			itemPrice, ok = constobjs.ShopEnergyPrices[iid]
 			if !ok {
-				// it's not ring nor energy item
-				// unrecognized item!
-				return "", 0, false
+				// it's not an energy item
+				itemPrice, ok = constobjs.ShopRaidbossEnergyPrices[iid]
+				if !ok {
+					// it's not ring, energy, nor raidboss energy item
+					// unrecognized item!
+					return "", 0, false
+				}
+				itemType = "raidbossEnergy"
+				return itemType, itemPrice, true
 			}
 			itemType = "energy"
 			return itemType, itemPrice, true
@@ -163,6 +169,15 @@ func RedStarExchange(helper *helper.Helper) {
 			if err != nil {
 				helper.WarnErr("Error storing analytics (AnalyticTypePurchaseEnergy)", err)
 			}
+		case "raidbossEnergy":
+			if player.PlayerState.NumRedRings-itemPrice < 0 {
+				baseInfo.StatusCode = status.NotEnoughRedRings
+				return
+			}
+			player.PlayerState.NumRedRings -= itemPrice
+			//player.PlayerState.Energy += constobjs.ShopEnergyAmounts[itemID]
+			player.EventUserRaidbossState.RaidBossEnergyBuy += constobjs.ShopRaidbossEnergyAmounts[itemID]
+			db.SavePlayer(player)
 		default:
 			// this should never execute!
 			baseInfo.StatusCode = status.MasterDataMismatch
