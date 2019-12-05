@@ -116,7 +116,7 @@ func GetEventUserRaidbossState(helper *helper.Helper) {
 	response := responses.EventUserRaidbossState(baseInfo, player.EventUserRaidbossState)
 	response.Seq = request.Seq
 	response.Version = request.Version
-	err = helper.SendInsecureResponse(response)
+	err = helper.SendCompatibleResponse(response)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -209,7 +209,7 @@ func EventActStart(helper *helper.Helper) {
 		respPlayer.CharacterState = cState
 	}
 	response := responses.DefaultEventActStart(baseInfo, respPlayer)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 		return

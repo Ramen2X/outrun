@@ -56,7 +56,7 @@ var BlankPlayer = func() netobj.Player {
 			allowedCharacters = append(allowedCharacters, character.ID)
 		}
 	}
-	chaoRouletteGroup := netobj.DefaultChaoRouletteGroup(playerState, allowedCharacters, allowedChao)
+	chaoRouletteGroup := netobj.DefaultChaoRouletteGroup(playerState, allowedCharacters, allowedChao, true)
 	personalEvents := []eventconf.ConfiguredEvent{}
 	return netobj.NewPlayer(
 		uid,

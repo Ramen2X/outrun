@@ -68,7 +68,7 @@ func NewAccountWithID(uid string) netobj.Player {
 		// testCharacter := netobj.DefaultCharacter(constobjs.CharacterXMasSonic)
 		// characterState = append(characterState, testCharacter)
 	}
-	chaoRouletteGroup := netobj.DefaultChaoRouletteGroup(playerState, allowedCharacters, allowedChao)
+	chaoRouletteGroup := netobj.DefaultChaoRouletteGroup(playerState, allowedCharacters, allowedChao, true)
 	personalEvents := []eventconf.ConfiguredEvent{}
 	return netobj.NewPlayer(
 		uid,
@@ -198,4 +198,42 @@ func PurgeAllExpiredSessionIDs() {
 	for _, key := range keysToPurge {
 		PurgeSessionID(string(key))
 	}
+}
+
+func SaveNormalHighScore(highScore int64, uid string) error {
+	j, err := json.Marshal(netobj.NewServerHighScoreEntry(highScore, uid))
+	if err != nil {
+		return err
+	}
+	grade := 1
+	hsdata, err := dbaccess.Get(consts.DBBucketAllTimeNormalHighScores, strconv.Itoa(grade))
+	if err != nil {
+		return err
+	}
+	if hsdata != nil {
+		var hs netobj.ServerHighScoreEntry
+		err = json.Unmarshal(hsdata, &hs)
+		if err != nil {
+			return err
+		}
+		for hs.HighScore > highScore {
+			grade++
+			hsdata, err := dbaccess.Get(consts.DBBucketAllTimeNormalHighScores, strconv.Itoa(grade))
+			if err != nil {
+				return err
+			}
+			if hsdata == nil {
+				//we must've reached the end of the list
+				err = dbaccess.Set(consts.DBBucketAllTimeNormalHighScores, strconv.Itoa(grade), j)
+				return err
+			} else {
+				err = json.Unmarshal(hsdata, &hs)
+				if err != nil {
+					return err
+				}
+			}
+		}
+	}
+	err = dbaccess.Set(consts.DBBucketAllTimeNormalHighScores, strconv.Itoa(grade), j)
+	return err
 }

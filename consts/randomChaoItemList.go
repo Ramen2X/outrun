@@ -25,9 +25,9 @@ var RandomChaoWheelCharacterPrizes = map[string]float64{
 	enums.CTStrCharmy:       4.0,
 	enums.CTStrCream:        6.0,
 	enums.CTStrEspio:        4.0,
-	enums.CTStrMephiles:     1.0,
+	enums.CTStrMephiles:     0.9,
 	enums.CTStrOmega:        2.0,
-	enums.CTStrPSISilver:    0.1, // This puts the total up to 100.1, but... [shrug]
+	enums.CTStrPSISilver:    0.1,
 	enums.CTStrRouge:        4.0,
 	enums.CTStrShadow:       4.0,
 	enums.CTStrSilver:       4.0,
@@ -37,6 +37,26 @@ var RandomChaoWheelCharacterPrizes = map[string]float64{
 	enums.CTStrWerehog:      2.0,
 	enums.CTStrClassicSonic: 2.0,
 	enums.CTStrMetalSonic:   3.0,
+}
+
+var RandomChaoWheelCharacterPrizes114 = map[string]float64{
+	// TODO: balance these
+	enums.CTStrSonic:        6.25,
+	enums.CTStrTails:        6.25,
+	enums.CTStrKnuckles:     6.25,
+	enums.CTStrAmy:          6.25,
+	enums.CTStrBig:          6.25,
+	enums.CTStrBlaze:        6.25,
+	enums.CTStrCharmy:       6.25,
+	enums.CTStrCream:        6.25,
+	enums.CTStrEspio:        6.25,
+	enums.CTStrOmega:        6.25,
+	enums.CTStrRouge:        6.25,
+	enums.CTStrShadow:       6.25,
+	enums.CTStrSilver:       6.25,
+	enums.CTStrVector:       6.25,
+	enums.CTStrClassicSonic: 6.25,
+	enums.CTStrMetalSonic:   6.25,
 }
 
 var RandomChaoWheelChaoPrizes = map[string]float64{

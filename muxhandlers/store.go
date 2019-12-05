@@ -62,7 +62,7 @@ func GetRedStarExchangeList(helper *helper.Helper) {
 		if obj.IsCampaignActive(campaignList[index]) {
 			switch request.ItemType {
 			case 0: //red star rings
-				if campaignList[index].Type == enums.CampaignTypePurchaseAddRedRings {
+				if campaignList[index].Type == enums.CampaignTypePurchaseAddRedRings || campaignList[index].Type == enums.CampaignTypePurchaseAddRedRingsNoChargeUser {
 					campaign = campaignList[index]
 					campaignActive = true
 				}

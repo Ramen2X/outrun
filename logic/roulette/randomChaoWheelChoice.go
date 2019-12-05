@@ -19,12 +19,16 @@ type LogicChao struct { // TODO: Find a better way to replace this!
 	Acquired int64  `json:"acquired"`  // flag
 }
 
-func GetRandomChaoWheelCharacter(count int) ([]string, error) {
+func GetRandomChaoWheelCharacter(count int, oldCharacters bool) ([]string, error) {
 	// Reference: https://eli.thegreenplace.net/2010/01/22/weighted-random-generation-in-python/
 	totalWeights := []float64{}
 	charList := []string{}
 	runningTotal := float64(0)
-	for cid, weight := range consts.RandomChaoWheelCharacterPrizes {
+	prizes := consts.RandomChaoWheelCharacterPrizes
+	if oldCharacters {
+		prizes = consts.RandomChaoWheelCharacterPrizes114
+	}
+	for cid, weight := range prizes {
 		charList = append(charList, cid)
 		runningTotal += weight
 		totalWeights = append(totalWeights, runningTotal)
@@ -81,7 +85,7 @@ func GetRandomChaoWheelChao(rarity int64, count int) ([]string, error) {
 	return finalChaoList, nil
 }
 
-func GetRandomChaoRouletteItems(rarities []int64, allowedCharacters, allowedChao []string) ([]string, []int64, error) { // TODO: Possibly rename to GetRandomChaoWheelItems?
+func GetRandomChaoRouletteItems(rarities []int64, allowedCharacters, allowedChao []string, oldCharacters bool) ([]string, []int64, error) { // TODO: Possibly rename to GetRandomChaoWheelItems?
 	//failsafeTimeout := int64(3) // seconds, used to break in case of infinite loop
 	//debugOriginalTime := time.Now().Unix()
 
@@ -153,7 +157,7 @@ func GetRandomChaoRouletteItems(rarities []int64, allowedCharacters, allowedChao
 	}
 	getUnusedCharacter := func() (string, error) {
 		// Implies that there are characters available! Check with len(allowedCharacters) != 0 or allowedRarity.
-		char, err := GetRandomChaoWheelCharacter(1)
+		char, err := GetRandomChaoWheelCharacter(1, oldCharacters)
 		// Don't check for unused characters
 		return char[0], err
 		/*

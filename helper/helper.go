@@ -103,6 +103,29 @@ func (r *Helper) RespondRaw(out []byte, secureFlag, iv string) {
 	}
 	r.RespW.Write(toClient)
 }
+func (r *Helper) SendCompatibleResponse(out interface{}) error {
+	response := map[string]interface{}{"secure": "0", "param": out}
+	toClient, err := json.Marshal(response)
+	if err != nil {
+		r.InternalErr("Error marshalling in SendCompatibleResponse", err)
+		return err
+	}
+	if config.CFile.LogAllResponses {
+		nano := time.Now().UnixNano()
+		nanoStr := strconv.Itoa(int(nano))
+		filename := r.Request.RequestURI + "--" + nanoStr
+		filename = strings.ReplaceAll(filename, ".", "-")
+		filename = strings.ReplaceAll(filename, "/", "-") + ".txt"
+		filepath := "logging/all_responses/" + filename
+		r.Out("DEBUG: Saving request to " + filepath)
+		err := ioutil.WriteFile(filepath, toClient, 0644)
+		if err != nil {
+			r.Out("DEBUG ERROR: Unable to write file '" + filepath + "'")
+		}
+	}
+	r.RespW.Write(toClient)
+	return nil
+}
 func (r *Helper) Respond(out []byte) {
 	r.RespondRaw(out, "1", DefaultIV)
 }
