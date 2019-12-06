@@ -116,7 +116,7 @@ func GetEventUserRaidbossState(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
-	for time.Now().UTC().Unix() >= player.EventUserRaidbossState.EnergyRenewsAt && player.EventUserRaidbossState.RaidBossEnergy < 5 {
+	for time.Now().UTC().Unix() >= player.EventUserRaidbossState.EnergyRenewsAt && player.EventUserRaidbossState.RaidBossEnergy < 3 {
 		player.EventUserRaidbossState.RaidBossEnergy++
 		player.EventUserRaidbossState.EnergyRenewsAt += 1200
 	}
@@ -141,7 +141,7 @@ func GetEventUserRaidbossList(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
-	for time.Now().UTC().Unix() >= player.EventUserRaidbossState.EnergyRenewsAt && player.EventUserRaidbossState.RaidBossEnergy < 5 {
+	for time.Now().UTC().Unix() >= player.EventUserRaidbossState.EnergyRenewsAt && player.EventUserRaidbossState.RaidBossEnergy < 3 {
 		player.EventUserRaidbossState.RaidBossEnergy++
 		player.EventUserRaidbossState.EnergyRenewsAt += 1200
 	}
@@ -170,7 +170,7 @@ func EventActStart(helper *helper.Helper) {
 	responseStatus := status.OK
 	// consume items
 	helper.DebugOut(fmt.Sprintf("%v", player.PlayerState.Items))
-	for time.Now().UTC().Unix() >= player.EventUserRaidbossState.EnergyRenewsAt && player.EventUserRaidbossState.RaidBossEnergy < 5 {
+	for time.Now().UTC().Unix() >= player.EventUserRaidbossState.EnergyRenewsAt && player.EventUserRaidbossState.RaidBossEnergy < 3 {
 		player.EventUserRaidbossState.RaidBossEnergy++
 		player.EventUserRaidbossState.EnergyRenewsAt += 1200
 	}
@@ -184,7 +184,7 @@ func EventActStart(helper *helper.Helper) {
 				}
 			} else {
 				player.EventUserRaidbossState.RaidBossEnergy -= request.EnergyExpend
-				if player.EventUserRaidbossState.RaidBossEnergy < 5 {
+				if player.EventUserRaidbossState.RaidBossEnergy < 3 {
 					player.EventUserRaidbossState.EnergyRenewsAt = time.Now().UTC().Unix() + 1200
 				}
 			}
@@ -258,7 +258,7 @@ func EventPostGameResults(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
-	for time.Now().UTC().Unix() >= player.EventUserRaidbossState.EnergyRenewsAt && player.EventUserRaidbossState.RaidBossEnergy < 5 {
+	for time.Now().UTC().Unix() >= player.EventUserRaidbossState.EnergyRenewsAt && player.EventUserRaidbossState.RaidBossEnergy < 3 {
 		player.EventUserRaidbossState.RaidBossEnergy++
 		player.EventUserRaidbossState.EnergyRenewsAt += 1200
 	}
@@ -295,7 +295,7 @@ func EventUpdateGameResults(helper *helper.Helper) {
 		player.PlayerState.Energy++
 		player.PlayerState.EnergyRenewsAt += player.PlayerVarious.EnergyRecoveryTime
 	}
-	for time.Now().UTC().Unix() >= player.EventUserRaidbossState.EnergyRenewsAt && player.EventUserRaidbossState.RaidBossEnergy < 5 {
+	for time.Now().UTC().Unix() >= player.EventUserRaidbossState.EnergyRenewsAt && player.EventUserRaidbossState.RaidBossEnergy < 3 {
 		player.EventUserRaidbossState.RaidBossEnergy++
 		player.EventUserRaidbossState.EnergyRenewsAt += 1200
 	}
@@ -449,22 +449,5 @@ func EventUpdateGameResults(helper *helper.Helper) {
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 		return
-	}
-}
-
-func DrawRaidBoss(helper *helper.Helper) {
-	// TODO: move to muxhandlers/game.go?
-	recv := helper.GetGameRequest()
-	var request requests.DrawRaidBossRequest
-	err := json.Unmarshal(recv, &request)
-	if err != nil {
-		helper.Err("Error unmarshalling", err)
-		return
-	}
-	baseInfo := helper.BaseInfo(emess.OK, status.OK)
-	response := responses.DrawRaidBoss(baseInfo, netobj.DefaultRaidbossState())
-	err = helper.SendCompatibleResponse(response)
-	if err != nil {
-		helper.InternalErr("Error sending response", err)
 	}
 }

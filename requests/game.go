@@ -44,3 +44,9 @@ type MileageRewardRequest struct {
 	Episode int64 `json:"episode,string"`
 	Chapter int64 `json:"chapter,string"`
 }
+
+type DrawRaidBossRequest struct {
+	Base
+	EventID int64 `json:"eventId,string"`
+	Score   int64 `json:"score,string"`
+}

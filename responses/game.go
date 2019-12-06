@@ -349,3 +349,17 @@ func DefaultMileageReward(base responseobjs.BaseInfo, chapter, episode int64) Mi
 		constobjs.GetAreaReward(chapter, episode),
 	)
 }
+
+type DrawRaidBossResponse struct {
+	BaseResponse
+	netobj.EventRaidbossState `json:"eventRaidboss"`
+}
+
+func DrawRaidBoss(base responseobjs.BaseInfo, raidbossState netobj.EventRaidbossState) DrawRaidBossResponse {
+	baseResponse := NewBaseResponse(base)
+	out := DrawRaidBossResponse{
+		baseResponse,
+		raidbossState,
+	}
+	return out
+}

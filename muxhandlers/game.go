@@ -858,3 +858,19 @@ func GetMileageReward(helper *helper.Helper) {
 		helper.InternalErr("Error sending response", err)
 	}
 }
+
+func DrawRaidBoss(helper *helper.Helper) {
+	recv := helper.GetGameRequest()
+	var request requests.DrawRaidBossRequest
+	err := json.Unmarshal(recv, &request)
+	if err != nil {
+		helper.Err("Error unmarshalling", err)
+		return
+	}
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	response := responses.DrawRaidBoss(baseInfo, netobj.DefaultRaidbossState())
+	err = helper.SendCompatibleResponse(response)
+	if err != nil {
+		helper.InternalErr("Error sending response", err)
+	}
+}

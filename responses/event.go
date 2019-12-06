@@ -274,17 +274,3 @@ func DefaultEventUpdateGameResults(base responseobjs.BaseInfo, player netobj.Pla
 		es,
 	}
 }
-
-type DrawRaidBossResponse struct {
-	BaseResponse
-	netobj.EventRaidbossState `json:"eventRaidboss,omitempty"`
-}
-
-func DrawRaidBoss(base responseobjs.BaseInfo, raidbossState netobj.EventRaidbossState) DrawRaidBossResponse {
-	baseResponse := NewBaseResponse(base)
-	out := DrawRaidBossResponse{
-		baseResponse,
-		raidbossState,
-	}
-	return out
-}
