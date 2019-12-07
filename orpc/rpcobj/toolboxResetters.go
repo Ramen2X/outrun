@@ -1,6 +1,7 @@
 package rpcobj
 
 import (
+	"github.com/fluofoxxo/outrun/consts"
 	"github.com/fluofoxxo/outrun/db"
 	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/netobj"
@@ -90,7 +91,7 @@ func (t *Toolbox) ResetLastWheelOptions(uid string, reply *ToolboxReply) error {
 		reply.Info = "unable to get player: " + err.Error()
 		return err
 	}
-	player.LastWheelOptions = netobj.DefaultWheelOptions(player.PlayerState.NumRouletteTicket, player.RouletteInfo.RouletteCountInPeriod, enums.WheelRankNormal)
+	player.LastWheelOptions = netobj.DefaultWheelOptions(player.PlayerState.NumRouletteTicket, player.RouletteInfo.RouletteCountInPeriod, enums.WheelRankNormal, consts.RouletteFreeSpins)
 	err = db.SavePlayer(player)
 	if err != nil {
 		reply.Status = StatusOtherError
