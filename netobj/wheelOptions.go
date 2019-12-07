@@ -6,8 +6,10 @@ import (
 	"strconv"
 
 	"github.com/fluofoxxo/outrun/config"
+	"github.com/fluofoxxo/outrun/config/campaignconf"
 	"github.com/fluofoxxo/outrun/consts"
 	"github.com/fluofoxxo/outrun/enums"
+	"github.com/fluofoxxo/outrun/logic/conversion"
 	"github.com/fluofoxxo/outrun/obj"
 	"github.com/jinzhu/now"
 )
@@ -121,6 +123,21 @@ func DefaultWheelOptions(numRouletteTicket, rouletteCountInPeriod, rouletteRank 
 			item[6] = 1
 		}
 	}
+	freeSpins := consts.RouletteFreeSpins
+	campaignList := []obj.Campaign{}
+	if campaignconf.CFile.AllowCampaigns {
+		for _, confCampaign := range campaignconf.CFile.CurrentCampaigns {
+			newCampaign := conversion.ConfiguredCampaignToCampaign(confCampaign)
+			campaignList = append(campaignList, newCampaign)
+		}
+	}
+	index := 0
+	for index < len(campaignList) {
+		if obj.IsCampaignActive(campaignList[index]) && campaignList[index].Type == enums.CampaignTypeFreeWheelSpinCount {
+			freeSpins = campaignList[index].Content
+		}
+		index++
+	}
 	//itemWon := int64(0)
 	itemWon := int64(rand.Intn(len(items)))   //TODO: adjust this to accurately represent item weights
 	nextFreeSpin := now.EndOfDay().Unix() + 1 // midnight
@@ -130,7 +147,7 @@ func DefaultWheelOptions(numRouletteTicket, rouletteCountInPeriod, rouletteRank 
 	numRouletteToken := numRouletteTicket // The game uses the _current_ value, not as if it was in the past (This is hard to explain, maybe TODO: explain this better?)
 	numJackpotRing := int64(consts.RouletteJackpotRings)
 	// TODO: get rid of logic here!
-	numRemainingRoulette := numRouletteToken + consts.RouletteFreeSpins - rouletteCountInPeriod // TODO: is this proper?
+	numRemainingRoulette := numRouletteToken + freeSpins - rouletteCountInPeriod // TODO: is this proper?
 	if numRemainingRoulette < numRouletteToken {
 		numRemainingRoulette = numRouletteToken
 	}
