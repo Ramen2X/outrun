@@ -36,8 +36,16 @@ func GetDailyChallengeData(helper *helper.Helper) {
 		helper.InternalErr("Error getting player", err)
 		return
 	}
-	helper.DebugOut(fmt.Sprintf("%v", player.PlayerState.Items)) // TODO: get rid of this
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
 	response := responses.DailyChallengeData(baseInfo)
 	err = helper.SendResponse(response)
 	if err != nil {
@@ -62,6 +70,15 @@ func GetMileageData(helper *helper.Helper) {
 		return
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
 	response := responses.DefaultMileageData(baseInfo, player)
 	err = helper.SendResponse(response)
 	if err != nil {
@@ -99,6 +116,16 @@ func QuickActStart(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
 	campaignList := []obj.Campaign{}
 	if campaignconf.CFile.AllowCampaigns {
 		for _, confCampaign := range campaignconf.CFile.CurrentCampaigns {
@@ -107,7 +134,6 @@ func QuickActStart(helper *helper.Helper) {
 		}
 	}
 	helper.DebugOut("Campaign list: %v", campaignList)
-	responseStatus := status.OK
 	// consume items
 	modToStringSlice := func(ns []int64) []string {
 		result := []string{}
@@ -149,7 +175,7 @@ func QuickActStart(helper *helper.Helper) {
 					player.PlayerState.Items[index].Amount--
 				} else {
 					if player.PlayerState.NumRings < consumedRings { // not enough rings
-						responseStatus = status.NotEnoughRings
+						baseInfo.StatusCode = status.NotEnoughRings
 						break
 					}
 					player.PlayerState.NumRings -= consumedRings
@@ -157,10 +183,9 @@ func QuickActStart(helper *helper.Helper) {
 			}
 		}
 	} else {
-		responseStatus = status.NotEnoughEnergy
+		baseInfo.StatusCode = status.NotEnoughEnergy
 	}
 	helper.DebugOut(fmt.Sprintf("%v", player.PlayerState.Items))
-	baseInfo := helper.BaseInfo(emess.OK, responseStatus)
 	response := responses.DefaultQuickActStart(baseInfo, player, campaignList)
 	err = helper.SendResponse(response)
 	if err != nil {
@@ -191,6 +216,16 @@ func ActStart(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
 	campaignList := []obj.Campaign{}
 	if campaignconf.CFile.AllowCampaigns {
 		for _, confCampaign := range campaignconf.CFile.CurrentCampaigns {
@@ -200,7 +235,6 @@ func ActStart(helper *helper.Helper) {
 	}
 	helper.DebugOut("Campaign list: %v", campaignList)
 	helper.DebugOut(fmt.Sprintf("%v", player.PlayerState.Items))
-	responseStatus := status.OK
 	// consume items
 	modToStringSlice := func(ns []int64) []string {
 		result := []string{}
@@ -243,7 +277,7 @@ func ActStart(helper *helper.Helper) {
 					player.PlayerState.Items[index].Amount--
 				} else {
 					if player.PlayerState.NumRings < consumedRings { // not enough rings
-						responseStatus = status.NotEnoughRings
+						baseInfo.StatusCode = status.NotEnoughRings
 						break
 					}
 					player.PlayerState.NumRings -= consumedRings
@@ -251,9 +285,8 @@ func ActStart(helper *helper.Helper) {
 			}
 		}
 	} else {
-		responseStatus = status.NotEnoughEnergy
+		baseInfo.StatusCode = status.NotEnoughEnergy
 	}
-	baseInfo := helper.BaseInfo(emess.OK, responseStatus)
 	respPlayer := player
 	if request.Version == "1.1.4" { // must send fewer characters
 		// only get first 21 characters
@@ -291,7 +324,16 @@ func ActRetry(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
-	responseStatus := status.OK
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
 	if player.PlayerState.NumRedRings >= 5 { //does the player actually have enough red rings to be revived?
 		player.PlayerState.NumRedRings -= 5
 		err = db.SavePlayer(player)
@@ -300,9 +342,8 @@ func ActRetry(helper *helper.Helper) {
 			return
 		}
 	} else {
-		responseStatus = status.NotEnoughRedRings
+		baseInfo.StatusCode = status.NotEnoughRedRings
 	}
-	baseInfo := helper.BaseInfo(emess.OK, responseStatus)
 	response := responses.NewBaseResponse(baseInfo)
 	err = helper.SendResponse(response)
 	if err != nil {
@@ -323,6 +364,15 @@ func ActRetryFree(helper *helper.Helper) {
 	}
 	// more than likely used for ad-based revives
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
 	response := responses.NewBaseResponse(baseInfo)
 	err = helper.SendResponse(response)
 	if err != nil {
@@ -346,6 +396,16 @@ func QuickPostGameResults(helper *helper.Helper) {
 	player, err := helper.GetCallingPlayer()
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
+		return
+	}
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
 		return
 	}
 
@@ -506,7 +566,6 @@ func QuickPostGameResults(helper *helper.Helper) {
 		subCIndex = player.IndexOfChara(subC.ID) // TODO: check if -1
 	}
 
-	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.DefaultQuickPostGameResults(baseInfo, player, playCharacters)
 	// apply the save after the response so that we don't break the leveling
 	mainC = playCharacters[0]
@@ -547,6 +606,16 @@ func PostGameResults(helper *helper.Helper) {
 	player, err := helper.GetCallingPlayer()
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
+		return
+	}
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
 		return
 	}
 
@@ -834,7 +903,6 @@ func PostGameResults(helper *helper.Helper) {
 		subCIndex = player.IndexOfChara(subC.ID) // TODO: check if -1
 	}
 
-	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	respPlayer := player
 	if request.Version == "1.1.4" { // must send fewer characters
 		// only get first 21 characters

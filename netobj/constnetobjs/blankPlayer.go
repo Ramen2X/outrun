@@ -58,6 +58,7 @@ var BlankPlayer = func() netobj.Player {
 	}
 	chaoRouletteGroup := netobj.DefaultChaoRouletteGroup(playerState, allowedCharacters, allowedChao, true)
 	personalEvents := []eventconf.ConfiguredEvent{}
+	suspended := false
 	return netobj.NewPlayer(
 		uid,
 		username,
@@ -78,5 +79,6 @@ var BlankPlayer = func() netobj.Player {
 		rouletteInfo,
 		chaoRouletteGroup,
 		personalEvents,
+		suspended,
 	)
 }() // TODO: Solve duplication requirement with db/assistants.go

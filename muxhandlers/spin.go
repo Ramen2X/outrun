@@ -26,6 +26,15 @@ func GetWheelOptions(helper *helper.Helper) {
 		return
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
 
 	//player.LastWheelOptions = netobj.DefaultWheelOptions(player.PlayerState) // generate new wheel for 'reroll' mechanic
 	helper.DebugOut("Time now: %v", time.Now().Unix())
@@ -59,6 +68,16 @@ func CommitWheelSpin(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
 	helper.DebugOut("request.Count: %v", request.Count)
 
 	endPeriod := player.RouletteInfo.RoulettePeriodEnd
@@ -70,7 +89,6 @@ func CommitWheelSpin(helper *helper.Helper) {
 		helper.DebugOut("RouletteCountInPeriod: %v", player.RouletteInfo.RouletteCountInPeriod)
 	}
 
-	responseStatus := status.OK
 	hasTickets := player.PlayerState.NumRouletteTicket > 0
 	hasFreeSpins := player.RouletteInfo.RouletteCountInPeriod < consts.RouletteFreeSpins
 	helper.DebugOut("Has tickets: %v", hasTickets)
@@ -145,10 +163,9 @@ func CommitWheelSpin(helper *helper.Helper) {
 		}
 	} else {
 		// do not modify the wheel, set error status
-		responseStatus = status.RouletteUseLimit
+		baseInfo.StatusCode = status.RouletteUseLimit
 	}
 
-	baseInfo := helper.BaseInfo(emess.OK, responseStatus)
 	cState := player.CharacterState
 	if request.Version == "1.1.4" { // must send fewer characters
 		// only get first 21 characters

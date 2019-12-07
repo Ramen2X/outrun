@@ -166,8 +166,18 @@ func EventActStart(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
-	helper.DebugOut("Energy expended: %v", request.EnergyExpend)
-	responseStatus := status.OK
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
+
 	// consume items
 	helper.DebugOut(fmt.Sprintf("%v", player.PlayerState.Items))
 	for time.Now().UTC().Unix() >= player.EventUserRaidbossState.EnergyRenewsAt && player.EventUserRaidbossState.RaidBossEnergy < 3 {
@@ -206,7 +216,7 @@ func EventActStart(helper *helper.Helper) {
 					player.PlayerState.Items[index].Amount--
 				} else {
 					if player.PlayerState.NumRings < consumedRings { // not enough rings
-						responseStatus = status.NotEnoughRings
+						baseInfo.StatusCode = status.NotEnoughRings
 						break
 					}
 					player.PlayerState.NumRings -= consumedRings
@@ -214,9 +224,8 @@ func EventActStart(helper *helper.Helper) {
 			}
 		}
 	} else {
-		responseStatus = status.NotEnoughEnergy
+		baseInfo.StatusCode = status.NotEnoughEnergy
 	}
-	baseInfo := helper.BaseInfo(emess.OK, responseStatus)
 	respPlayer := player
 	if request.Version == "1.1.4" { // must send fewer characters
 		// only get first 21 characters
@@ -258,12 +267,21 @@ func EventPostGameResults(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
 	for time.Now().UTC().Unix() >= player.EventUserRaidbossState.EnergyRenewsAt && player.EventUserRaidbossState.RaidBossEnergy < 3 {
 		player.EventUserRaidbossState.RaidBossEnergy++
 		player.EventUserRaidbossState.EnergyRenewsAt += 1200
 	}
 	player.EventUserRaidbossState.NumRaidbossRings += request.NumRaidbossRings
-	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.EventUserRaidbossState(baseInfo, player.EventUserRaidbossState)
 	err = helper.SendCompatibleResponse(response)
 	if err != nil {
@@ -447,7 +465,6 @@ func EventUpdateGameResults(helper *helper.Helper) {
 		if request.RaidbossBeatFlg != 0 {
 			helper.DebugOut("It was defeated!")
 			player.EventUserRaidbossState.NumBeatedEncounter++
-			player.EventUserRaidbossState.NumBeatedEnterprise++ // TODO: is this right?
 		}
 	}
 

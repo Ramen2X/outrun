@@ -31,9 +31,10 @@ type Player struct {
 	RouletteInfo           RouletteInfo                `json:"ORN_rouletteInfo"`
 	ChaoRouletteGroup      ChaoRouletteGroup           `json:"ORN_chaoRouletteGroup"`
 	PersonalEvents         []eventconf.ConfiguredEvent `json:"ORN_personalEvents"`
+	Suspended              bool                        `json:"ORN_suspended"`
 }
 
-func NewPlayer(id, username, password, migrationPassword, userPassword, key string, playerState PlayerState, characterState []Character, chaoState []Chao, eventState EventState, eventUserRaidbossState EventUserRaidbossState, optionUserResult OptionUserResult, mileageMapState MileageMapState, mf []MileageFriend, playerVarious PlayerVarious, wheelOptions WheelOptions, rouletteInfo RouletteInfo, chaoRouletteGroup ChaoRouletteGroup, personalEvents []eventconf.ConfiguredEvent) Player {
+func NewPlayer(id, username, password, migrationPassword, userPassword, key string, playerState PlayerState, characterState []Character, chaoState []Chao, eventState EventState, eventUserRaidbossState EventUserRaidbossState, optionUserResult OptionUserResult, mileageMapState MileageMapState, mf []MileageFriend, playerVarious PlayerVarious, wheelOptions WheelOptions, rouletteInfo RouletteInfo, chaoRouletteGroup ChaoRouletteGroup, personalEvents []eventconf.ConfiguredEvent, suspended bool) Player {
 	return Player{
 		id,
 		username,
@@ -55,6 +56,7 @@ func NewPlayer(id, username, password, migrationPassword, userPassword, key stri
 		rouletteInfo,
 		chaoRouletteGroup,
 		personalEvents,
+		suspended,
 	}
 }
 

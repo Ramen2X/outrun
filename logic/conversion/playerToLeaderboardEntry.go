@@ -51,6 +51,12 @@ func PlayerToLeaderboardEntry(player netobj.Player, place, mode, lbtype int64) o
 	}
 	if time.Now().UTC().Unix() > player.PlayerState.WeeklyScoresExpireAt {
 		//if expired, show 0 for total scores
+		if player.PlayerState.TotalScoreThisPeriod > player.PlayerState.TotalScore {
+			player.PlayerState.TotalScore = player.PlayerState.TotalScoreThisPeriod
+		}
+		if player.PlayerState.TimedTotalScoreThisPeriod > player.PlayerState.TimedTotalScore {
+			player.PlayerState.TimedTotalScore = player.PlayerState.TimedTotalScoreThisPeriod
+		}
 		player.PlayerState.HighScoreThisPeriod = 0
 		player.PlayerState.TimedHighScoreThisPeriod = 0
 		player.PlayerState.TotalScoreThisPeriod = 0

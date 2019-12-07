@@ -31,6 +31,16 @@ func ChangeCharacter(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
 
 	mainCharaID := request.MainCharaID
 	subCharaID := request.SubCharaID
@@ -44,6 +54,7 @@ func ChangeCharacter(helper *helper.Helper) {
 			player.PlayerState.MainCharaID = mainCharaID
 		} else {
 			helper.Warn("Bad attempt to change main chara to '%s'", mainCharaID)
+			baseInfo.StatusCode = status.DataMismatch
 		}
 		_, err = analytics.Store(player.ID, factors.AnalyticTypeChangeMainCharacter)
 		if err != nil {
@@ -60,15 +71,18 @@ func ChangeCharacter(helper *helper.Helper) {
 			player.PlayerState.SubCharaID = subCharaID
 		} else {
 			helper.Warn("Bad attempt to change sub chara to '%s'", subCharaID)
+			baseInfo.StatusCode = status.DataMismatch
 		}
 		_, err = analytics.Store(player.ID, factors.AnalyticTypeChangeSubCharacter)
 		if err != nil {
 			helper.WarnErr("Error storing analytics (AnalyticTypeChangeSubCharacter)", err)
 		}
 	}
+	if player.PlayerState.MainCharaID == player.PlayerState.SubCharaID {
+		player.PlayerState.MainCharaID = "-1"
+	}
 	db.SavePlayer(player)
 
-	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.ChangeCharacter(baseInfo, player.PlayerState)
 	err = helper.SendResponse(response)
 	if err != nil {
@@ -90,6 +104,16 @@ func UpgradeCharacter(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
 
 	charaID := request.CharacterID
 	abilityID := request.AbilityID
@@ -107,13 +131,12 @@ func UpgradeCharacter(helper *helper.Helper) {
 		return v
 	}
 
-	sendStatus := status.OK
 	abilityIndex := abilityIDFromStr - 120000 // minus enums.UpgradeAbilityInvincibility
 	index := player.IndexOfChara(charaID)
 	abilitySum := sum(player.CharacterState[index].AbilityLevel)
 	amountNeedToBePaid := player.CharacterState[index].Cost - player.CharacterState[index].Exp
 	if player.PlayerState.NumRings-amountNeedToBePaid < 0 {
-		sendStatus = status.NotEnoughRings
+		baseInfo.StatusCode = status.NotEnoughRings
 	} else {
 		if abilitySum < 100 {
 			// check if character is valid here
@@ -132,11 +155,10 @@ func UpgradeCharacter(helper *helper.Helper) {
 			}
 			db.SavePlayer(player)
 		} else {
-			sendStatus = status.CharacterLevelLimit
+			baseInfo.StatusCode = status.CharacterLevelLimit
 		}
 	}
 
-	baseInfo := helper.BaseInfo(emess.OK, int64(sendStatus))
 	respPlayer := player
 	if request.Version == "1.1.4" { // must send fewer characters
 		// only get first 21 characters
@@ -172,8 +194,16 @@ func UnlockedCharacter(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
-
-	responseStatus := status.OK
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
 
 	characterToBuy := request.CharacterID
 	charaIndex := player.IndexOfChara(characterToBuy)
@@ -191,7 +221,7 @@ func UnlockedCharacter(helper *helper.Helper) {
 		ringCost := chara.Price
 		if ringCost > player.PlayerState.NumRings { // cannot buy
 			helper.DebugOut("Player can't pay with rings (Has %v)", player.PlayerState.NumRings)
-			responseStatus = status.NotEnoughRings
+			baseInfo.StatusCode = status.NotEnoughRings
 		} else { // can buy with rings
 			helper.DebugOut("NumRings: %v", player.PlayerState.NumRings)
 			//helper.DebugOut(sp("CharacterState[%v].Level: %v", charaIndex, player.CharacterState[charaIndex].Level))
@@ -210,7 +240,7 @@ func UnlockedCharacter(helper *helper.Helper) {
 		redRingCost := chara.PriceRedRings
 		if redRingCost > player.PlayerState.NumRedRings { // cannot buy with red rings
 			helper.DebugOut("Player can't pay with red rings (Has %v)", player.PlayerState.NumRedRings)
-			responseStatus = status.NotEnoughRedRings
+			baseInfo.StatusCode = status.NotEnoughRedRings
 		} else { // can buy with red rings
 			helper.DebugOut("NumRedRings: %v", player.PlayerState.NumRedRings)
 			//helper.DebugOut(sp("CharacterState[%v].Level: %v", charaIndex, player.CharacterState[charaIndex].Level))
@@ -227,7 +257,7 @@ func UnlockedCharacter(helper *helper.Helper) {
 		}
 	} else { // didn't buy using rings or red rings...
 		helper.Warn(fmt.Sprintf("Player '%s' (%v) tried to purchase a character without Rings or Red Rings!", player.Username, player.ID))
-		responseStatus = status.InternalServerError
+		baseInfo.StatusCode = status.OtherError
 	}
 	helper.DebugOut("Post:")
 	helper.DebugOut("NumRings: %v", player.PlayerState.NumRings)
@@ -236,7 +266,6 @@ func UnlockedCharacter(helper *helper.Helper) {
 	helper.DebugOut("CharacterState[%v].Status: %v", charaIndex, player.CharacterState[charaIndex].Status)
 	helper.DebugOut("CharacterState[%v].Star: %v", charaIndex, player.CharacterState[charaIndex].Star)
 
-	baseInfo := helper.BaseInfo(emess.OK, int64(responseStatus))
 	response := responses.DefaultUpgradeCharacter(baseInfo, player)
 	err = helper.SendResponse(response)
 	if err != nil {

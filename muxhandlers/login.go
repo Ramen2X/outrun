@@ -81,18 +81,38 @@ func Login(helper *helper.Helper) {
 	} else if uid != "0" && password != "" {
 		helper.Out("Entering LoginDelta")
 		// game is attempting to log in using key
-		// for now, we pretend that it worked no matter what
-		// TODO: fix this obvious security flaw
+
 		baseInfo.StatusCode = status.OK
 		baseInfo.SetErrorMessage(emess.OK)
-		sid, err := db.AssignSessionID(uid)
-		if err != nil {
-			helper.InternalErr("Error assigning session ID", err)
-			return
-		}
 		player, err := db.GetPlayer(uid)
 		if err != nil {
 			helper.InternalErr("Error getting player", err)
+			return
+		}
+		if player.Suspended {
+			baseInfo.StatusCode = status.MissingPlayer
+			err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+			if err != nil {
+				helper.InternalErr("Error sending response", err)
+				return
+			}
+			return
+		}
+
+		/*if player.Password != request.Password {
+			baseInfo.StatusCode = status.InvalidPassword
+			baseInfo.SetErrorMessage(emess.BadPassword)
+			err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+			if err != nil {
+				helper.InternalErr("Error sending response", err)
+				return
+			}
+			return
+		}*/
+
+		sid, err := db.AssignSessionID(uid)
+		if err != nil {
+			helper.InternalErr("Error assigning session ID", err)
 			return
 		}
 		player.LastLogin = time.Now().UTC().Unix()
@@ -119,6 +139,15 @@ func GetVariousParameter(helper *helper.Helper) {
 		return
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
 	response := responses.VariousParameter(baseInfo, player)
 	err = helper.SendResponse(response)
 	if err != nil {
@@ -202,12 +231,21 @@ func GetMigrationPassword(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
 	if len(player.MigrationPassword) != 10 {
 		player.MigrationPassword = randChar("abcdefghijklmnopqrstuvwxyz1234567890", 10)
 	}
 	player.UserPassword = request.UserPassword
 	db.SavePlayer(player)
-	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.MigrationPassword(baseInfo, player)
 	err = helper.SendResponse(response)
 	if err != nil {
@@ -254,10 +292,18 @@ func Migration(helper *helper.Helper) {
 			return
 		}
 		if migrationUserPassword == migratePlayer.UserPassword {
+			if migratePlayer.Suspended {
+				baseInfo.StatusCode = status.MissingPlayer
+				err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+				if err != nil {
+					helper.InternalErr("Error sending response", err)
+					return
+				}
+				return
+			}
 			baseInfo.StatusCode = status.OK
 			baseInfo.SetErrorMessage(emess.OK)
-			migratePlayer.MigrationPassword = randChar("abcdefghijklmnopqrstuvwxyz1234567890", 10) //generate a brand new transfer ID
-			migratePlayer.UserPassword = ""                                                        //clear user password
+			migratePlayer.MigrationPassword = randChar("abcdefghijklmnopqrstuvwxyz1234567890", 10) //generate a brand new transfer ID                                                        //clear user password
 			migratePlayer.LastLogin = time.Now().UTC().Unix()
 			err = db.SavePlayer(migratePlayer)
 			if err != nil {

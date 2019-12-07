@@ -19,11 +19,20 @@ func GetPlayerState(helper *helper.Helper) {
 		helper.InternalErr("Error getting calling player", err)
 		return
 	}
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
 	for time.Now().UTC().Unix() >= player.PlayerState.EnergyRenewsAt && player.PlayerState.Energy < player.PlayerVarious.EnergyRecoveryMax {
 		player.PlayerState.Energy++
 		player.PlayerState.EnergyRenewsAt += player.PlayerVarious.EnergyRecoveryTime
 	}
-	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.PlayerState(baseInfo, player.PlayerState)
 	helper.SendResponse(response)
 }
@@ -42,6 +51,15 @@ func GetCharacterState(helper *helper.Helper) {
 		return
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
 	cState := player.CharacterState
 	if request.Version == "1.1.4" { // must send fewer characters
 		// only get first 21 characters
@@ -65,6 +83,15 @@ func GetChaoState(helper *helper.Helper) {
 		return
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
 	response := responses.ChaoState(baseInfo, player.ChaoState)
 	helper.SendResponse(response)
 }

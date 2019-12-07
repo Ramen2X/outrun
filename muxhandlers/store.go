@@ -115,6 +115,15 @@ func RedStarExchange(helper *helper.Helper) {
 	}
 
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
 	itemID := request.ItemID
 	getItemType := func(iid string) (string, int64, bool) {
 		var itemType string

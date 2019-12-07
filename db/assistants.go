@@ -70,6 +70,7 @@ func NewAccountWithID(uid string) netobj.Player {
 	}
 	chaoRouletteGroup := netobj.DefaultChaoRouletteGroup(playerState, allowedCharacters, allowedChao, true)
 	personalEvents := []eventconf.ConfiguredEvent{}
+	suspended := false
 	return netobj.NewPlayer(
 		uid,
 		username,
@@ -90,6 +91,7 @@ func NewAccountWithID(uid string) netobj.Player {
 		rouletteInfo,
 		chaoRouletteGroup,
 		personalEvents,
+		suspended,
 	)
 }
 

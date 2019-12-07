@@ -30,6 +30,15 @@ func GetChaoWheelOptions(helper *helper.Helper) {
 		return
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
 	response := responses.DefaultChaoWheelOptions(baseInfo, player)
 	err = helper.SendResponse(response)
 	if err != nil {
@@ -59,6 +68,17 @@ func EquipChao(helper *helper.Helper) {
 	player, err := helper.GetCallingPlayer()
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
+		return
+	}
+
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
 		return
 	}
 
@@ -132,7 +152,6 @@ completed:
 	}
 	db.SavePlayer(player)
 
-	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.EquipChao(baseInfo, player.PlayerState)
 	err = helper.SendResponse(response)
 	if err != nil {
@@ -154,9 +173,19 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 		helper.InternalErr("Error unmarshalling", err)
 	}
 
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+			return
+		}
+		return
+	}
+
 	items := player.ChaoRouletteGroup.WheelChao
 	weights := player.ChaoRouletteGroup.ChaoWheelOptions.ItemWeight
-	availStatus := status.OK
 	// set initial prize
 	prize := netobj.CharacterIDToChaoSpinPrize("0") // This will almost certainly give the game errors if improperly counting payment!
 	spinResults := []netobj.ChaoSpinResult{}        // TODO: Find out why it's an array
@@ -328,7 +357,7 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 	} else if hasAvailableRings { // if no tickets, but sufficient red rings
 		primaryLogic(false)
 	} else { // no tickets nor sufficient red rings
-		availStatus = status.RouletteUseLimit
+		baseInfo.StatusCode = status.RouletteUseLimit
 	}
 
 	helper.DebugOut("POST")
@@ -340,7 +369,6 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 	helper.DebugOut("Chao Roulette tickets (ChaoWheelOptions): %v", player.ChaoRouletteGroup.ChaoWheelOptions.NumChaoRouletteToken)
 	helper.DebugOut("Chao Roulette spin cost: %v", player.ChaoRouletteGroup.ChaoWheelOptions.SpinCost)
 
-	baseInfo := helper.BaseInfo(emess.OK, availStatus)
 	cState := player.CharacterState
 	if request.Version == "1.1.4" { // must send fewer characters
 		// only get first 21 characters
