@@ -49,8 +49,10 @@ func PlayerToLeaderboardEntry(player netobj.Player, place, mode, lbtype int64) o
 		league = player.PlayerState.QuickRankingLeague
 		maxScore = player.PlayerState.TimedHighScore
 	}
-	if time.Now().UTC().Unix() > player.PlayerState.TotalScoreExpiresAt {
+	if time.Now().UTC().Unix() > player.PlayerState.WeeklyScoresExpireAt {
 		//if expired, show 0 for total scores
+		player.PlayerState.HighScoreThisPeriod = 0
+		player.PlayerState.TimedHighScoreThisPeriod = 0
 		player.PlayerState.TotalScoreThisPeriod = 0
 		player.PlayerState.TimedTotalScoreThisPeriod = 0
 	}
