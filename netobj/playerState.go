@@ -17,40 +17,44 @@ Notes:
 */
 
 type PlayerState struct {
-	Items                  []obj.Item `json:"items"`         // items owned
-	EquippedItemIDs        []string   `json:"equipItemList"` // default is list of 3 "-1"s. look to be item ids
-	MainCharaID            string     `json:"mainCharaID"`
-	SubCharaID             string     `json:"subCharaID"`
-	MainChaoID             string     `json:"mainChaoID"`
-	SubChaoID              string     `json:"subChaoID"`
-	NumRings               int64      `json:"numRings,string"`           // number of rings
-	NumBuyRings            int64      `json:"numBuyRings,string"`        // number of rings purchased
-	NumRedRings            int64      `json:"numRedRings,string"`        // number of red rings
-	NumBuyRedRings         int64      `json:"numBuyRedRings,string"`     // number of red rings purchased
-	Energy                 int64      `json:"energy,string"`             // energy/'lives'
-	EnergyBuy              int64      `json:"energyBuy,string"`          // ?
-	EnergyRenewsAt         int64      `json:"energyRenewsAt"`            // does 0 mean it is instant?
-	MumMessages            int64      `json:"mumMessages"`               // number of unread messages
-	RankingLeague          int64      `json:"rankingLeague,string"`      // 'league index'
-	QuickRankingLeague     int64      `json:"quickRankingLeague,string"` // same as above, but for timed mode
-	NumRouletteTicket      int64      `json:"numRouletteTicket,string"`
-	NumChaoRouletteTicket  int64      `json:"numChaoRouletteTicket"` // This isn't a requirement from the game for PlayerState, but is useful to have here
-	ChaoEggs               int64      `json:"chaoEggs"`              // Same as above
-	HighScore              int64      `json:"totalHighScore,string"`
-	TimedHighScore         int64      `json:"quickTotalHighScore,string"`
-	TotalDistance          int64      `json:"totalDistance,string"`
-	HighDistance           int64      `json:"maximumDistance,string"` // high distance in one go? (appears as "Longest Run (m)" in user stats)
-	DailyMissionID         int64      `json:"dailyMissionId,string"`
-	DailyMissionEndTime    int64      `json:"dailyMissionEndTime"` // 11:59 pm of current day
-	DailyChallengeValue    int64      `json:"dailyChallengeValue"` // internally listed as ProgressStatus... Current day of the challenge?
-	DailyChallengeComplete int64      `json:"dailyChallengeComplete"`
-	NumDailyChallenge      int64      `json:"numDailyChalCont"`
-	NumPlaying             int64      `json:"numPlaying,string"` // possibly the number of times played?
-	Animals                int64      `json:"numAnimals,string"`
-	Rank                   int64      `json:"numRank,string"`
-	TotalScore             int64
-	TimedTotalScore        int64
-	TotalScoreExpiresAt    int64
+	Items                     []obj.Item `json:"items"`         // items owned
+	EquippedItemIDs           []string   `json:"equipItemList"` // default is list of 3 "-1"s. look to be item ids
+	MainCharaID               string     `json:"mainCharaID"`
+	SubCharaID                string     `json:"subCharaID"`
+	MainChaoID                string     `json:"mainChaoID"`
+	SubChaoID                 string     `json:"subChaoID"`
+	NumRings                  int64      `json:"numRings,string"`           // number of rings
+	NumBuyRings               int64      `json:"numBuyRings,string"`        // number of rings purchased
+	NumRedRings               int64      `json:"numRedRings,string"`        // number of red rings
+	NumBuyRedRings            int64      `json:"numBuyRedRings,string"`     // number of red rings purchased
+	Energy                    int64      `json:"energy,string"`             // energy/'lives'
+	EnergyBuy                 int64      `json:"energyBuy,string"`          // ?
+	EnergyRenewsAt            int64      `json:"energyRenewsAt"`            // does 0 mean it is instant?
+	MumMessages               int64      `json:"mumMessages"`               // number of unread messages
+	RankingLeague             int64      `json:"rankingLeague,string"`      // 'league index'
+	QuickRankingLeague        int64      `json:"quickRankingLeague,string"` // same as above, but for timed mode
+	NumRouletteTicket         int64      `json:"numRouletteTicket,string"`
+	NumChaoRouletteTicket     int64      `json:"numChaoRouletteTicket"` // This isn't a requirement from the game for PlayerState, but is useful to have here
+	ChaoEggs                  int64      `json:"chaoEggs"`              // Same as above
+	HighScore                 int64      `json:"totalHighScore,string"`
+	TimedHighScore            int64      `json:"quickTotalHighScore,string"`
+	TotalDistance             int64      `json:"totalDistance,string"`
+	HighDistance              int64      `json:"maximumDistance,string"` // high distance in one go? (appears as "Longest Run (m)" in user stats)
+	DailyMissionID            int64      `json:"dailyMissionId,string"`
+	DailyMissionEndTime       int64      `json:"dailyMissionEndTime"` // 11:59 pm of current day
+	DailyChallengeValue       int64      `json:"dailyChallengeValue"` // internally listed as ProgressStatus... Current day of the challenge?
+	DailyChallengeComplete    int64      `json:"dailyChallengeComplete"`
+	NumDailyChallenge         int64      `json:"numDailyChalCont"`
+	NumPlaying                int64      `json:"numPlaying,string"` // possibly the number of times played?
+	Animals                   int64      `json:"numAnimals,string"`
+	Rank                      int64      `json:"numRank,string"`
+	TotalScore                int64
+	TimedTotalScore           int64
+	HighScoreThisPeriod       int64
+	TimedHighScoreThisPeriod  int64
+	TotalScoreThisPeriod      int64
+	TimedTotalScoreThisPeriod int64
+	WeeklyScoresExpireAt      int64
 }
 
 var ChaoIDs = []string{"400000", "400001", "400002", "400003", "400004", "400005", "400006", "400007", "400008", "400009", "400010", "400011", "400012", "400013", "400014", "400015", "400016", "400017", "400018", "400019", "400020", "400021", "400022", "400023", "400024", "400025", "401000", "401001", "401002", "401003", "401004", "401005", "401006", "401007", "401008", "401009", "401010", "401011", "401012", "401013", "401014", "401015", "401016", "401017", "401018", "401019", "401020", "401021", "401022", "401023", "401024", "401025", "401026", "401027", "401028", "401029", "401030", "401031", "401032", "401033", "401034", "401035", "401036", "401037", "401038", "401039", "401040", "401041", "401042", "401043", "401044", "401045", "401046", "401047", "402000", "402001", "402002", "402003", "402004", "402005", "402006", "402007", "402008", "402009", "402010", "402011", "402012", "402013", "402014", "402015", "402016", "402017", "402018", "402019", "402020", "402021", "402022", "402023", "402024", "402025", "402026", "402027", "402028", "402029", "402030", "402031", "402032", "402033", "402034"}
@@ -96,7 +100,11 @@ func DefaultPlayerState() PlayerState {
 	rank := int64(0) //appears to be offset by 1?
 	totalScore := int64(0)
 	timedTotalScore := int64(0)
-	totalScoreExpiresAt := now.EndOfWeek().UTC().Unix()
+	highScoreThisPeriod := int64(0)
+	timedHighScoreThisPeriod := int64(0)
+	totalScoreThisPeriod := int64(0)
+	timedTotalScoreThisPeriod := int64(0)
+	weeklyScoresExpireAt := now.EndOfWeek().UTC().Unix()
 	return PlayerState{
 		items,
 		equippedItemIDs,
@@ -131,6 +139,10 @@ func DefaultPlayerState() PlayerState {
 		rank,
 		totalScore,
 		timedTotalScore,
-		totalScoreExpiresAt,
+		highScoreThisPeriod,
+		timedHighScoreThisPeriod,
+		totalScoreThisPeriod,
+		timedTotalScoreThisPeriod,
+		weeklyScoresExpireAt,
 	}
 }

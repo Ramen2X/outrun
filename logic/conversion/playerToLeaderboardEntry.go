@@ -51,36 +51,51 @@ func PlayerToLeaderboardEntry(player netobj.Player, place, mode, lbtype int64) o
 	}
 	if time.Now().UTC().Unix() > player.PlayerState.TotalScoreExpiresAt {
 		//if expired, show 0 for total scores
-		player.PlayerState.TotalScore = 0
-		player.PlayerState.TimedTotalScore = 0
+		player.PlayerState.TotalScoreThisPeriod = 0
+		player.PlayerState.TimedTotalScoreThisPeriod = 0
 	}
 	switch lbtype {
 	case 0:
 		// Friends High Score?
+		if mode == 1 {
+			rankingScore = player.PlayerState.TimedHighScoreThisPeriod
+		} else {
+			rankingScore = player.PlayerState.HighScoreThisPeriod
+		}
 	case 1:
 		// Friends Total Score?
 		if mode == 1 {
-			rankingScore = player.PlayerState.TimedTotalScore
+			rankingScore = player.PlayerState.TimedTotalScoreThisPeriod
 		} else {
-			rankingScore = player.PlayerState.TotalScore
+			rankingScore = player.PlayerState.TotalScoreThisPeriod
 		}
 	case 2:
 		// World High Score
+		if mode == 1 {
+			rankingScore = player.PlayerState.TimedHighScoreThisPeriod
+		} else {
+			rankingScore = player.PlayerState.HighScoreThisPeriod
+		}
 	case 3:
 		// World Total Score
 		if mode == 1 {
-			rankingScore = player.PlayerState.TimedTotalScore
+			rankingScore = player.PlayerState.TimedTotalScoreThisPeriod
 		} else {
-			rankingScore = player.PlayerState.TotalScore
+			rankingScore = player.PlayerState.TotalScoreThisPeriod
 		}
 	case 4:
 		// Runners' League High Score
+		if mode == 1 {
+			rankingScore = player.PlayerState.TimedHighScoreThisPeriod
+		} else {
+			rankingScore = player.PlayerState.HighScoreThisPeriod
+		}
 	case 5:
 		// Runners' League Total Score
 		if mode == 1 {
-			rankingScore = player.PlayerState.TimedTotalScore
+			rankingScore = player.PlayerState.TimedTotalScoreThisPeriod
 		} else {
-			rankingScore = player.PlayerState.TotalScore
+			rankingScore = player.PlayerState.TotalScoreThisPeriod
 		}
 	case 6:
 		// History High Score

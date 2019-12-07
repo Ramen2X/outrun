@@ -332,14 +332,26 @@ func EventUpdateGameResults(helper *helper.Helper) {
 		if request.Score > playerTimedHighScore {
 			player.PlayerState.TimedHighScore = request.Score
 		}
-		if time.Now().UTC().Unix() > player.PlayerState.TotalScoreExpiresAt {
-			player.PlayerState.TotalScore = 0
-			player.PlayerState.TimedTotalScore = 0
-			player.PlayerState.TotalScoreExpiresAt = now.EndOfWeek().UTC().Unix()
+		if time.Now().UTC().Unix() > player.PlayerState.WeeklyScoresExpireAt {
+			if player.PlayerState.TotalScoreThisPeriod > player.PlayerState.TotalScore {
+				player.PlayerState.TotalScore = player.PlayerState.TotalScoreThisPeriod
+			}
+			if player.PlayerState.TimedTotalScoreThisPeriod > player.PlayerState.TimedTotalScore {
+				player.PlayerState.TimedTotalScore = player.PlayerState.TimedTotalScoreThisPeriod
+			}
+			player.PlayerState.HighScoreThisPeriod = 0
+			player.PlayerState.TimedHighScoreThisPeriod = 0
+			player.PlayerState.TotalScoreThisPeriod = 0
+			player.PlayerState.TimedTotalScoreThisPeriod = 0
+			player.PlayerState.WeeklyScoresExpireAt = now.EndOfWeek().UTC().Unix()
 		}
-		player.PlayerState.TimedTotalScore += request.Score
-		if player.PlayerState.TimedTotalScore > player.OptionUserResult.QuickTotalSumHighScore {
-			player.OptionUserResult.QuickTotalSumHighScore = player.PlayerState.TimedTotalScore
+		playerTimedHighScoreThisPeriod := player.PlayerState.TimedHighScoreThisPeriod
+		if request.Score > playerTimedHighScoreThisPeriod {
+			player.PlayerState.TimedHighScoreThisPeriod = request.Score
+		}
+		player.PlayerState.TimedTotalScoreThisPeriod += request.Score
+		if player.PlayerState.TimedTotalScoreThisPeriod > player.OptionUserResult.QuickTotalSumHighScore {
+			player.OptionUserResult.QuickTotalSumHighScore = player.PlayerState.TimedTotalScoreThisPeriod
 		}
 		//player.PlayerState.TotalDistance += request.Distance  // We don't do this in timed mode!
 		// increase character(s)'s experience
@@ -361,52 +373,70 @@ func EventUpdateGameResults(helper *helper.Helper) {
 				return
 			}
 		}
+		playCharacters[0].AbilityLevelUp = []int64{}
+		playCharacters[0].AbilityLevelUpExp = []int64{}
 		if playCharacters[0].Level < 100 {
-			playCharacters[0].AbilityLevelUp = []int64{}
-			playCharacters[0].AbilityLevelUpExp = []int64{}
 			playCharacters[0].Exp += expIncrease
 			for playCharacters[0].Exp >= playCharacters[0].Cost {
 				// more exp than cost = level up
-				playCharacters[0].Level++                                               // increase level
-				playCharacters[0].AbilityLevel[abilityIndex]++                          // increase ability level
-				playCharacters[0].Exp -= playCharacters[0].Cost                         // remove cost from exp
-				playCharacters[0].Cost += consts.UpgradeIncreases[playCharacters[0].ID] // increase cost
-				playCharacters[0].AbilityLevelUp = append(playCharacters[0].AbilityLevelUp, int64(abilityIndex))
-				playCharacters[0].AbilityLevelUpExp = append(playCharacters[0].AbilityLevelUpExp, playCharacters[0].Cost)
-				abilityIndex = 1
-				for abilityIndex == 1 { // unused ability is at index 1
-					abilityIndex = rand.Intn(len(mainC.AbilityLevel))
+				if playCharacters[0].Level < 100 {
+					abilityIndex = 1
+					for abilityIndex == 1 || playCharacters[0].AbilityLevel[abilityIndex] >= 10 { // unused ability is at index 1
+						abilityIndex = rand.Intn(len(mainC.AbilityLevel))
+					}
+					playCharacters[0].Level++                                               // increase level
+					playCharacters[0].AbilityLevel[abilityIndex]++                          // increase ability level
+					playCharacters[0].Exp -= playCharacters[0].Cost                         // remove cost from exp
+					playCharacters[0].Cost += consts.UpgradeIncreases[playCharacters[0].ID] // increase cost
+					playCharacters[0].AbilityLevelUp = append(playCharacters[0].AbilityLevelUp, int64(abilityIndex))
+					playCharacters[0].AbilityLevelUpExp = append(playCharacters[0].AbilityLevelUpExp, playCharacters[0].Cost)
+				} else {
+					playCharacters[0].Exp -= playCharacters[0].Cost
 				}
 			}
 		}
+
 		if hasSubCharacter {
+			playCharacters[1].AbilityLevelUp = []int64{}
+			playCharacters[1].AbilityLevelUpExp = []int64{}
 			if playCharacters[1].Level < 100 {
-				playCharacters[1].AbilityLevelUp = []int64{}
-				playCharacters[1].AbilityLevelUpExp = []int64{}
 				playCharacters[1].Exp += expIncrease
 				for playCharacters[1].Exp >= playCharacters[1].Cost {
 					// more exp than cost = level up
-					playCharacters[1].Level++                                               // increase level
-					playCharacters[1].AbilityLevel[abilityIndex]++                          // increase ability level
-					playCharacters[1].Exp -= playCharacters[1].Cost                         // remove cost from exp
-					playCharacters[1].Cost += consts.UpgradeIncreases[playCharacters[1].ID] // increase cost
-					playCharacters[1].AbilityLevelUp = append(playCharacters[1].AbilityLevelUp, int64(abilityIndex))
-					playCharacters[1].AbilityLevelUpExp = append(playCharacters[1].AbilityLevelUpExp, playCharacters[1].Cost)
-					abilityIndex = 1
-					for abilityIndex == 1 { // unused ability is at index 1
-						abilityIndex = rand.Intn(len(mainC.AbilityLevel))
+					if playCharacters[1].Level < 100 {
+						abilityIndex = 1
+						for abilityIndex == 1 || playCharacters[1].AbilityLevel[abilityIndex] >= 10 { // unused ability is at index 1
+							abilityIndex = rand.Intn(len(playCharacters[1].AbilityLevel))
+						}
+						playCharacters[1].Level++                                               // increase level
+						playCharacters[1].AbilityLevel[abilityIndex]++                          // increase ability level
+						playCharacters[1].Exp -= playCharacters[1].Cost                         // remove cost from exp
+						playCharacters[1].Cost += consts.UpgradeIncreases[playCharacters[1].ID] // increase cost
+						playCharacters[1].AbilityLevelUp = append(playCharacters[1].AbilityLevelUp, int64(abilityIndex))
+						playCharacters[1].AbilityLevelUpExp = append(playCharacters[1].AbilityLevelUpExp, playCharacters[1].Cost)
+					} else {
+						playCharacters[1].Exp -= playCharacters[1].Cost
 					}
 				}
 			}
 		}
+
 		helper.DebugOut("Old mainC Exp: %v / %v", mainC.Exp, mainC.Cost)
 		helper.DebugOut("Old mainC Level: %v", mainC.Level)
-		helper.DebugOut("Old subC Exp: %v / %v", subC.Exp, subC.Cost)
-		helper.DebugOut("Old subC Level: %v", subC.Level)
+		if hasSubCharacter {
+			helper.DebugOut("Old subC Exp: %v / %v", subC.Exp, subC.Cost)
+			helper.DebugOut("Old subC Level: %v", subC.Level)
+		}
 		helper.DebugOut("New mainC Exp: %v / %v", playCharacters[0].Exp, playCharacters[0].Cost)
 		helper.DebugOut("New mainC Level: %v", playCharacters[0].Level)
-		helper.DebugOut("New subC Exp: %v / %v", playCharacters[1].Exp, playCharacters[1].Cost)
-		helper.DebugOut("New subC Level: %v", playCharacters[1].Level)
+		helper.DebugOut("mainC AbilityLevelUp: %v", playCharacters[0].AbilityLevelUp)
+		helper.DebugOut("mainC AbilityLevelUpExp: %v", playCharacters[0].AbilityLevelUpExp)
+		if hasSubCharacter {
+			helper.DebugOut("New subC Exp: %v / %v", playCharacters[1].Exp, playCharacters[1].Cost)
+			helper.DebugOut("New subC Level: %v", playCharacters[1].Level)
+			helper.DebugOut("subC AbilityLevelUp: %v", playCharacters[1].AbilityLevelUp)
+			helper.DebugOut("subC AbilityLevelUpExp: %v", playCharacters[1].AbilityLevelUpExp)
+		}
 
 		helper.DebugOut("Event ID: %v", request.EventID)
 		helper.DebugOut("Player got %v event object(s)", request.EventValue)
