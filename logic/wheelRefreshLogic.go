@@ -32,7 +32,7 @@ func WheelRefreshLogic(player netobj.Player, wheel netobj.WheelOptions) netobj.W
 		wheel.NumJackpotRing = 1
 	}
 	wheel.NumRouletteToken = numRouletteTicket
-	wheel.NumRemainingRoulette = wheel.NumRouletteToken + -rouletteCount // TODO: is this proper?
+	wheel.NumRemainingRoulette = wheel.NumRouletteToken + freeSpins - rouletteCount // TODO: is this proper?
 	if wheel.NumRemainingRoulette < wheel.NumRouletteToken {
 		wheel.NumRemainingRoulette = wheel.NumRouletteToken
 	}

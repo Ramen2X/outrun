@@ -7,13 +7,16 @@ import (
 
 	"github.com/fluofoxxo/outrun/analytics"
 	"github.com/fluofoxxo/outrun/analytics/factors"
+	"github.com/fluofoxxo/outrun/config/campaignconf"
 	"github.com/fluofoxxo/outrun/consts"
 	"github.com/fluofoxxo/outrun/db"
 	"github.com/fluofoxxo/outrun/emess"
 	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/helper"
 	"github.com/fluofoxxo/outrun/logic"
+	"github.com/fluofoxxo/outrun/logic/conversion"
 	"github.com/fluofoxxo/outrun/netobj"
+	"github.com/fluofoxxo/outrun/obj"
 	"github.com/fluofoxxo/outrun/requests"
 	"github.com/fluofoxxo/outrun/responses"
 	"github.com/fluofoxxo/outrun/status"
@@ -80,6 +83,22 @@ func CommitWheelSpin(helper *helper.Helper) {
 	}
 	helper.DebugOut("request.Count: %v", request.Count)
 
+	freeSpins := consts.RouletteFreeSpins
+	campaignList := []obj.Campaign{}
+	if campaignconf.CFile.AllowCampaigns {
+		for _, confCampaign := range campaignconf.CFile.CurrentCampaigns {
+			newCampaign := conversion.ConfiguredCampaignToCampaign(confCampaign)
+			campaignList = append(campaignList, newCampaign)
+		}
+	}
+	index := 0
+	for index < len(campaignList) {
+		if obj.IsCampaignActive(campaignList[index]) && campaignList[index].Type == enums.CampaignTypeFreeWheelSpinCount {
+			freeSpins = campaignList[index].Content
+		}
+		index++
+	}
+
 	endPeriod := player.RouletteInfo.RoulettePeriodEnd
 	helper.DebugOut("Time now: %v", time.Now().Unix())
 	helper.DebugOut("End period: %v", endPeriod)
@@ -90,7 +109,7 @@ func CommitWheelSpin(helper *helper.Helper) {
 	}
 
 	hasTickets := player.PlayerState.NumRouletteTicket > 0
-	hasFreeSpins := player.RouletteInfo.RouletteCountInPeriod < consts.RouletteFreeSpins
+	hasFreeSpins := player.RouletteInfo.RouletteCountInPeriod < freeSpins
 	helper.DebugOut("Has tickets: %v", hasTickets)
 	helper.DebugOut("Number of tickets: %v", player.PlayerState.NumRouletteTicket)
 	helper.DebugOut("Has free spins: %v", hasFreeSpins)
@@ -139,7 +158,7 @@ func CommitWheelSpin(helper *helper.Helper) {
 		if !landedOnUpgrade {
 			//don't use up spin if we landed on an upgrade
 			player.RouletteInfo.RouletteCountInPeriod++ // we've spun an additional time
-			if player.RouletteInfo.RouletteCountInPeriod > consts.RouletteFreeSpins {
+			if player.RouletteInfo.RouletteCountInPeriod > freeSpins {
 				// we've run out of free spins for the period
 				player.PlayerState.NumRouletteTicket--
 			}
