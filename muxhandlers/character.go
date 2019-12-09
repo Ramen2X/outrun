@@ -79,7 +79,8 @@ func ChangeCharacter(helper *helper.Helper) {
 		}
 	}
 	if player.PlayerState.MainCharaID == player.PlayerState.SubCharaID {
-		player.PlayerState.MainCharaID = "-1"
+		helper.InvalidRequest()
+		return
 	}
 	db.SavePlayer(player)
 

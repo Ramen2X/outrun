@@ -44,6 +44,10 @@ func DefaultChaoWheelOptions(playerState PlayerState) ChaoWheelOptions {
 	campaignList := obj.DefaultCampaigns()
 	chaoRouletteType := enums.ChaoWheelTypeNormal
 	numSpecialEgg := playerState.ChaoEggs
+	if numSpecialEgg >= 10 {
+		chaoRouletteType = enums.ChaoWheelTypeSpecial
+		itemWeight = []int64{1, 1, 1, 1, 1, 1, 1, 1}
+	}
 	rouletteAvailable := int64(1)
 	numChaoRouletteToken := playerState.NumChaoRouletteTicket
 	spinCost := consts.ChaoRouletteTicketCost

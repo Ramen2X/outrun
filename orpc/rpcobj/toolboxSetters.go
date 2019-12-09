@@ -5,6 +5,7 @@ import (
 
 	"github.com/fluofoxxo/outrun/config/eventconf"
 	"github.com/fluofoxxo/outrun/db"
+	"github.com/fluofoxxo/outrun/netobj"
 )
 
 func (t *Toolbox) SetRings(args ChangeValueArgs, reply *ToolboxReply) error {
@@ -313,6 +314,27 @@ func (t *Toolbox) SetDailyMissionID(args ChangeValueArgs, reply *ToolboxReply) e
 	}
 	newDailyMissionID := args.Value.(int64)
 	player.PlayerState.DailyMissionID = newDailyMissionID
+	err = db.SavePlayer(player)
+	if err != nil {
+		reply.Status = StatusOtherError
+		reply.Info = "unable to save player: " + err.Error()
+		return err
+	}
+	reply.Status = StatusOK
+	reply.Info = "OK"
+	return nil
+}
+
+func (t *Toolbox) SetChaoEggs(args ChangeValueArgs, reply *ToolboxReply) error {
+	player, err := db.GetPlayer(args.UID)
+	if err != nil {
+		reply.Status = StatusOtherError
+		reply.Info = "unable to get player: " + err.Error()
+		return err
+	}
+	newChaoEggs := args.Value.(int64)
+	player.PlayerState.ChaoEggs = newChaoEggs
+	player.ChaoRouletteGroup.ChaoWheelOptions = netobj.DefaultChaoWheelOptions(player.PlayerState) //refresh chao roulette
 	err = db.SavePlayer(player)
 	if err != nil {
 		reply.Status = StatusOtherError

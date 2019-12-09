@@ -210,15 +210,15 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 
 	// spin logic
 	primaryLogic := func(usingTickets bool) {
-		//if player.PlayerState.ChaoEggs < 10 {
-		if usingTickets { // paying with ticket(s)
-			player.PlayerState.NumChaoRouletteTicket -= consts.ChaoRouletteTicketCost * request.Count // spend ticket(s)
-		} else { // paying with red ring(s)
-			player.PlayerState.NumRedRings -= consts.ChaoRouletteRedRingCost * request.Count // spend red ring(s)
+		if player.PlayerState.ChaoEggs < 10 {
+			if usingTickets { // paying with ticket(s)
+				player.PlayerState.NumChaoRouletteTicket -= consts.ChaoRouletteTicketCost * request.Count // spend ticket(s)
+			} else { // paying with red ring(s)
+				player.PlayerState.NumRedRings -= consts.ChaoRouletteRedRingCost * request.Count // spend red ring(s)
+			}
+		} else { //paying with chao eggs
+			player.PlayerState.ChaoEggs -= 10
 		}
-		//} else { //paying with chao eggs
-		//	player.PlayerState.ChaoEggs -= 10
-		//}
 		player.OptionUserResult.NumChaoRoulette++
 		player.ChaoRouletteGroup.ChaoRouletteInfo.RouletteCountInPeriod++ // increment times spun in timer; TODO: Should we count request.Count?
 		actions := request.Count

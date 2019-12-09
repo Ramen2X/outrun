@@ -812,6 +812,9 @@ func PostGameResults(helper *helper.Helper) {
 				// Assumed this just means next episode...
 				if player.PlayerState.Rank < 998 {
 					player.PlayerState.Rank++ //TODO: This should be looked into more.
+					if player.PlayerState.Energy < player.PlayerVarious.EnergyRecoveryMax {
+						player.PlayerState.Energy = player.PlayerVarious.EnergyRecoveryMax //restore energy
+					}
 				}
 				maxChapters, episodeHasMultipleChapters := consts.EpisodeWithChapters[player.MileageMapState.Episode]
 				if episodeHasMultipleChapters {
