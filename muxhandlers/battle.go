@@ -5,6 +5,7 @@ import (
 
 	"github.com/fluofoxxo/outrun/emess"
 	"github.com/fluofoxxo/outrun/helper"
+	"github.com/fluofoxxo/outrun/logic/conversion"
 	"github.com/fluofoxxo/outrun/obj"
 	"github.com/fluofoxxo/outrun/requests"
 	"github.com/fluofoxxo/outrun/responses"
@@ -43,5 +44,23 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 		return
+	}
+}
+
+func ResetDailyBattleMatching(helper *helper.Helper) {
+	player, err := helper.GetCallingPlayer()
+	if err != nil {
+		helper.InternalErr("error getting calling player", err)
+		return
+	}
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	battleData := conversion.DebugPlayerToBattleData(player)
+	rivalBattleData := obj.DebugRivalBattleData()
+	startTime := now.BeginningOfDay().UTC().Unix()
+	endTime := now.EndOfDay().UTC().Unix()
+	response := responses.ResetDailyBattleMatching(baseInfo, startTime, endTime, battleData, rivalBattleData, player)
+	err = helper.SendCompatibleResponse(response)
+	if err != nil {
+		helper.InternalErr("error sending response", err)
 	}
 }

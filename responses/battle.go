@@ -50,6 +50,18 @@ func DefaultDailyBattleData(base responseobjs.BaseInfo, player netobj.Player) No
 	)
 }
 
+func DefaultMatchedDailyBattleData(base responseobjs.BaseInfo, player netobj.Player) DailyBattleDataResponse {
+	battleData := conversion.DebugPlayerToBattleData(player)
+	rivalBattleData := obj.DebugRivalBattleData()
+	return DailyBattleData(
+		base,
+		now.BeginningOfDay().UTC().Unix(),
+		now.EndOfDay().UTC().Unix(),
+		battleData,
+		rivalBattleData,
+	)
+}
+
 type UpdateDailyBattleStatusResponse struct {
 	BaseResponse
 	EndTime      int64            `json:"endTime"`
@@ -64,5 +76,20 @@ func UpdateDailyBattleStatus(base responseobjs.BaseInfo, endTime int64, battleSt
 		endTime,
 		battleStatus,
 		rewardFlag,
+	}
+}
+
+type ResetDailyBattleMatchingResponse struct {
+	BaseResponse
+	obj.BattlePair
+	PlayerState netobj.PlayerState `json:"playerState"`
+}
+
+func ResetDailyBattleMatching(base responseobjs.BaseInfo, startTime, endTime int64, battleData, rivalBattleData obj.BattleData, player netobj.Player) ResetDailyBattleMatchingResponse {
+	baseResponse := NewBaseResponse(base)
+	return ResetDailyBattleMatchingResponse{
+		baseResponse,
+		obj.NewBattlePair(startTime, endTime, battleData, rivalBattleData),
+		player.PlayerState,
 	}
 }
