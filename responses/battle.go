@@ -1,33 +1,52 @@
 package responses
 
 import (
-	"time"
-
+	"github.com/fluofoxxo/outrun/logic/conversion"
+	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/obj"
 	"github.com/fluofoxxo/outrun/responses/responseobjs"
+	"github.com/jinzhu/now"
 )
+
+type NoRivalDailyBattleDataResponse struct {
+	BaseResponse
+	StartTime  int64          `json:"startTime"`
+	EndTime    int64          `json:"endTime"`
+	BattleData obj.BattleData `json:"battleData"`
+}
 
 type DailyBattleDataResponse struct {
 	BaseResponse
-	EndTime      int64          `json:"endTime"`
-	BattleStatus obj.BattleData `json:"battleData"`
+	obj.BattlePair
 }
 
-func DailyBattleData(base responseobjs.BaseInfo, endTime int64, battleData obj.BattleData) DailyBattleDataResponse {
+func NoRivalDailyBattleData(base responseobjs.BaseInfo, startTime, endTime int64, battleData obj.BattleData) NoRivalDailyBattleDataResponse {
 	baseResponse := NewBaseResponse(base)
-	return DailyBattleDataResponse{
+	return NoRivalDailyBattleDataResponse{
 		baseResponse,
+		startTime,
 		endTime,
 		battleData,
 	}
 }
 
-func DefaultDailyBattleData(base responseobjs.BaseInfo) DailyBattleDataResponse {
-	battleData := obj.DebugRivalBattleData()
-	return DailyBattleData(
+func DailyBattleData(base responseobjs.BaseInfo, startTime, endTime int64, battleData, rivalBattleData obj.BattleData) DailyBattleDataResponse {
+	baseResponse := NewBaseResponse(base)
+	return DailyBattleDataResponse{
+		baseResponse,
+		obj.NewBattlePair(startTime, endTime, battleData, rivalBattleData),
+	}
+}
+
+func DefaultDailyBattleData(base responseobjs.BaseInfo, player netobj.Player) NoRivalDailyBattleDataResponse {
+	battleData := conversion.DebugPlayerToBattleData(player)
+	//	rivalBattleData := obj.DebugRivalBattleData()
+	return NoRivalDailyBattleData(
 		base,
-		time.Now().Unix()+80000, // ~22 hours from now
+		now.BeginningOfDay().UTC().Unix(),
+		now.EndOfDay().UTC().Unix(),
 		battleData,
+		//		rivalBattleData,
 	)
 }
 

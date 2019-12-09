@@ -8,7 +8,7 @@ import (
 
 type BattleData struct {
 	UserID         string `json:"userId"`     // user ID
-	Name           string `json:"name"`       // username?
+	Name           string `json:"name"`       // username
 	MaxScore       int64  `json:"maxScore"`   // highest score gained
 	League         int64  `json:"league"`     // enums.RankingLeague*
 	LoginTime      int64  `json:"loginTime"`  // used by game in ranking window with GetCurrentTime() - loginTime
@@ -21,7 +21,7 @@ type BattleData struct {
 	MainCharaLevel int64  `json:"charaLevel"`
 	SubCharaID     string `json:"subCharaId"`
 	SubCharaLevel  int64  `json:"subCharaLevel"`
-	GoOnWin        int64  `json:"goOnWin"`   // I think this is either win count or successive win count?
+	GoOnWin        int64  `json:"goOnWin"`   // Win streak
 	IsSentEnergy   int64  `json:"energyFlg"` // you can't send energy to friend if true (is only friend if social connection); enables custom icon
 	Language       int64  `json:"language"`  // enums.Lang*
 }

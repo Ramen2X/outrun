@@ -1,8 +1,6 @@
 package conversion
 
 import (
-	"time"
-
 	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/obj"
@@ -11,14 +9,14 @@ import (
 func DebugPlayerToBattleData(player netobj.Player) obj.BattleData {
 	uid := player.ID
 	username := player.Username
-	maxScore := player.PlayerState.HighScore
-	league := int64(enums.RankingLeagueC)
-	loginTime := time.Now().UTC().Unix() - 60
+	maxScore := player.PlayerState.TimedHighScore // TODO: Should this be the daily high score?
+	league := player.PlayerState.RankingLeague
+	loginTime := player.LastLogin
 	mainChaoID := player.PlayerState.MainChaoID
 	mainChaoLevel := int64(2) // TODO: this may be problematic if the game does checks
 	subChaoID := player.PlayerState.SubChaoID
 	subChaoLevel := int64(3) // TODO: this may be problematic if the game does checks
-	rank := int64(1)         // ??
+	rank := player.PlayerState.Rank
 	mainCharaID := player.PlayerState.MainCharaID
 	mainCharaLevel := int64(4) // TODO: this may be problematic if the game does checks
 	subCharaID := player.PlayerState.SubCharaID
