@@ -3,7 +3,6 @@ package muxhandlers
 import (
 	"encoding/json"
 	"math/rand"
-	"strconv"
 	"time"
 
 	"github.com/fluofoxxo/outrun/enums"
@@ -44,7 +43,7 @@ func Login(helper *helper.Helper) {
 				1,
 				"A welcome gift from the Revival Team.", // TODO: make this configurable
 				obj.NewMessageItem(
-					strconv.Itoa(enums.ItemIDRedRing),
+					enums.ItemIDRedRing,
 					50,
 					0,
 					0,

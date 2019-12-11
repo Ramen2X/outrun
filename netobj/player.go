@@ -2,6 +2,7 @@ package netobj
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/fluofoxxo/outrun/config/eventconf"
@@ -357,6 +358,33 @@ func (p *Player) GetAllNonMaxedCharacters() []string {
 		if character.Star < 10 { // not max star
 			result = append(result, character.ID)
 		}
+	}
+	return result
+}
+
+func (p *Player) AcceptOperatorMessage(id int64) interface{} {
+	for index, message := range p.OperatorMessages {
+		if strconv.Itoa(int(id)) == message.ID {
+			p.RemoveFromOperatorMessages(index)
+			if time.Now().UTC().Unix() < message.ExpireTime {
+				return obj.MessageItemToPresent(message.Item)
+			}
+		}
+	}
+	return nil
+}
+
+func (p *Player) RemoveFromOperatorMessages(index int) {
+	// don't care about order; it shouldn't really matter
+	p.OperatorMessages[index] = p.OperatorMessages[len(p.OperatorMessages)-1]
+	p.OperatorMessages = p.OperatorMessages[:len(p.OperatorMessages)-1]
+}
+
+func (p *Player) GetAllOperatorMessageIDs() []int64 {
+	result := []int64{}
+	for _, message := range p.OperatorMessages {
+		messageid, _ := strconv.Atoi(message.ID)
+		result = append(result, int64(messageid))
 	}
 	return result
 }

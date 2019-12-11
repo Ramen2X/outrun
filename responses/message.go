@@ -45,3 +45,17 @@ type GetMessageResponse struct {
 	RemainingMessageIDs         []int64            `json:"notRecvMessageList"`         // IDs of messages not yet received?
 	RemainingOperatorMessageIDs []int64            `json:"notRecvOperatorMessageList"` // IDs of operator messages not yet received?
 }
+
+func GetMessage(base responseobjs.BaseInfo, player netobj.Player, presentList []obj.Present, remainingMessageIDs, remainingOperatorMessageIDs []int64) GetMessageResponse {
+	baseResponse := NewBaseResponse(base)
+	out := GetMessageResponse{
+		baseResponse,
+		player.PlayerState,
+		player.CharacterState,
+		player.ChaoState,
+		presentList,
+		remainingMessageIDs,
+		remainingOperatorMessageIDs,
+	}
+	return out
+}

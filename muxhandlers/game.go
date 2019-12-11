@@ -875,10 +875,6 @@ func PostGameResults(helper *helper.Helper) {
 					player.PlayerState.NumRings += reward.NumItem
 				} else if reward.ItemID == strconv.Itoa(enums.ItemIDRedRing) { // Red rings
 					player.PlayerState.NumRedRings += reward.NumItem
-				} else if reward.ItemID == strconv.Itoa(enums.ItemIDRing) { // Rings
-					player.PlayerState.NumRings += reward.NumItem
-				} else if reward.ItemID == strconv.Itoa(enums.ItemIDRedRing) { // Red rings
-					player.PlayerState.NumRedRings += reward.NumItem
 				} else if reward.ItemID == enums.CTStrTails { // Tails node
 					tailsIndex := player.IndexOfChara(enums.CTStrTails)
 					player.CharacterState[tailsIndex].Status = enums.CharacterStatusUnlocked

@@ -18,7 +18,7 @@ func DefaultOperatorMessage() OperatorMessage {
 	id := "2346789"
 	content := "Test Gift"
 	item := NewMessageItem(
-		strconv.Itoa(int(enums.ItemIDRing)),
+		enums.ItemIDRing,
 		15000,
 		0,
 		0,

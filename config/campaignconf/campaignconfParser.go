@@ -13,7 +13,6 @@ import (
 var Defaults = map[string]interface{}{
 	"DAllowCampaigns":   false,
 	"DCurrentCampaigns": []ConfiguredCampaign{},
-	"DEnforceGlobal":    false,
 }
 
 var CampaignTypes = map[string]int64{
@@ -57,14 +56,12 @@ var CFile ConfigFile
 type ConfigFile struct {
 	AllowCampaigns   bool                 `json:"allowCampaigns,omitempty"`
 	CurrentCampaigns []ConfiguredCampaign `json:"currentCampaigns,omitempty"`
-	EnforceGlobal    bool                 `json:"enforceGlobal,omitempty"`
 }
 
 func Parse(filename string) error {
 	CFile = ConfigFile{
 		Defaults["DAllowCampaigns"].(bool),
 		Defaults["DCurrentCampaigns"].([]ConfiguredCampaign),
-		Defaults["DEnforceGlobal"].(bool),
 	}
 	file, err := loadFile(filename)
 	if err != nil {
