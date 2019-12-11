@@ -35,11 +35,11 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 		helper.InternalErr("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	/*player, err := helper.GetCallingPlayer()
 	if err != nil {
 		helper.InternalErr("error getting calling player", err)
 		return
-	}
+	}*/
 	endTime := now.EndOfDay().UTC().Unix()
 	//rewardBattleData := conversion.DebugPlayerToBattleData(player)
 	//rewardRivalBattleData := obj.DebugRivalBattleData()

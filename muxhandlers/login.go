@@ -37,11 +37,12 @@ func Login(helper *helper.Helper) {
 	if uid == "0" && password == "" {
 		helper.Out("Entering LoginAlpha")
 		newPlayer := db.NewAccount()
+		// welcome gifts
 		newPlayer.OperatorMessages = append(
 			newPlayer.OperatorMessages,
 			obj.NewOperatorMessage(
 				1,
-				"A welcome gift from the Revival Team.",
+				"A welcome gift from the Revival Team.", // TODO: make this configurable
 				obj.NewMessageItem(
 					strconv.Itoa(enums.ItemIDRedRing),
 					50,

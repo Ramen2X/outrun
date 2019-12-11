@@ -3,6 +3,7 @@ package rpcobj
 import (
 	"github.com/fluofoxxo/outrun/db"
 	"github.com/fluofoxxo/outrun/netobj"
+	"github.com/fluofoxxo/outrun/obj"
 )
 
 type Toolbox struct {
@@ -43,4 +44,17 @@ type ToolboxValueReply struct {
 type ChangeValueArgs struct {
 	UID   string
 	Value interface{}
+}
+
+type SendMessageToAllArgs struct {
+	MessageContents string
+	Item            obj.MessageItem
+	ExpiresAfter    int64
+}
+
+type SendMessageArgs struct {
+	UID             string
+	MessageContents string
+	Item            obj.MessageItem
+	ExpiresAfter    int64
 }

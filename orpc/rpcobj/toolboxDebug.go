@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/fluofoxxo/outrun/obj"
+
 	"github.com/fluofoxxo/outrun/config/gameconf"
 	"github.com/fluofoxxo/outrun/consts"
 	"github.com/fluofoxxo/outrun/db"
@@ -368,6 +370,55 @@ func (t *Toolbox) Debug_FixWerehogRedRings(uids string, reply *ToolboxReply) err
 		}
 		player.CharacterState[i].Character.PriceRedRings = whrr
 		player.CharacterState[i].PriceRedRings = whrr
+		err = db.SavePlayer(player)
+		if err != nil {
+			reply.Status = StatusOtherError
+			reply.Info = fmt.Sprintf("error saving player %s: ", uid) + err.Error()
+			return err
+		}
+	}
+	reply.Status = StatusOK
+	reply.Info = "OK"
+	return nil
+}
+
+func (t *Toolbox) Debug_SendMessageToAll(args SendMessageToAllArgs, reply *ToolboxReply) error {
+	playerIDs := []string{}
+	dbaccess.ForEachKey(consts.DBBucketPlayers, func(k, v []byte) error {
+		playerIDs = append(playerIDs, string(k))
+		return nil
+	})
+	for _, uid := range playerIDs {
+		player, err := db.GetPlayer(uid)
+		if err != nil {
+			reply.Status = StatusOtherError
+			reply.Info = fmt.Sprintf("unable to get player %s: ", uid) + err.Error()
+			return err
+		}
+		index := 0
+		foundPreferredID := false
+		preferredID := 1
+		for !foundPreferredID {
+			foundPreferredID = true
+			index = 0
+			for index < len(player.OperatorMessages) {
+				if player.OperatorMessages[index].ID == strconv.Itoa(preferredID) {
+					foundPreferredID = false
+				}
+				index++
+			}
+			preferredID++
+		}
+		preferredID--
+		player.OperatorMessages = append(
+			player.OperatorMessages,
+			obj.NewOperatorMessage(
+				int64(preferredID),
+				args.MessageContents,
+				args.Item,
+				args.ExpiresAfter,
+			),
+		)
 		err = db.SavePlayer(player)
 		if err != nil {
 			reply.Status = StatusOtherError
