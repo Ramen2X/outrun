@@ -111,10 +111,23 @@ func GetMessage(helper *helper.Helper) {
 			// TODO: Add Chao
 		}
 	}
-
+	respPlayer := player
+	if request.Version == "1.1.4" { // must send fewer characters
+		// only get first 21 characters
+		// TODO: enforce order 300000 to 300020?
+		//cState = cState[:len(cState)-(len(cState)-10)]
+		cState := respPlayer.CharacterState
+		cState = cState[:16]
+		helper.DebugOut("cState length: %v", len(cState))
+		helper.DebugOut("Sent character IDs: ")
+		for _, char := range cState {
+			helper.DebugOut(char.ID)
+		}
+		respPlayer.CharacterState = cState
+	}
 	var response interface{}
 	if baseInfo.StatusCode == status.OK {
-		response = responses.GetMessage(baseInfo, player, presentList, []int64{}, player.GetAllOperatorMessageIDs())
+		response = responses.GetMessage(baseInfo, respPlayer, presentList, []int64{}, player.GetAllOperatorMessageIDs())
 	} else {
 		response = responses.NewBaseResponse(baseInfo)
 	}
