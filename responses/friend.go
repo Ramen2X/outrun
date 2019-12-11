@@ -1,7 +1,6 @@
 package responses
 
 import (
-	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/obj"
 	"github.com/fluofoxxo/outrun/responses/responseobjs"
@@ -24,15 +23,7 @@ func FacebookIncentive(base responseobjs.BaseInfo, playerState netobj.PlayerStat
 
 func DefaultFacebookIncentive(base responseobjs.BaseInfo, player netobj.Player) FacebookIncentiveResponse {
 	playerState := player.PlayerState
-	//presents := []obj.Present{} // Naughty this year
-	presents := []obj.Present{
-		obj.NewPresent(
-			enums.ItemIDAsteroid,
-			5,
-			0,
-			0,
-		),
-	}
+	presents := []obj.Present{} // Naughty this year
 	return FacebookIncentive(
 		base,
 		playerState,

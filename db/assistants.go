@@ -16,6 +16,7 @@ import (
 	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/netobj/constnetobjs"
+	"github.com/fluofoxxo/outrun/obj"
 
 	bolt "go.etcd.io/bbolt"
 )
@@ -71,6 +72,7 @@ func NewAccountWithID(uid string) netobj.Player {
 	chaoRouletteGroup := netobj.DefaultChaoRouletteGroup(playerState, allowedCharacters, allowedChao, true)
 	personalEvents := []eventconf.ConfiguredEvent{}
 	suspended := false
+	operatorMessages := []obj.OperatorMessage{}
 	return netobj.NewPlayer(
 		uid,
 		username,
@@ -92,6 +94,7 @@ func NewAccountWithID(uid string) netobj.Player {
 		chaoRouletteGroup,
 		personalEvents,
 		suspended,
+		operatorMessages,
 	)
 }
 

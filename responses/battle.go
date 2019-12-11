@@ -69,13 +69,33 @@ type UpdateDailyBattleStatusResponse struct {
 	RewardFlag   bool             `json:"rewardFlag"` // TODO: allow not false after testing
 }
 
-func UpdateDailyBattleStatus(base responseobjs.BaseInfo, endTime int64, battleStatus obj.BattleStatus, rewardFlag bool) UpdateDailyBattleStatusResponse {
+type UpdateDailyBattleStatusResponseWithReward struct {
+	BaseResponse
+	EndTime      int64            `json:"endTime"`
+	BattleStatus obj.BattleStatus `json:"battleStatus"`
+	RewardFlag   bool             `json:"rewardFlag"` // TODO: allow not false after testing
+	obj.RewardBattlePair
+}
+
+func UpdateDailyBattleStatus(base responseobjs.BaseInfo, endTime int64, battleStatus obj.BattleStatus) UpdateDailyBattleStatusResponse {
 	baseResponse := NewBaseResponse(base)
 	return UpdateDailyBattleStatusResponse{
 		baseResponse,
 		endTime,
 		battleStatus,
-		rewardFlag,
+		false,
+	}
+}
+
+func UpdateDailyBattleStatusWithReward(base responseobjs.BaseInfo, endTime int64, battleStatus obj.BattleStatus, rewardStartTime, rewardEndTime int64, rewardBattleData, rewardRivalBattleData obj.BattleData) UpdateDailyBattleStatusResponseWithReward {
+	baseResponse := NewBaseResponse(base)
+	battleReward := obj.NewRewardBattlePair(rewardStartTime, rewardEndTime, rewardBattleData, rewardRivalBattleData)
+	return UpdateDailyBattleStatusResponseWithReward{
+		baseResponse,
+		endTime,
+		battleStatus,
+		true,
+		battleReward,
 	}
 }
 

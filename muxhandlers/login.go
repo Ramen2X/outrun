@@ -3,7 +3,10 @@ package muxhandlers
 import (
 	"encoding/json"
 	"math/rand"
+	"strconv"
 	"time"
+
+	"github.com/fluofoxxo/outrun/enums"
 
 	"github.com/fluofoxxo/outrun/analytics"
 	"github.com/fluofoxxo/outrun/analytics/factors"
@@ -34,6 +37,20 @@ func Login(helper *helper.Helper) {
 	if uid == "0" && password == "" {
 		helper.Out("Entering LoginAlpha")
 		newPlayer := db.NewAccount()
+		newPlayer.OperatorMessages = append(
+			newPlayer.OperatorMessages,
+			obj.NewOperatorMessage(
+				1,
+				"A welcome gift from the Revival Team.",
+				obj.NewMessageItem(
+					strconv.Itoa(enums.ItemIDRedRing),
+					50,
+					0,
+					0,
+				),
+				432000,
+			),
+		)
 		err = db.SavePlayer(newPlayer)
 		if err != nil {
 			helper.InternalErr("Error saving player", err)

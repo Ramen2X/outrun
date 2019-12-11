@@ -40,10 +40,10 @@ func GetRedStarExchangeList(helper *helper.Helper) {
 	var redStarItems []obj.RedStarItem
 	helper.Out("Recv ItemType " + strconv.Itoa(int(request.ItemType)))
 	if request.ItemType == 0 { //red star rings
-		if request.Version == "1.1.4" {
-			redStarItems = constobjs.RedStarItemsType0
-		} else {
+		if request.Version == "2.0.3" {
 			redStarItems = []obj.RedStarItem{}
+		} else {
+			redStarItems = constobjs.RedStarItemsType0
 		}
 	} else if request.ItemType == 1 { // rings
 		redStarItems = constobjs.RedStarItemsType1

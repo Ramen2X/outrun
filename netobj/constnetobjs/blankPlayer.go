@@ -8,6 +8,7 @@ import (
 	"github.com/fluofoxxo/outrun/consts"
 	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/netobj"
+	"github.com/fluofoxxo/outrun/obj"
 )
 
 var BlankPlayer = func() netobj.Player {
@@ -60,6 +61,7 @@ var BlankPlayer = func() netobj.Player {
 	chaoRouletteGroup := netobj.DefaultChaoRouletteGroup(playerState, allowedCharacters, allowedChao, true)
 	personalEvents := []eventconf.ConfiguredEvent{}
 	suspended := false
+	operatorMessages := []obj.OperatorMessage{}
 	return netobj.NewPlayer(
 		uid,
 		username,
@@ -81,5 +83,6 @@ var BlankPlayer = func() netobj.Player {
 		chaoRouletteGroup,
 		personalEvents,
 		suspended,
+		operatorMessages,
 	)
 }() // TODO: Solve duplication requirement with db/assistants.go
