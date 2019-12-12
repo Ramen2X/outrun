@@ -62,7 +62,7 @@ func GetRandomChaoWheelChao(rarity int64, count int, oldChao bool) ([]string, er
 	if oldChao {
 		prizes = consts.RandomChaoWheelChaoPrizes114
 	}
-	for chid, weight := range consts.RandomChaoWheelChaoPrizes {
+	for chid, weight := range prizes {
 		if string(chid[2]) == strconv.Itoa(int(rarity)) {
 			chaoList = append(chaoList, chid)
 			runningTotal += weight
