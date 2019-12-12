@@ -53,11 +53,15 @@ func GetRandomChaoWheelCharacter(count int, oldCharacters bool) ([]string, error
 	return finalCharList, nil
 }
 
-func GetRandomChaoWheelChao(rarity int64, count int) ([]string, error) {
+func GetRandomChaoWheelChao(rarity int64, count int, oldChao bool) ([]string, error) {
 	// Reference: https://eli.thegreenplace.net/2010/01/22/weighted-random-generation-in-python/
 	totalWeights := []float64{}
 	chaoList := []string{}
 	runningTotal := float64(0)
+	prizes := consts.RandomChaoWheelChaoPrizes
+	if oldChao {
+		prizes = consts.RandomChaoWheelChaoPrizes114
+	}
 	for chid, weight := range consts.RandomChaoWheelChaoPrizes {
 		if string(chid[2]) == strconv.Itoa(int(rarity)) {
 			chaoList = append(chaoList, chid)
@@ -135,7 +139,7 @@ func GetRandomChaoRouletteItems(rarities []int64, allowedCharacters, allowedChao
 
 	getUnusedChao := func(rarity int64) (string, error) {
 		// Implies that there is a Chao of the given rarity allowed! Check with allowedRarity.
-		chao, err := GetRandomChaoWheelChao(rarity, 1)
+		chao, err := GetRandomChaoWheelChao(rarity, 1, oldCharacters)
 		// Don't check for unused Chao
 		return chao[0], err
 		/*
