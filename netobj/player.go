@@ -276,20 +276,28 @@ func (p *Player) GetSubChao() (Chao, error) {
 	chao, err := p.GetChao(chid)
 	return chao, err
 }
-func (p *Player) GetMaxLevelChao() []Chao {
+func (p *Player) GetMaxLevelChao(legacyCap bool) []Chao {
+	maxLevel := int64(10)
+	if legacyCap {
+		maxLevel = int64(5)
+	}
 	mxlvl := []Chao{}
 	for _, c := range p.ChaoState {
-		if c.Level >= 10 { // if max level (or above)
+		if c.Level >= maxLevel { // if max level (or above)
 			mxlvl = append(mxlvl, c)
 		}
 	}
 	return mxlvl
 }
-func (p *Player) GetMaxLevelChaoIDs() []string {
-	chao := p.GetMaxLevelChao()
+func (p *Player) GetMaxLevelChaoIDs(legacyCap bool) []string {
+	maxLevel := int64(10)
+	if legacyCap {
+		maxLevel = int64(5)
+	}
+	chao := p.GetMaxLevelChao(legacyCap)
 	ids := []string{}
 	for _, c := range chao {
-		if c.Level >= 10 { // if max level (or above)
+		if c.Level >= maxLevel { // if max level (or above)
 			ids = append(ids, c.ID)
 		}
 	}
@@ -315,17 +323,21 @@ func (p *Player) GetMaxLevelCharacterIDs() []string {
 	}
 	return ids
 }
-func (p *Player) GetAllMaxLevelIDs() []string {
+func (p *Player) GetAllMaxLevelIDs(legacyCap bool) []string {
 	chars := p.GetMaxLevelCharacterIDs()
-	chao := p.GetMaxLevelChaoIDs()
+	chao := p.GetMaxLevelChaoIDs(legacyCap)
 	combined := []string{}
 	combined = append(combined, chars...)
 	combined = append(combined, chao...)
 	return combined
 }
-func (p *Player) AllChaoMaxLevel() bool {
+func (p *Player) AllChaoMaxLevel(legacyCap bool) bool {
+	maxLevel := int64(10)
+	if legacyCap {
+		maxLevel = int64(5)
+	}
 	for _, c := range p.ChaoState {
-		if c.Level < 10 {
+		if c.Level < maxLevel {
 			return false
 		}
 	}
@@ -339,14 +351,18 @@ func (p *Player) AllCharactersMaxLevel() bool {
 	}
 	return true
 }
-func (p *Player) GetAllNonMaxedChaoAndCharacters() []string {
-	result := append(p.GetAllNonMaxedChao(), p.GetAllNonMaxedCharacters()...) // combine two
+func (p *Player) GetAllNonMaxedChaoAndCharacters(legacyCap bool) []string {
+	result := append(p.GetAllNonMaxedChao(legacyCap), p.GetAllNonMaxedCharacters()...) // combine two
 	return result
 }
-func (p *Player) GetAllNonMaxedChao() []string {
+func (p *Player) GetAllNonMaxedChao(legacyCap bool) []string {
 	result := []string{}
+	maxLevel := int64(10)
+	if legacyCap {
+		maxLevel = int64(5)
+	}
 	for _, chao := range p.ChaoState {
-		if chao.Level < 10 { // not max level
+		if chao.Level < maxLevel { // not max level
 			result = append(result, chao.ID)
 		}
 	}

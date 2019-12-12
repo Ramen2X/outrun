@@ -281,10 +281,14 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 					prizeChaoLevel := int64(rand.Intn(highRange-lowRange+1) + lowRange) // This level is added to the current Chao level
 					//amtWon = int(prizeChaoLevel)
 					player.ChaoState[chaoIndex].Level += prizeChaoLevel
-					if player.ChaoState[chaoIndex].Level > 10 { // if max chao level (https://www.deviantart.com/vocaloidbrsfreak97/journal/So-Sonic-Runners-just-recently-updated-574789098)
-						excess := player.ChaoState[chaoIndex].Level - 10              // get amount gone over
+					maxChaoLevel := int64(10)
+					if request.Version == "1.1.4" {
+						maxChaoLevel = int64(5)
+					}
+					if player.ChaoState[chaoIndex].Level > maxChaoLevel { // if max chao level (https://www.deviantart.com/vocaloidbrsfreak97/journal/So-Sonic-Runners-just-recently-updated-574789098)
+						excess := player.ChaoState[chaoIndex].Level - maxChaoLevel    // get amount gone over
 						prizeChaoLevel -= excess                                      // shave it from prize level
-						player.ChaoState[chaoIndex].Level = 10                        // reset to maximum
+						player.ChaoState[chaoIndex].Level = maxChaoLevel              // reset to maximum
 						player.ChaoState[chaoIndex].Status = enums.ChaoStatusMaxLevel // set status to MaxLevel
 					}
 					spinResult.WonPrize.Level = player.ChaoState[chaoIndex].Level
@@ -300,7 +304,7 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 			spinResults = append(spinResults, spinResult) // add spin result to results list (See spinResults declaration)
 		}
 		// create a new wheel; must be done after ALL player operations are done
-		chaoCanBeLevelled := !player.AllChaoMaxLevel()
+		chaoCanBeLevelled := !player.AllChaoMaxLevel(request.Version == "1.1.4")
 		charactersCanBeLevelled := !player.AllCharactersMaxLevel()
 		helper.DebugOut("Chao can be levelled: %v", chaoCanBeLevelled)
 		helper.DebugOut("Characters can be levelled: %v", charactersCanBeLevelled)
@@ -344,7 +348,7 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 		}
 		//newItems, err := roulette.GetRandomChaoRouletteItems(player.ChaoRouletteGroup.ChaoWheelOptions.Rarity, player.GetAllMaxLevelIDs()) // create new wheel items
 		//newItems, err := roulette.GetRandomChaoRouletteItems(player.ChaoRouletteGroup.ChaoWheelOptions.Rarity, player.GetAllNonMaxedChaoAndCharacters()) // create new wheel items
-		newItems, newRarities, err := roulette.GetRandomChaoRouletteItems(player.ChaoRouletteGroup.ChaoWheelOptions.Rarity, player.GetAllNonMaxedCharacters(), player.GetAllNonMaxedChao(), request.Version == "1.1.4")
+		newItems, newRarities, err := roulette.GetRandomChaoRouletteItems(player.ChaoRouletteGroup.ChaoWheelOptions.Rarity, player.GetAllNonMaxedCharacters(), player.GetAllNonMaxedChao(request.Version == "1.1.4"), request.Version == "1.1.4")
 		if err != nil {
 			helper.InternalErr("Error getting new items", err)
 			return

@@ -126,8 +126,12 @@ func GetMessage(helper *helper.Helper) {
 				player.ChaoState[chaoIndex].Level = 0
 			}
 			player.ChaoState[chaoIndex].Level += currentPresent.NumItem
-			if player.ChaoState[chaoIndex].Level > 10 { // if max chao level
-				player.ChaoState[chaoIndex].Level = 10                        // reset to maximum
+			maxChaoLevel := int64(10)
+			if request.Version == "1.1.4" {
+				maxChaoLevel = int64(5)
+			}
+			if player.ChaoState[chaoIndex].Level > maxChaoLevel { // if max chao level
+				player.ChaoState[chaoIndex].Level = maxChaoLevel              // reset to maximum
 				player.ChaoState[chaoIndex].Status = enums.ChaoStatusMaxLevel // set status to MaxLevel
 			}
 		} else {
