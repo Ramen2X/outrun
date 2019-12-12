@@ -90,6 +90,7 @@ const ( // Mileage rewards
 const ( // Presents
 	ItemIDEnergy         = 920000
 	ItemIDRaidbossEnergy = 940000
+	ItemIDRaidbossRing   = 960000
 )
 
 const (

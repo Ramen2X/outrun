@@ -794,7 +794,7 @@ func PostGameResults(helper *helper.Helper) {
 			helper.DebugOut("Event ID: %v", request.EventId)
 			helper.DebugOut("Player got %v event object(s)", request.EventValue)
 			player.EventState.Param += request.EventValue
-			//TODO: Actually store rewards
+			//TODO: Send rewards to gift box
 		} else {
 			player.MileageMapState.StageTotalScore += request.Score
 
@@ -802,6 +802,9 @@ func PostGameResults(helper *helper.Helper) {
 			chaoEggs := request.GetChaoEgg
 			if chaoEggs > 0 {
 				player.PlayerState.ChaoEggs += chaoEggs
+				if player.PlayerState.ChaoEggs > 10 {
+					player.PlayerState.ChaoEggs = 10
+				}
 				player.ChaoRouletteGroup.ChaoWheelOptions = netobj.DefaultChaoWheelOptions(player.PlayerState)
 			}
 			// TODO: Add chao eggs to player

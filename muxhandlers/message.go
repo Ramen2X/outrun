@@ -103,12 +103,35 @@ func GetMessage(helper *helper.Helper) {
 			player.PlayerState.Energy += currentPresent.NumItem
 		} else if itemid == strconv.Itoa(enums.ItemIDRaidbossEnergy) { // Boss challenge tokens
 			player.EventUserRaidbossState.RaidBossEnergy += currentPresent.NumItem
-		} else if itemid == strconv.Itoa(enums.IDRouletteTicketItem) {
-			player.PlayerState.NumRouletteTicket += currentPresent.NumItem
+		} else if itemid == strconv.Itoa(enums.IDSpecialEgg) {
+			player.PlayerState.ChaoEggs += currentPresent.NumItem
 		} else if itemid == strconv.Itoa(enums.IDRouletteTicketPremium) {
 			player.PlayerState.NumChaoRouletteTicket += currentPresent.NumItem
+		} else if itemid == strconv.Itoa(enums.IDRouletteTicketItem) {
+			player.PlayerState.NumRouletteTicket += currentPresent.NumItem
+		} else if itemid == strconv.Itoa(enums.IDRouletteTicketRaid) {
+			helper.Out("Cannot add raid boss roulette tickets yet!")
+		} else if itemid == strconv.Itoa(enums.ItemIDRaidbossRing) {
+			player.EventUserRaidbossState.NumRaidbossRings += currentPresent.NumItem
+		} else if itemid[2:] == "40" { // ID is a Chao
+			chaoIndex := player.IndexOfChao(itemid)
+			if chaoIndex == -1 { // chao index not found, should never happen
+				helper.InternalErr("cannot get index of chao '"+strconv.Itoa(chaoIndex)+"'", err)
+				return
+			}
+			if player.ChaoState[chaoIndex].Status == enums.ChaoStatusNotOwned {
+				// earn the Chao
+				player.ChaoState[chaoIndex].Status = enums.ChaoStatusOwned
+				player.ChaoState[chaoIndex].Acquired = 1
+				player.ChaoState[chaoIndex].Level = 0
+			}
+			player.ChaoState[chaoIndex].Level += currentPresent.NumItem
+			if player.ChaoState[chaoIndex].Level > 10 { // if max chao level
+				player.ChaoState[chaoIndex].Level = 10                        // reset to maximum
+				player.ChaoState[chaoIndex].Status = enums.ChaoStatusMaxLevel // set status to MaxLevel
+			}
 		} else {
-			// TODO: Add Chao
+			helper.Out("Unknown present ID %s", itemid)
 		}
 	}
 	respPlayer := player

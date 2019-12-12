@@ -34,6 +34,9 @@ func DefaultOperatorMessage() OperatorMessage {
 
 func NewOperatorMessage(id int64, content string, item MessageItem, expiresAfter int64) OperatorMessage {
 	expireTime := time.Now().Unix() + expiresAfter
+	if expiresAfter < 0 {
+		expireTime = -1
+	}
 	return OperatorMessage{
 		strconv.Itoa(int(id)),
 		content,

@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/fluofoxxo/outrun/config/eventconf"
+	"github.com/fluofoxxo/outrun/config/gameconf"
 	"github.com/fluofoxxo/outrun/consts"
 	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/netobj"
@@ -61,7 +62,30 @@ var BlankPlayer = func() netobj.Player {
 	chaoRouletteGroup := netobj.DefaultChaoRouletteGroup(playerState, allowedCharacters, allowedChao, true)
 	personalEvents := []eventconf.ConfiguredEvent{}
 	suspended := false
-	operatorMessages := []obj.OperatorMessage{}
+	operatorMessages := []obj.OperatorMessage{
+		obj.NewOperatorMessage(
+			1,
+			"A welcome gift from the Revival Team.", // TODO: make this configurable
+			obj.NewMessageItem(
+				enums.ItemIDRedRing,
+				gameconf.CFile.StartingRedRings,
+				0,
+				0,
+			),
+			-1,
+		),
+		obj.NewOperatorMessage(
+			2,
+			"A welcome gift from the Revival Team.", // TODO: make this configurable
+			obj.NewMessageItem(
+				enums.ItemIDRing,
+				gameconf.CFile.StartingRings,
+				0,
+				0,
+			),
+			-1,
+		),
+	}
 	return netobj.NewPlayer(
 		uid,
 		username,

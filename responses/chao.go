@@ -70,6 +70,7 @@ type ChaoWheelSpinResponse struct {
 	ChaoState        []netobj.Chao           `json:"chaoState"` // also works with json:"chaoStatus"
 	ChaoWheelOptions netobj.ChaoWheelOptions `json:"chaoWheelOptions"`
 	ChaoSpinResults  []netobj.ChaoSpinResult `json:"chaoSpinResultList"` // Should only contain one element! Otherwise, ItemWon is interpreted as -1
+	ChaoSpinResult   netobj.ChaoSpinResult   `json:"chaoSpinResult"`     // This is only there for 1.1.4 backwards compatibility
 }
 
 func ChaoWheelSpin(base responseobjs.BaseInfo, playerState netobj.PlayerState, characterState []netobj.Character, chaoState []netobj.Chao, chaoWheelOptions netobj.ChaoWheelOptions, chaoSpinResults []netobj.ChaoSpinResult) ChaoWheelSpinResponse {
@@ -81,6 +82,7 @@ func ChaoWheelSpin(base responseobjs.BaseInfo, playerState netobj.PlayerState, c
 		chaoState,
 		chaoWheelOptions,
 		chaoSpinResults,
+		chaoSpinResults[0],
 	}
 }
 

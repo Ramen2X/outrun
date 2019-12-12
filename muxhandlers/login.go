@@ -5,8 +5,6 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/fluofoxxo/outrun/enums"
-
 	"github.com/fluofoxxo/outrun/analytics"
 	"github.com/fluofoxxo/outrun/analytics/factors"
 	"github.com/fluofoxxo/outrun/config/infoconf"
@@ -36,21 +34,6 @@ func Login(helper *helper.Helper) {
 	if uid == "0" && password == "" {
 		helper.Out("Entering LoginAlpha")
 		newPlayer := db.NewAccount()
-		// welcome gifts
-		newPlayer.OperatorMessages = append(
-			newPlayer.OperatorMessages,
-			obj.NewOperatorMessage(
-				1,
-				"A welcome gift from the Revival Team.", // TODO: make this configurable
-				obj.NewMessageItem(
-					enums.ItemIDRedRing,
-					50,
-					0,
-					0,
-				),
-				432000,
-			),
-		)
 		err = db.SavePlayer(newPlayer)
 		if err != nil {
 			helper.InternalErr("Error saving player", err)

@@ -366,7 +366,7 @@ func (p *Player) AcceptOperatorMessage(id int64) interface{} {
 	for index, message := range p.OperatorMessages {
 		if strconv.Itoa(int(id)) == message.ID {
 			p.RemoveFromOperatorMessages(index)
-			if time.Now().UTC().Unix() < message.ExpireTime {
+			if time.Now().UTC().Unix() < message.ExpireTime || message.ExpireTime == -1 {
 				return obj.MessageItemToPresent(message.Item)
 			}
 		}

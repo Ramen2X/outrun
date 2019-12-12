@@ -210,19 +210,27 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 
 	// spin logic
 	primaryLogic := func(usingTickets bool) {
+		actions := request.Count
+		if request.Version == "1.1.4" {
+			// 1.1.4 does not specify a value for request.Count; so we'll make it always one spin
+			actions = 1
+		}
+		if actions < 1 {
+			helper.InvalidRequest()
+			return
+		}
 		if player.PlayerState.ChaoEggs < 10 {
 			if usingTickets { // paying with ticket(s)
-				player.PlayerState.NumChaoRouletteTicket -= consts.ChaoRouletteTicketCost * request.Count // spend ticket(s)
+				player.PlayerState.NumChaoRouletteTicket -= consts.ChaoRouletteTicketCost * actions // spend ticket(s)
 			} else { // paying with red ring(s)
-				player.PlayerState.NumRedRings -= consts.ChaoRouletteRedRingCost * request.Count // spend red ring(s)
+				player.PlayerState.NumRedRings -= consts.ChaoRouletteRedRingCost * actions // spend red ring(s)
 			}
 		} else { //paying with chao eggs
 			player.PlayerState.ChaoEggs -= 10
 		}
-		player.OptionUserResult.NumChaoRoulette++
 		player.ChaoRouletteGroup.ChaoRouletteInfo.RouletteCountInPeriod++ // increment times spun in timer; TODO: Should we count request.Count?
-		actions := request.Count
 		for actions > 0 {
+			player.OptionUserResult.NumChaoRoulette++
 			actions--
 			gottenItemIndex, err := roulette.ChooseChaoRouletteItemIndex(items, weights) // pick a potential item index (used for later)
 			if err != nil {
@@ -336,7 +344,7 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 		}
 		//newItems, err := roulette.GetRandomChaoRouletteItems(player.ChaoRouletteGroup.ChaoWheelOptions.Rarity, player.GetAllMaxLevelIDs()) // create new wheel items
 		//newItems, err := roulette.GetRandomChaoRouletteItems(player.ChaoRouletteGroup.ChaoWheelOptions.Rarity, player.GetAllNonMaxedChaoAndCharacters()) // create new wheel items
-		newItems, newRarities, err := roulette.GetRandomChaoRouletteItems(player.ChaoRouletteGroup.ChaoWheelOptions.Rarity, player.GetAllNonMaxedCharacters(), player.GetAllNonMaxedChao(), request.Version == "1.1.4")
+		newItems, newRarities, err := roulette.GetRandomChaoRouletteItems(player.ChaoRouletteGroup.ChaoWheelOptions.Rarity, player.GetAllNonMaxedCharacters(), player.GetAllNonMaxedChao(), false)
 		if err != nil {
 			helper.InternalErr("Error getting new items", err)
 			return

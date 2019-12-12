@@ -71,10 +71,12 @@ func DefaultPlayerState() PlayerState {
 	mainChaoID := gameconf.CFile.DefaultMainChao
 	//subChaoID := ChaoIDs[5] // changed from [1]...
 	subChaoID := gameconf.CFile.DefaultSubChao
-	numRings := int64(gameconf.CFile.StartingRings)
+	//numRings := int64(gameconf.CFile.StartingRings)
+	numRings := int64(0) // The starting amount of rings is now given to you as an operator message
 	//numBuyRings := int64(1)
 	numBuyRings := int64(0)
-	numRedRings := int64(gameconf.CFile.StartingRedRings)
+	//numRedRings := int64(gameconf.CFile.StartingRedRings)
+	numRedRings := int64(0) // The starting amount of red rings is now given to you as an operator message
 	//numBuyRedRings := int64(7)
 	numBuyRedRings := int64(0)
 	energy := int64(gameconf.CFile.StartingEnergy)
@@ -83,9 +85,9 @@ func DefaultPlayerState() PlayerState {
 	mumMessages := int64(0)
 	rankingLeague := int64(enums.RankingLeagueNone)
 	quickRankingLeague := int64(enums.RankingLeagueNone)
-	numRouletteTicket := int64(3)
-	numChaoRouletteTicket := int64(7)
-	chaoEggs := int64(11)
+	numRouletteTicket := int64(0)
+	numChaoRouletteTicket := int64(0)
+	chaoEggs := int64(0)
 	highScore := int64(0)
 	timedHighScore := int64(0)
 	totalDistance := int64(0)
