@@ -789,13 +789,18 @@ func PostGameResults(helper *helper.Helper) {
 			mainC,
 			subC,
 		}*/
-
+		doStoryProgression := true
 		if request.EventId != 0 { // Is this an event stage?
+			if strconv.Itoa(int(request.EventId))[1:] == "1" {
+				// This is a special stage; don't do story progression since it'll screw with the current point.
+				doStoryProgression = false
+			}
 			helper.DebugOut("Event ID: %v", request.EventId)
 			helper.DebugOut("Player got %v event object(s)", request.EventValue)
 			player.EventState.Param += request.EventValue
 			//TODO: Send rewards to gift box
-		} else {
+		}
+		if doStoryProgression {
 			player.MileageMapState.StageTotalScore += request.Score
 
 			goToNextChapter := request.ChapterClear == 1

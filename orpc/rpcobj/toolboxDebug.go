@@ -120,7 +120,7 @@ func (t *Toolbox) Debug_ResetChao(uid string, reply *ToolboxReply) error {
 		reply.Info = "unable to get player: " + err.Error()
 		return err
 	}
-	player.ChaoState = constnetobjs.NetChaoList
+	player.ChaoState = constnetobjs.DefaultChaoState()
 	err = db.SavePlayer(player)
 	if err != nil {
 		reply.Status = StatusOK
@@ -425,6 +425,48 @@ func (t *Toolbox) Debug_SendMessageToAll(args SendMessageToAllArgs, reply *Toolb
 			reply.Info = fmt.Sprintf("error saving player %s: ", uid) + err.Error()
 			return err
 		}
+	}
+	reply.Status = StatusOK
+	reply.Info = "OK"
+	return nil
+}
+
+func (t *Toolbox) Debug_SendMessage(args SendMessageArgs, reply *ToolboxReply) error {
+	player, err := db.GetPlayer(args.UID)
+	if err != nil {
+		reply.Status = StatusOtherError
+		reply.Info = fmt.Sprintf("unable to get player %s: ", args.UID) + err.Error()
+		return err
+	}
+	index := 0
+	foundPreferredID := false
+	preferredID := 1
+	for !foundPreferredID {
+		foundPreferredID = true
+		index = 0
+		for index < len(player.OperatorMessages) {
+			if player.OperatorMessages[index].ID == strconv.Itoa(preferredID) {
+				foundPreferredID = false
+			}
+			index++
+		}
+		preferredID++
+	}
+	preferredID--
+	player.OperatorMessages = append(
+		player.OperatorMessages,
+		obj.NewOperatorMessage(
+			int64(preferredID),
+			args.MessageContents,
+			args.Item,
+			args.ExpiresAfter,
+		),
+	)
+	err = db.SavePlayer(player)
+	if err != nil {
+		reply.Status = StatusOtherError
+		reply.Info = fmt.Sprintf("error saving player %s: ", args.UID) + err.Error()
+		return err
 	}
 	reply.Status = StatusOK
 	reply.Info = "OK"

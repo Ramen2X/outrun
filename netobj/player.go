@@ -382,7 +382,7 @@ func (p *Player) AcceptOperatorMessage(id int64) interface{} {
 	for index, message := range p.OperatorMessages {
 		if strconv.Itoa(int(id)) == message.ID {
 			p.RemoveFromOperatorMessages(index)
-			if time.Now().UTC().Unix() < message.ExpireTime || message.ExpireTime == -1 {
+			if time.Now().UTC().Unix() < message.ExpireTime {
 				return obj.MessageItemToPresent(message.Item)
 			}
 		}
@@ -403,4 +403,17 @@ func (p *Player) GetAllOperatorMessageIDs() []int64 {
 		result = append(result, int64(messageid))
 	}
 	return result
+}
+
+func (p *Player) CleanUpExpiredOperatorMessages() {
+	removals := -1
+	for removals != 0 {
+		removals = 0
+		for index, message := range p.OperatorMessages {
+			if time.Now().UTC().Unix() >= message.ExpireTime {
+				p.RemoveFromOperatorMessages(index)
+				removals++
+			}
+		}
+	}
 }

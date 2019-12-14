@@ -188,7 +188,7 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 	weights := player.ChaoRouletteGroup.ChaoWheelOptions.ItemWeight
 	// set initial prize
 	prize := netobj.CharacterIDToChaoSpinPrize("0") // This will almost certainly give the game errors if improperly counting payment!
-	spinResults := []netobj.ChaoSpinResult{}        // TODO: Find out why it's an array
+	spinResults := []netobj.ChaoSpinResult{}
 
 	helper.DebugOut("PRE")
 	helper.DebugOut("Items: %s", items)
@@ -364,7 +364,7 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 	hasTickets := player.PlayerState.NumChaoRouletteTicket >= consts.ChaoRouletteTicketCost*request.Count
 	hasAvailableRings := player.PlayerState.NumRedRings >= consts.ChaoRouletteRedRingCost*request.Count
 
-	if hasTickets { // if tickets to spend
+	if hasTickets || player.PlayerState.ChaoEggs >= 10 { // if tickets or chao eggs to spend
 		primaryLogic(true)
 	} else if hasAvailableRings { // if no tickets, but sufficient red rings
 		primaryLogic(false)

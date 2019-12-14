@@ -99,7 +99,7 @@ func DefaultWheelOptions(numRouletteTicket, rouletteCountInPeriod, rouletteRank,
 			items = append(items, randomItem)
 			item = append(item, randomItemAmount)
 		}
-		if rouletteGenMode == 2 && rouletteRank != enums.WheelRankSuper {
+		if rouletteGenMode == 2 && rouletteRank == enums.WheelRankNormal {
 			randomItem := consts.RandomItemListNormalWheel[rand.Intn(len(consts.RandomItemListNormalWheel))]
 			randomItemAmount := consts.NormalWheelItemAmountRange[randomItem].GetRandom()
 			switch rouletteRank {
@@ -120,6 +120,22 @@ func DefaultWheelOptions(numRouletteTicket, rouletteCountInPeriod, rouletteRank,
 			items[6] = strconv.Itoa(enums.IDTypeItemRouletteWin)
 			item[6] = 1
 		}
+	}
+	switch rouletteRank {
+	case enums.WheelRankBig:
+		items[2] = strconv.Itoa(enums.IDTypeChao)
+		item[2] = 1
+		items[6] = strconv.Itoa(enums.IDTypeChao)
+		item[6] = 1
+	case enums.WheelRankSuper:
+		items[1] = strconv.Itoa(enums.IDTypeChao)
+		item[1] = 1
+		items[3] = strconv.Itoa(enums.IDTypeChao)
+		item[3] = 1
+		items[5] = strconv.Itoa(enums.IDTypeChao)
+		item[5] = 1
+		items[7] = strconv.Itoa(enums.IDTypeChao)
+		item[7] = 1
 	}
 	//itemWon := int64(0)
 	itemWon := int64(rand.Intn(len(items)))   //TODO: adjust this to accurately represent item weights

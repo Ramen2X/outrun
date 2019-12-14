@@ -69,6 +69,7 @@ func GetMessage(helper *helper.Helper) {
 	switch operatorMessageIds := request.OperatorMessageIDs.(type) {
 	case []interface{}:
 		helper.DebugOut("%v", operatorMessageIds)
+		player.CleanUpExpiredOperatorMessages()
 		for _, omsgid := range operatorMessageIds {
 			helper.DebugOut("Accepting operator message ID %v", omsgid)
 			present := player.AcceptOperatorMessage(int64(omsgid.(float64))) // TODO: why does Go think this is a float64 and not an int64?

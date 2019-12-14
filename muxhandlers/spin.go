@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/fluofoxxo/outrun/logic/roulette"
+
 	"github.com/fluofoxxo/outrun/analytics"
 	"github.com/fluofoxxo/outrun/analytics/factors"
 	"github.com/fluofoxxo/outrun/config/campaignconf"
@@ -138,6 +140,34 @@ func CommitWheelSpin(helper *helper.Helper) {
 			} else if wonItem == strconv.Itoa(enums.IDTypeRedRing) {
 				// Red rings
 				player.PlayerState.NumRedRings += player.LastWheelOptions.Item[player.LastWheelOptions.ItemWon]
+			} else if wonItem == strconv.Itoa(enums.IDTypeChao) {
+				// Chao
+				chaoWon, _ := roulette.GetRandomChaoWheelChao(0, 1, request.Version == "1.1.4")
+				wonItem = chaoWon[0]
+				amountOfItemWon := player.LastWheelOptions.Item[player.LastWheelOptions.ItemWon]
+				helper.DebugOut("wonItem: %v", wonItem)
+				helper.DebugOut("amountOfItemWon: %v", amountOfItemWon)
+
+				chaoIndex := player.IndexOfChao(wonItem)
+				if chaoIndex == -1 { // chao index not found, should never happen
+					helper.InternalErr("cannot get index of chao '"+strconv.Itoa(chaoIndex)+"'", err)
+					return
+				}
+				if player.ChaoState[chaoIndex].Status == enums.ChaoStatusNotOwned {
+					// earn the Chao
+					player.ChaoState[chaoIndex].Status = enums.ChaoStatusOwned
+					player.ChaoState[chaoIndex].Acquired = 1
+					player.ChaoState[chaoIndex].Level = 0
+				}
+				player.ChaoState[chaoIndex].Level += amountOfItemWon
+				maxChaoLevel := int64(10)
+				if request.Version == "1.1.4" {
+					maxChaoLevel = int64(5)
+				}
+				if player.ChaoState[chaoIndex].Level > maxChaoLevel { // if max chao level
+					player.ChaoState[chaoIndex].Level = maxChaoLevel              // reset to maximum
+					player.ChaoState[chaoIndex].Status = enums.ChaoStatusMaxLevel // set status to MaxLevel
+				}
 			} else {
 				helper.Warn("item '" + wonItem + "' not found")
 			}
