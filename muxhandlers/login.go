@@ -99,6 +99,8 @@ func Login(helper *helper.Helper) {
 			return
 		}
 
+		helper.DebugOut("Password sent: %s", request.Password) // TODO: Encode the stored password so checks can be performed correctly
+		helper.DebugOut("Correct password: %s", player.Password)
 		/*if player.Password != request.Password {
 			baseInfo.StatusCode = status.InvalidPassword
 			baseInfo.SetErrorMessage(emess.BadPassword)

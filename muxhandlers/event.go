@@ -201,8 +201,9 @@ func EventActStart(helper *helper.Helper) {
 		}
 		player.PlayerState.NumPlaying++
 		if !gameconf.CFile.AllItemsFree {
-			consumedRings := gameplay.GetRequiredItemPayment(request.Modifier)
-			for _, citemID := range request.Modifier {
+			consumedItems := modToStringSlice(request.Modifier)
+			consumedRings := gameplay.GetRequiredItemPayment(consumedItems, player)
+			for _, citemID := range consumedItems {
 				if citemID[:2] == "11" { // boosts, not items
 					continue
 				}
@@ -214,14 +215,12 @@ func EventActStart(helper *helper.Helper) {
 				}
 				if player.PlayerState.Items[index].Amount >= 1 { // can use item
 					player.PlayerState.Items[index].Amount--
-				} else {
-					if player.PlayerState.NumRings < consumedRings { // not enough rings
-						baseInfo.StatusCode = status.NotEnoughRings
-						break
-					}
-					player.PlayerState.NumRings -= consumedRings
 				}
 			}
+			if player.PlayerState.NumRings < consumedRings { // not enough rings
+				baseInfo.StatusCode = status.NotEnoughRings
+			}
+			player.PlayerState.NumRings -= consumedRings
 		}
 	} else {
 		baseInfo.StatusCode = status.NotEnoughEnergy
