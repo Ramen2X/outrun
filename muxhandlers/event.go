@@ -201,9 +201,8 @@ func EventActStart(helper *helper.Helper) {
 		}
 		player.PlayerState.NumPlaying++
 		if !gameconf.CFile.AllItemsFree {
-			consumedItems := modToStringSlice(request.Modifier)
-			consumedRings := gameplay.GetRequiredItemPayment(consumedItems, player)
-			for _, citemID := range consumedItems {
+			consumedRings := gameplay.GetRequiredItemPayment(request.Modifier, player)
+			for _, citemID := range request.Modifier {
 				if citemID[:2] == "11" { // boosts, not items
 					continue
 				}
