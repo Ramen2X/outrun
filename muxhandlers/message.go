@@ -114,7 +114,7 @@ func GetMessage(helper *helper.Helper) {
 			helper.Out("Cannot add raid boss roulette tickets yet!")
 		} else if itemid == strconv.Itoa(enums.ItemIDRaidbossRing) {
 			player.EventUserRaidbossState.NumRaidbossRings += currentPresent.NumItem
-		} else if itemid[2:] == "40" { // ID is a Chao
+		} else if itemid[:2] == "40" { // ID is a Chao
 			chaoIndex := player.IndexOfChao(itemid)
 			if chaoIndex == -1 { // chao index not found, should never happen
 				helper.InternalErr("cannot get index of chao '"+strconv.Itoa(chaoIndex)+"'", err)

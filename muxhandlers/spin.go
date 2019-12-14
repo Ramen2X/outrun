@@ -5,8 +5,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/fluofoxxo/outrun/logic/roulette"
-
 	"github.com/fluofoxxo/outrun/analytics"
 	"github.com/fluofoxxo/outrun/analytics/factors"
 	"github.com/fluofoxxo/outrun/config/campaignconf"
@@ -140,10 +138,8 @@ func CommitWheelSpin(helper *helper.Helper) {
 			} else if wonItem == strconv.Itoa(enums.IDTypeRedRing) {
 				// Red rings
 				player.PlayerState.NumRedRings += player.LastWheelOptions.Item[player.LastWheelOptions.ItemWon]
-			} else if wonItem == strconv.Itoa(enums.IDTypeChao) {
+			} else if wonItem[:2] == "40" {
 				// Chao
-				chaoWon, _ := roulette.GetRandomChaoWheelChao(0, 1, request.Version == "1.1.4")
-				wonItem = chaoWon[0]
 				amountOfItemWon := player.LastWheelOptions.Item[player.LastWheelOptions.ItemWon]
 				helper.DebugOut("wonItem: %v", wonItem)
 				helper.DebugOut("amountOfItemWon: %v", amountOfItemWon)
@@ -170,6 +166,7 @@ func CommitWheelSpin(helper *helper.Helper) {
 				}
 			} else {
 				helper.Warn("item '" + wonItem + "' not found")
+				helper.DebugOut(wonItem[:2])
 			}
 		}
 
