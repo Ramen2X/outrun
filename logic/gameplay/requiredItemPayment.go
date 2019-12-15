@@ -21,9 +21,13 @@ func GetRequiredItemPayment(items []string, player netobj.Player) int64 {
 	totalRingPayment := int64(0)
 	for _, itemID := range items {
 		citem := findItem(itemID)
-		index := player.IndexOfItem(itemID)
-		if player.PlayerState.Items[index].Amount < 1 {
+		if itemID[:2] == "11" { // boosts, not items
 			totalRingPayment += citem.Item.Amount
+		} else {
+			index := player.IndexOfItem(itemID)
+			if player.PlayerState.Items[index].Amount < 1 {
+				totalRingPayment += citem.Item.Amount
+			}
 		}
 	}
 	return totalRingPayment
