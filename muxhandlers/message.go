@@ -5,6 +5,8 @@ import (
 	"strconv"
 
 	"github.com/fluofoxxo/outrun/enums"
+	"github.com/fluofoxxo/outrun/logic"
+	"github.com/fluofoxxo/outrun/netobj"
 
 	"github.com/fluofoxxo/outrun/db"
 	"github.com/fluofoxxo/outrun/emess"
@@ -88,7 +90,7 @@ func GetMessage(helper *helper.Helper) {
 		itemid := strconv.Itoa(int(currentPresent.ItemID))
 		helper.DebugOut("Present: %s", itemid)
 		helper.DebugOut("Present amount: %v", currentPresent.NumItem)
-		if itemid[2:] == "12" { // ID is an item
+		if itemid[:2] == "12" { // ID is an item
 			// check if the item is already in the player's inventory
 			for _, item := range player.PlayerState.Items {
 				if item.ID == itemid { // item found, increment amount
@@ -106,12 +108,15 @@ func GetMessage(helper *helper.Helper) {
 			player.EventUserRaidbossState.RaidBossEnergy += currentPresent.NumItem
 		} else if itemid == strconv.Itoa(enums.IDSpecialEgg) {
 			player.PlayerState.ChaoEggs += currentPresent.NumItem
+			player.ChaoRouletteGroup.ChaoWheelOptions = netobj.DefaultChaoWheelOptions(player.PlayerState)
 		} else if itemid == strconv.Itoa(enums.IDRouletteTicketPremium) {
 			player.PlayerState.NumChaoRouletteTicket += currentPresent.NumItem
+			player.ChaoRouletteGroup.ChaoWheelOptions = netobj.DefaultChaoWheelOptions(player.PlayerState)
 		} else if itemid == strconv.Itoa(enums.IDRouletteTicketItem) {
 			player.PlayerState.NumRouletteTicket += currentPresent.NumItem
+			player.LastWheelOptions = logic.WheelRefreshLogic(player, player.LastWheelOptions)
 		} else if itemid == strconv.Itoa(enums.IDRouletteTicketRaid) {
-			helper.Out("Cannot add raid boss roulette tickets yet!")
+			// TODO: Add this functionality once raid boss roulette is added!
 		} else if itemid == strconv.Itoa(enums.ItemIDRaidbossRing) {
 			player.EventUserRaidbossState.NumRaidbossRings += currentPresent.NumItem
 		} else if itemid[:2] == "40" { // ID is a Chao
