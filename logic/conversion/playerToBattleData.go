@@ -9,7 +9,7 @@ import (
 func DebugPlayerToBattleData(player netobj.Player) obj.BattleData {
 	uid := player.ID
 	username := player.Username
-	maxScore := player.PlayerState.TimedHighScore // TODO: Should this be the daily high score?
+	maxScore := player.BattleState.DailyBattleHighScore
 	league := player.PlayerState.RankingLeague
 	loginTime := player.LastLogin
 	mainChaoID := player.PlayerState.MainChaoID
@@ -21,7 +21,7 @@ func DebugPlayerToBattleData(player netobj.Player) obj.BattleData {
 	mainCharaLevel := int64(4) // TODO: this may be problematic if the game does checks
 	subCharaID := player.PlayerState.SubCharaID
 	subCharaLevel := int64(5) // TODO: this may be problematic if the game does checks
-	goOnWin := int64(0)
+	goOnWin := player.BattleState.WinStreak
 	isSentEnergy := int64(0)
 	language := int64(enums.LangEnglish)
 	return obj.BattleData{

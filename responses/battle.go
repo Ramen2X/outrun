@@ -8,6 +8,12 @@ import (
 	"github.com/jinzhu/now"
 )
 
+type NoScoreDailyBattleDataResponse struct {
+	BaseResponse
+	StartTime int64 `json:"startTime"`
+	EndTime   int64 `json:"endTime"`
+}
+
 type NoRivalDailyBattleDataResponse struct {
 	BaseResponse
 	StartTime  int64          `json:"startTime"`
@@ -18,6 +24,15 @@ type NoRivalDailyBattleDataResponse struct {
 type DailyBattleDataResponse struct {
 	BaseResponse
 	obj.BattlePair
+}
+
+func NoScoreDailyBattleData(base responseobjs.BaseInfo, startTime, endTime int64) NoScoreDailyBattleDataResponse {
+	baseResponse := NewBaseResponse(base)
+	return NoScoreDailyBattleDataResponse{
+		baseResponse,
+		startTime,
+		endTime,
+	}
 }
 
 func NoRivalDailyBattleData(base responseobjs.BaseInfo, startTime, endTime int64, battleData obj.BattleData) NoRivalDailyBattleDataResponse {
@@ -105,11 +120,30 @@ type ResetDailyBattleMatchingResponse struct {
 	PlayerState netobj.PlayerState `json:"playerState"`
 }
 
+type ResetDailyBattleMatchingNoOpponentResponse struct {
+	BaseResponse
+	StartTime   int64              `json:"startTime"`
+	EndTime     int64              `json:"endTime"`
+	BattleData  obj.BattleData     `json:"battleData"`
+	PlayerState netobj.PlayerState `json:"playerState"`
+}
+
 func ResetDailyBattleMatching(base responseobjs.BaseInfo, startTime, endTime int64, battleData, rivalBattleData obj.BattleData, player netobj.Player) ResetDailyBattleMatchingResponse {
 	baseResponse := NewBaseResponse(base)
 	return ResetDailyBattleMatchingResponse{
 		baseResponse,
 		obj.NewBattlePair(startTime, endTime, battleData, rivalBattleData),
+		player.PlayerState,
+	}
+}
+
+func ResetDailyBattleMatchingNoOpponent(base responseobjs.BaseInfo, startTime, endTime int64, battleData obj.BattleData, player netobj.Player) ResetDailyBattleMatchingNoOpponentResponse {
+	baseResponse := NewBaseResponse(base)
+	return ResetDailyBattleMatchingNoOpponentResponse{
+		baseResponse,
+		startTime,
+		endTime,
+		battleData,
 		player.PlayerState,
 	}
 }

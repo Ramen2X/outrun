@@ -20,7 +20,15 @@ func GetDailyBattleData(helper *helper.Helper) {
 		return
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
-	response := responses.DefaultDailyBattleData(baseInfo, player)
+	var response interface{}
+	if player.BattleState.ScoreRecordedToday {
+		response = responses.DefaultDailyBattleData(baseInfo, player)
+	} else {
+		response = responses.NoScoreDailyBattleData(baseInfo,
+			now.BeginningOfDay().UTC().Unix(),
+			player.BattleState.BattleEndsAt,
+		)
+	}
 	err = helper.SendCompatibleResponse(response)
 	if err != nil {
 		helper.InternalErr("error sending response", err)
@@ -47,6 +55,7 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 	//rewardEndTime := now.EndOfDay().UTC().Unix()
 	battleStatus := obj.DefaultBattleStatus()
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+
 	//response := responses.UpdateDailyBattleStatusWithReward(baseInfo, endTime, battleStatus, rewardStartTime, rewardEndTime, rewardBattleData, rewardRivalBattleData)
 	response := responses.UpdateDailyBattleStatus(baseInfo, endTime, battleStatus)
 	err = helper.SendCompatibleResponse(response)
@@ -64,10 +73,10 @@ func ResetDailyBattleMatching(helper *helper.Helper) {
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	battleData := conversion.DebugPlayerToBattleData(player)
-	rivalBattleData := obj.DebugRivalBattleData()
+	//rivalBattleData := obj.DebugRivalBattleData()
 	startTime := now.BeginningOfDay().UTC().Unix()
 	endTime := now.EndOfDay().UTC().Unix()
-	response := responses.ResetDailyBattleMatching(baseInfo, startTime, endTime, battleData, rivalBattleData, player)
+	response := responses.ResetDailyBattleMatchingNoOpponent(baseInfo, startTime, endTime, battleData, player)
 	err = helper.SendCompatibleResponse(response)
 	if err != nil {
 		helper.InternalErr("error sending response", err)

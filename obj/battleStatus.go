@@ -6,7 +6,7 @@ type BattleStatus struct {
 	Draws           int64 `json:"numDraw"`          // battle draws
 	LossesByDefault int64 `json:"numLoseByDefault"` // battle failures
 	GoOnWins        int64 `json:"goOnWin"`          // battle win streak
-	GoOnLosses      int64 `json:"goOnLosses"`       // battle loss streak?
+	GoOnLosses      int64 `json:"goOnLosses"`       // battle loss streak???
 }
 
 func DefaultBattleStatus() BattleStatus {
