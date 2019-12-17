@@ -92,6 +92,16 @@ type UpdateDailyBattleStatusResponseWithReward struct {
 	obj.RewardBattlePair
 }
 
+type UpdateDailyBattleStatusResponseWithRewardFailure struct {
+	BaseResponse
+	EndTime          int64            `json:"endTime"`
+	BattleStatus     obj.BattleStatus `json:"battleStatus"`
+	RewardFlag       bool             `json:"rewardFlag"` // TODO: allow not false after testing
+	RewardStartTime  int64            `json:"rewardStartTime"`
+	RewardEndTime    int64            `json:"rewardEndTime"`
+	RewardBattleData obj.BattleData   `json:"rewardBattleData"`
+}
+
 func UpdateDailyBattleStatus(base responseobjs.BaseInfo, endTime int64, battleStatus obj.BattleStatus) UpdateDailyBattleStatusResponse {
 	baseResponse := NewBaseResponse(base)
 	return UpdateDailyBattleStatusResponse{
@@ -111,6 +121,19 @@ func UpdateDailyBattleStatusWithReward(base responseobjs.BaseInfo, endTime int64
 		battleStatus,
 		true,
 		battleReward,
+	}
+}
+
+func UpdateDailyBattleStatusWithRewardFailure(base responseobjs.BaseInfo, endTime int64, battleStatus obj.BattleStatus, rewardStartTime, rewardEndTime int64, rewardBattleData obj.BattleData) UpdateDailyBattleStatusResponseWithRewardFailure {
+	baseResponse := NewBaseResponse(base)
+	return UpdateDailyBattleStatusResponseWithRewardFailure{
+		baseResponse,
+		endTime,
+		battleStatus,
+		true,
+		rewardStartTime,
+		rewardEndTime,
+		rewardBattleData,
 	}
 }
 
@@ -145,5 +168,33 @@ func ResetDailyBattleMatchingNoOpponent(base responseobjs.BaseInfo, startTime, e
 		endTime,
 		battleData,
 		player.PlayerState,
+	}
+}
+
+type GetDailyBattleHistoryResponse struct {
+	BaseResponse
+	BattleDataList []obj.BattlePair `json:"battleDataList"`
+}
+
+func GetDailyBattleHistory(base responseobjs.BaseInfo, battleDataList []obj.BattlePair) GetDailyBattleHistoryResponse {
+	baseResponse := NewBaseResponse(base)
+	return GetDailyBattleHistoryResponse{
+		baseResponse,
+		battleDataList,
+	}
+}
+
+type GetDailyBattleStatusResponse struct {
+	BaseResponse
+	EndTime      int64            `json:"endTime"`
+	BattleStatus obj.BattleStatus `json:"battleStatus"`
+}
+
+func GetDailyBattleStatus(base responseobjs.BaseInfo, endTime int64, battleStatus obj.BattleStatus) GetDailyBattleStatusResponse {
+	baseResponse := NewBaseResponse(base)
+	return GetDailyBattleStatusResponse{
+		baseResponse,
+		endTime,
+		battleStatus,
 	}
 }

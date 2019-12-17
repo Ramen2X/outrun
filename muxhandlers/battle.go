@@ -2,7 +2,9 @@ package muxhandlers
 
 import (
 	"encoding/json"
+	"time"
 
+	"github.com/fluofoxxo/outrun/db"
 	"github.com/fluofoxxo/outrun/emess"
 	"github.com/fluofoxxo/outrun/helper"
 	"github.com/fluofoxxo/outrun/logic/conversion"
@@ -22,10 +24,28 @@ func GetDailyBattleData(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	var response interface{}
 	if player.BattleState.ScoreRecordedToday {
-		response = responses.DefaultDailyBattleData(baseInfo, player)
+		if player.BattleState.MatchedUpWithRival {
+			rivalPlayer, err := db.GetPlayer(player.BattleState.RivalID)
+			if err != nil {
+				helper.InternalErr("error getting rival player", err)
+				return
+			}
+			response = responses.DailyBattleData(baseInfo,
+				player.BattleState.BattleStartsAt,
+				player.BattleState.BattleEndsAt,
+				conversion.DebugPlayerToBattleData(player),
+				conversion.DebugPlayerToBattleData(rivalPlayer),
+			)
+		} else {
+			response = responses.NoRivalDailyBattleData(baseInfo,
+				player.BattleState.BattleStartsAt,
+				player.BattleState.BattleEndsAt,
+				conversion.DebugPlayerToBattleData(player),
+			)
+		}
 	} else {
 		response = responses.NoScoreDailyBattleData(baseInfo,
-			now.BeginningOfDay().UTC().Unix(),
+			player.BattleState.BattleStartsAt,
 			player.BattleState.BattleEndsAt,
 		)
 	}
@@ -43,21 +63,72 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 		helper.InternalErr("Error unmarshalling", err)
 		return
 	}
-	/*player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer()
 	if err != nil {
 		helper.InternalErr("error getting calling player", err)
 		return
-	}*/
-	endTime := now.EndOfDay().UTC().Unix()
-	//rewardBattleData := conversion.DebugPlayerToBattleData(player)
-	//rewardRivalBattleData := obj.DebugRivalBattleData()
-	//rewardStartTime := now.BeginningOfDay().UTC().Unix()
-	//rewardEndTime := now.EndOfDay().UTC().Unix()
-	battleStatus := obj.DefaultBattleStatus()
+	}
+	var rewardBattleStartTime int64
+	var rewardBattleEndTime int64
+	var rewardBattlePlayerData obj.BattleData
+	var rewardBattleRivalData obj.BattleData
+	doReward := false
+	if time.Now().UTC().Unix() > player.BattleState.BattleEndsAt {
+		if player.BattleState.ScoreRecordedToday && player.BattleState.MatchedUpWithRival {
+			rivalPlayer, err := db.GetPlayer(player.BattleState.RivalID)
+			if err != nil {
+				helper.InternalErr("error getting rival player", err)
+				return
+			}
+			rewardBattleStartTime = player.BattleState.BattleStartsAt
+			rewardBattleEndTime = player.BattleState.BattleEndsAt
+			rewardBattlePlayerData = conversion.DebugPlayerToBattleData(player)
+			rewardBattleRivalData = conversion.DebugPlayerToBattleData(rivalPlayer)
+			battlePair := obj.NewBattlePair(
+				rewardBattleStartTime,
+				rewardBattleEndTime,
+				rewardBattlePlayerData,
+				rewardBattleRivalData,
+			)
+			if player.BattleState.DailyBattleHighScore > rivalPlayer.BattleState.DailyBattleHighScore {
+				player.BattleState.Wins++
+				player.BattleState.WinStreak++
+				player.BattleState.LossStreak = 0
+			} else {
+				if player.BattleState.DailyBattleHighScore < rivalPlayer.BattleState.DailyBattleHighScore {
+					player.BattleState.Losses++
+					player.BattleState.LossStreak++
+					player.BattleState.WinStreak = 0
+				} else {
+					player.BattleState.Draws++
+					player.BattleState.WinStreak = 0
+					player.BattleState.LossStreak = 0
+				}
+			}
+			player.BattleState.BattleHistory = append(player.BattleState.BattleHistory, battlePair)
+			doReward = true
+		}
+		player.BattleState.BattleStartsAt = now.BeginningOfDay().UTC().Unix()
+		player.BattleState.BattleEndsAt = now.EndOfDay().UTC().Unix()
+		player.BattleState.ScoreRecordedToday = false
+		player.BattleState.MatchedUpWithRival = false
+	}
+	battleStatus := obj.BattleStatus{
+		player.BattleState.Wins,
+		player.BattleState.Losses,
+		player.BattleState.Draws,
+		player.BattleState.Failures,
+		player.BattleState.WinStreak,
+		player.BattleState.LossStreak,
+	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	var response interface{}
+	if doReward {
+		response = responses.UpdateDailyBattleStatusWithReward(baseInfo, player.BattleState.BattleEndsAt, battleStatus, rewardBattleStartTime, rewardBattleEndTime, rewardBattlePlayerData, rewardBattleRivalData)
+	} else {
+		response = responses.UpdateDailyBattleStatus(baseInfo, player.BattleState.BattleEndsAt, battleStatus)
+	}
 
-	//response := responses.UpdateDailyBattleStatusWithReward(baseInfo, endTime, battleStatus, rewardStartTime, rewardEndTime, rewardBattleData, rewardRivalBattleData)
-	response := responses.UpdateDailyBattleStatus(baseInfo, endTime, battleStatus)
 	err = helper.SendCompatibleResponse(response)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
@@ -65,6 +136,7 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 	}
 }
 
+// Reroll daily battle rival
 func ResetDailyBattleMatching(helper *helper.Helper) {
 	player, err := helper.GetCallingPlayer()
 	if err != nil {
@@ -80,5 +152,50 @@ func ResetDailyBattleMatching(helper *helper.Helper) {
 	err = helper.SendCompatibleResponse(response)
 	if err != nil {
 		helper.InternalErr("error sending response", err)
+	}
+}
+
+func GetDailyBattleHistory(helper *helper.Helper) {
+	player, err := helper.GetCallingPlayer()
+	if err != nil {
+		helper.InternalErr("error getting calling player", err)
+		return
+	}
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	response := responses.GetDailyBattleHistory(baseInfo, player.BattleState.BattleHistory)
+	err = helper.SendResponse(response)
+	if err != nil {
+		helper.InternalErr("error sending response", err)
+	}
+}
+
+func GetDailyBattleStatus(helper *helper.Helper) {
+	data := helper.GetGameRequest()
+	var request requests.Base
+	err := json.Unmarshal(data, &request)
+	if err != nil {
+		helper.InternalErr("Error unmarshalling", err)
+		return
+	}
+	player, err := helper.GetCallingPlayer()
+	if err != nil {
+		helper.InternalErr("error getting calling player", err)
+		return
+	}
+	battleStatus := obj.BattleStatus{
+		player.BattleState.Wins,
+		player.BattleState.Losses,
+		player.BattleState.Draws,
+		player.BattleState.Failures,
+		player.BattleState.WinStreak,
+		player.BattleState.LossStreak,
+	}
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+
+	response := responses.GetDailyBattleStatus(baseInfo, player.BattleState.BattleEndsAt, battleStatus)
+	err = helper.SendCompatibleResponse(response)
+	if err != nil {
+		helper.InternalErr("Error sending response", err)
+		return
 	}
 }

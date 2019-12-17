@@ -464,6 +464,16 @@ func QuickPostGameResults(helper *helper.Helper) {
 		if player.PlayerState.TimedTotalScoreThisPeriod > player.OptionUserResult.QuickTotalSumHighScore {
 			player.OptionUserResult.QuickTotalSumHighScore = player.PlayerState.TimedTotalScoreThisPeriod
 		}
+		if player.BattleState.ScoreRecordedToday {
+			dailyBattleHighScore := player.BattleState.DailyBattleHighScore
+			if request.Score > dailyBattleHighScore {
+				player.BattleState.DailyBattleHighScore = request.Score
+			}
+		} else {
+			player.BattleState.PrevDailyBattleHighScore = player.BattleState.DailyBattleHighScore
+			player.BattleState.DailyBattleHighScore = request.Score
+			player.BattleState.ScoreRecordedToday = true
+		}
 		//player.PlayerState.TotalDistance += request.Distance  // We don't do this in timed mode!
 		// increase character(s)'s experience
 		expIncrease := request.Rings + request.FailureRings // all rings collected
@@ -563,6 +573,11 @@ func QuickPostGameResults(helper *helper.Helper) {
 	}
 
 	response := responses.DefaultQuickPostGameResults(baseInfo, player, playCharacters)
+	err = helper.SendResponse(response)
+	if err != nil {
+		helper.InternalErr("Error sending response", err)
+		return
+	}
 	// apply the save after the response so that we don't break the leveling
 	mainC = playCharacters[0]
 	if hasSubCharacter {
@@ -580,11 +595,6 @@ func QuickPostGameResults(helper *helper.Helper) {
 	}
 	helper.DebugOut(fmt.Sprintf("%v", player.PlayerState.Items))
 
-	err = helper.SendResponse(response)
-	if err != nil {
-		helper.InternalErr("Error sending response", err)
-		return
-	}
 	_, err = analytics.Store(player.ID, factors.AnalyticTypeTimedEnds)
 	if err != nil {
 		helper.WarnErr("Error storing analytics (AnalyticTypeTimedEnds)", err)
