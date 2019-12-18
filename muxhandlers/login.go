@@ -32,7 +32,7 @@ func Login(helper *helper.Helper) {
 
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	if uid == "0" && password == "" {
-		helper.Out("Entering LoginAlpha")
+		helper.Out("Entering LoginAlpha (registration)")
 		newPlayer := db.NewAccount()
 		err = db.SavePlayer(newPlayer)
 		if err != nil {
@@ -53,12 +53,12 @@ func Login(helper *helper.Helper) {
 		}
 		return
 	} else if uid == "0" && password != "" {
-		helper.Out("Entering LoginBravo")
+		helper.Out("Entering LoginBravo (INVALID)")
 		// invalid request
 		helper.InvalidRequest()
 		return
 	} else if uid != "0" && password == "" {
-		helper.Out("Entering LoginCharlie")
+		helper.Out("Entering LoginCharlie (initial log in)")
 		// game wants to log in
 		baseInfo.StatusCode = status.InvalidPassword
 		baseInfo.SetErrorMessage(emess.BadPassword)
@@ -79,7 +79,7 @@ func Login(helper *helper.Helper) {
 		}
 		return
 	} else if uid != "0" && password != "" {
-		helper.Out("Entering LoginDelta")
+		helper.Out("Entering LoginDelta (log in with key)")
 		// game is attempting to log in using key
 
 		baseInfo.StatusCode = status.OK

@@ -81,6 +81,7 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 		rewardBattleEndTime = player.BattleState.PendingRewardData.EndTime
 		rewardBattlePlayerData = player.BattleState.PendingRewardData.BattleData
 		rewardBattleRivalData = player.BattleState.PendingRewardData.RivalBattleData
+		player.BattleState.PendingReward = false
 		doReward = true
 		if time.Now().UTC().Unix() > player.BattleState.BattleEndsAt {
 			player.BattleState.BattleStartsAt = now.BeginningOfDay().UTC().Unix()
@@ -241,6 +242,18 @@ func ResetDailyBattleMatching(helper *helper.Helper) {
 		}
 	}
 	oldRivalID := player.BattleState.RivalID
+	oldRival, err := db.GetPlayer(oldRivalID)
+	if err != nil {
+		helper.InternalErr("error getting rival player", err)
+		return
+	}
+	player.BattleState.MatchedUpWithRival = false
+	oldRival.BattleState.MatchedUpWithRival = false
+	err = db.SavePlayer(oldRival)
+	if err != nil {
+		helper.InternalErr("Error saving old rival", err)
+		return
+	}
 	if request.Type == 2 {
 		helper.InvalidRequest()
 		return
@@ -348,6 +361,7 @@ func PostDailyBattleResult(helper *helper.Helper) {
 		rewardBattleEndTime = player.BattleState.PendingRewardData.EndTime
 		rewardBattlePlayerData = player.BattleState.PendingRewardData.BattleData
 		rewardBattleRivalData = player.BattleState.PendingRewardData.RivalBattleData
+		player.BattleState.PendingReward = false
 		doReward = true
 		if time.Now().UTC().Unix() > player.BattleState.BattleEndsAt {
 			player.BattleState.BattleStartsAt = now.BeginningOfDay().UTC().Unix()
