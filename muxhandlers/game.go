@@ -466,15 +466,23 @@ func QuickPostGameResults(helper *helper.Helper) {
 			player.OptionUserResult.QuickTotalSumHighScore = player.PlayerState.TimedTotalScoreThisPeriod
 		}
 		if player.BattleState.ScoreRecordedToday {
+			helper.DebugOut("Daily battle high score already set!")
 			dailyBattleHighScore := player.BattleState.DailyBattleHighScore
 			if request.Score > dailyBattleHighScore {
 				player.BattleState.DailyBattleHighScore = request.Score
+				helper.DebugOut("New daily battle high score!")
 			}
 		} else {
 			player.BattleState.PrevDailyBattleHighScore = player.BattleState.DailyBattleHighScore
 			player.BattleState.DailyBattleHighScore = request.Score
 			player.BattleState.ScoreRecordedToday = true
+			helper.DebugOut("Daily battle high score has been set!")
 			player.BattleState = battle.DrawBattleRival(player)
+			if player.BattleState.MatchedUpWithRival {
+				helper.DebugOut("Matched up with rival!")
+			} else {
+				helper.DebugOut("No rival was found!")
+			}
 		}
 		//player.PlayerState.TotalDistance += request.Distance  // We don't do this in timed mode!
 		// increase character(s)'s experience

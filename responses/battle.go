@@ -198,3 +198,107 @@ func GetDailyBattleStatus(base responseobjs.BaseInfo, endTime int64, battleStatu
 		battleStatus,
 	}
 }
+
+type PostDailyBattleResultResponse struct {
+	BaseResponse
+	obj.BattlePair
+	BattleStatus obj.BattleStatus `json:"battleStatus"`
+	RewardFlag   bool             `json:"rewardFlag"` // TODO: allow not false after testing
+}
+
+type PostDailyBattleResultResponseNoRival struct {
+	BaseResponse
+	StartTime    int64            `json:"startTime"`
+	EndTime      int64            `json:"endTime"`
+	BattleData   obj.BattleData   `json:"battleData"`
+	BattleStatus obj.BattleStatus `json:"battleStatus"`
+	RewardFlag   bool             `json:"rewardFlag"` // TODO: allow not false after testing
+}
+
+type PostDailyBattleResultResponseNoData struct {
+	BaseResponse
+	StartTime    int64            `json:"startTime"`
+	EndTime      int64            `json:"endTime"`
+	BattleStatus obj.BattleStatus `json:"battleStatus"`
+	RewardFlag   bool             `json:"rewardFlag"` // TODO: allow not false after testing
+}
+
+type PostDailyBattleResultResponseWithReward struct {
+	BaseResponse
+	StartTime    int64            `json:"startTime"`
+	EndTime      int64            `json:"endTime"`
+	BattleStatus obj.BattleStatus `json:"battleStatus"`
+	RewardFlag   bool             `json:"rewardFlag"` // TODO: allow not false after testing
+	obj.RewardBattlePair
+}
+
+type PostDailyBattleResultResponseWithRewardFailure struct {
+	BaseResponse
+	StartTime        int64            `json:"startTime"`
+	EndTime          int64            `json:"endTime"`
+	BattleStatus     obj.BattleStatus `json:"battleStatus"`
+	RewardFlag       bool             `json:"rewardFlag"` // TODO: allow not false after testing
+	RewardStartTime  int64            `json:"rewardStartTime"`
+	RewardEndTime    int64            `json:"rewardEndTime"`
+	RewardBattleData obj.BattleData   `json:"rewardBattleData"`
+}
+
+func PostDailyBattleResult(base responseobjs.BaseInfo, startTime, endTime int64, battleData, rivalBattleData obj.BattleData, battleStatus obj.BattleStatus) PostDailyBattleResultResponse {
+	baseResponse := NewBaseResponse(base)
+	return PostDailyBattleResultResponse{
+		baseResponse,
+		obj.NewBattlePair(startTime, endTime, battleData, rivalBattleData),
+		battleStatus,
+		false,
+	}
+}
+
+func PostDailyBattleResultNoData(base responseobjs.BaseInfo, startTime, endTime int64, battleStatus obj.BattleStatus) PostDailyBattleResultResponseNoData {
+	baseResponse := NewBaseResponse(base)
+	return PostDailyBattleResultResponseNoData{
+		baseResponse,
+		startTime,
+		endTime,
+		battleStatus,
+		false,
+	}
+}
+
+func PostDailyBattleResultNoRival(base responseobjs.BaseInfo, startTime, endTime int64, battleData obj.BattleData, battleStatus obj.BattleStatus) PostDailyBattleResultResponseNoRival {
+	baseResponse := NewBaseResponse(base)
+	return PostDailyBattleResultResponseNoRival{
+		baseResponse,
+		startTime,
+		endTime,
+		battleData,
+		battleStatus,
+		false,
+	}
+}
+
+func PostDailyBattleResultWithReward(base responseobjs.BaseInfo, startTime, endTime int64, battleStatus obj.BattleStatus, rewardStartTime, rewardEndTime int64, rewardBattleData, rewardRivalBattleData obj.BattleData) PostDailyBattleResultResponseWithReward {
+	baseResponse := NewBaseResponse(base)
+	battleReward := obj.NewRewardBattlePair(rewardStartTime, rewardEndTime, rewardBattleData, rewardRivalBattleData)
+	return PostDailyBattleResultResponseWithReward{
+		baseResponse,
+		startTime,
+		endTime,
+		battleStatus,
+		true,
+		battleReward,
+	}
+}
+
+func PostDailyBattleResultWithRewardFailure(base responseobjs.BaseInfo, startTime, endTime int64, battleStatus obj.BattleStatus, rewardStartTime, rewardEndTime int64, rewardBattleData obj.BattleData) PostDailyBattleResultResponseWithRewardFailure {
+	baseResponse := NewBaseResponse(base)
+	return PostDailyBattleResultResponseWithRewardFailure{
+		baseResponse,
+		startTime,
+		endTime,
+		battleStatus,
+		true,
+		rewardStartTime,
+		rewardEndTime,
+		rewardBattleData,
+	}
+}
