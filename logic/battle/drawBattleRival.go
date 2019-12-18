@@ -43,13 +43,13 @@ func DrawBattleRival(player netobj.Player) netobj.BattleState {
 				} else {
 					player.BattleState.RivalID = rivalID
 					player.BattleState.MatchedUpWithRival = true
-					if player.ID == rivalID {
-						log.Printf("[WARN] (battle.DrawBattleRival) Somehow matched up with self! Removing match...")
-						player.BattleState.MatchedUpWithRival = false
-					}
 				}
 			}
 		}
+	}
+	if player.ID == player.BattleState.RivalID && player.BattleState.MatchedUpWithRival {
+		log.Printf("[WARN] (battle.DrawBattleRival) Somehow matched up with self! Removing match...")
+		player.BattleState.MatchedUpWithRival = false
 	}
 	return player.BattleState
 }
