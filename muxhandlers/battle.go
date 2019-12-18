@@ -115,6 +115,11 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 					rivalPlayer.BattleState.BattleHistory = append(rivalPlayer.BattleState.BattleHistory, battlePair)
 					rivalPlayer.BattleState.RecordedLastBattle = true
 				}*/
+				err = db.SavePlayer(rivalPlayer)
+				if err != nil {
+					helper.InternalErr("Error saving player", err)
+					return
+				}
 				doReward = true
 			} else {
 				player.BattleState.Failures++
@@ -368,7 +373,6 @@ func PostDailyBattleResult(helper *helper.Helper) {
 				battleStatus,
 			)
 		}
-		response = responses.UpdateDailyBattleStatus(baseInfo, player.BattleState.BattleEndsAt, battleStatus)
 	}
 
 	err = helper.SendCompatibleResponse(response)

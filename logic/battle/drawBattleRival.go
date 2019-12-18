@@ -5,6 +5,9 @@ import (
 )
 
 func DrawBattleRival(player netobj.Player) netobj.BattleState {
-	// TODO: This is a stub!
+	if !player.BattleState.MatchedUpWithRival { // are we not matched up yet?
+		potentialRivals := []int64{}
+		// TODO: finish this code
+	}
 	return player.BattleState
 }
