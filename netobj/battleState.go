@@ -5,25 +5,27 @@ import (
 	"github.com/jinzhu/now"
 )
 
+// TODO: Clean this up!
 type BattleState struct {
-	ScoreRecordedToday       bool             `json:"hasRecordedScoreToday"`
-	DailyBattleHighScore     int64            `json:"maxScore"`
-	PrevDailyBattleHighScore int64            `json:"lastMaxScore"`
-	BattleStartsAt           int64            `json:"startTime"`
-	BattleEndsAt             int64            `json:"expireTime"`
-	MatchedUpWithRival       bool             `json:"matchedUpWithRival"`
-	RivalID                  string           `json:"rivalId"`
-	Wins                     int64            `json:"numWin"`
-	Losses                   int64            `json:"numLose"`
-	Draws                    int64            `json:"numDraw"`
-	Failures                 int64            `json:"numLoseByDefault"`
-	WinStreak                int64            `json:"goOnWin"`
-	LossStreak               int64            `json:"goOnLosses"`
-	BattleHistory            []obj.BattlePair `json:"battleDataHistory"`
-	RecordedLastBattle       bool             `json:"recordedLastBattle"`
+	ScoreRecordedToday       bool                 `json:"hasRecordedScoreToday"`
+	DailyBattleHighScore     int64                `json:"maxScore"`
+	PrevDailyBattleHighScore int64                `json:"lastMaxScore"`
+	BattleStartsAt           int64                `json:"startTime"`
+	BattleEndsAt             int64                `json:"expireTime"`
+	MatchedUpWithRival       bool                 `json:"matchedUpWithRival"`
+	RivalID                  string               `json:"rivalId"`
+	Wins                     int64                `json:"numWin"`
+	Losses                   int64                `json:"numLose"`
+	Draws                    int64                `json:"numDraw"`
+	Failures                 int64                `json:"numLoseByDefault"`
+	WinStreak                int64                `json:"goOnWin"`
+	LossStreak               int64                `json:"goOnLosses"`
+	BattleHistory            []obj.BattlePair     `json:"battleDataHistory"`
+	PendingReward            bool                 `json:"pendingReward"`
+	PendingRewardData        obj.RewardBattlePair `json:"pendingRewardData"`
 }
 
-func NewBattleState(scoreRecordedToday bool, dailyBattleHighScore, prevDailyBattleHighScore, battleStartTime, battleEndTime int64, matchedUpWithRival bool, rivalID string, wins, losses, draws, failures, winStreak, lossStreak int64, battleHistory []obj.BattlePair, recordedLastBattle bool) BattleState {
+func NewBattleState(scoreRecordedToday bool, dailyBattleHighScore, prevDailyBattleHighScore, battleStartTime, battleEndTime int64, matchedUpWithRival bool, rivalID string, wins, losses, draws, failures, winStreak, lossStreak int64, battleHistory []obj.BattlePair, pendingReward bool, pendingRewardData obj.RewardBattlePair) BattleState {
 	return BattleState{
 		scoreRecordedToday,
 		dailyBattleHighScore,
@@ -39,7 +41,8 @@ func NewBattleState(scoreRecordedToday bool, dailyBattleHighScore, prevDailyBatt
 		winStreak,
 		lossStreak,
 		battleHistory,
-		recordedLastBattle,
+		pendingReward,
+		pendingRewardData,
 	}
 }
 
@@ -58,7 +61,8 @@ func DefaultBattleState() BattleState {
 	winStreak := int64(0)
 	lossStreak := int64(0)
 	battleHistory := []obj.BattlePair{}
-	recordedLastBattle := false
+	pendingReward := false
+	pendingRewardData := obj.NewRewardBattlePair(-1, -1, obj.DebugRivalBattleData(), obj.DebugRivalBattleData()) //dummy data
 	return NewBattleState(
 		scoreRecordedToday,
 		dailyBattleHighScore,
@@ -74,6 +78,7 @@ func DefaultBattleState() BattleState {
 		winStreak,
 		lossStreak,
 		battleHistory,
-		recordedLastBattle,
+		pendingReward,
+		pendingRewardData,
 	)
 }
