@@ -76,7 +76,6 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 	var rewardBattlePlayerData obj.BattleData
 	var rewardBattleRivalData obj.BattleData
 	doReward := false
-	doRewardFailure := false
 	if time.Now().UTC().Unix() > player.BattleState.BattleEndsAt {
 		if player.BattleState.ScoreRecordedToday {
 			if player.BattleState.MatchedUpWithRival {
@@ -116,16 +115,12 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 					rivalPlayer.BattleState.BattleHistory = append(rivalPlayer.BattleState.BattleHistory, battlePair)
 					rivalPlayer.BattleState.RecordedLastBattle = true
 				}*/
+				doReward = true
 			} else {
-				rewardBattleStartTime = player.BattleState.BattleStartsAt
-				rewardBattleEndTime = player.BattleState.BattleEndsAt
-				rewardBattlePlayerData = conversion.DebugPlayerToBattleData(player)
 				player.BattleState.Failures++
 				player.BattleState.LossStreak++
 				player.BattleState.WinStreak = 0
-				doRewardFailure = true
 			}
-			doReward = true
 		}
 		player.BattleState.BattleStartsAt = now.BeginningOfDay().UTC().Unix()
 		player.BattleState.BattleEndsAt = now.EndOfDay().UTC().Unix()
@@ -143,11 +138,7 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	var response interface{}
 	if doReward {
-		if doRewardFailure {
-			response = responses.UpdateDailyBattleStatusWithRewardFailure(baseInfo, player.BattleState.BattleEndsAt, battleStatus, rewardBattleStartTime, rewardBattleEndTime, rewardBattlePlayerData)
-		} else {
-			response = responses.UpdateDailyBattleStatusWithReward(baseInfo, player.BattleState.BattleEndsAt, battleStatus, rewardBattleStartTime, rewardBattleEndTime, rewardBattlePlayerData, rewardBattleRivalData)
-		}
+		response = responses.UpdateDailyBattleStatusWithReward(baseInfo, player.BattleState.BattleEndsAt, battleStatus, rewardBattleStartTime, rewardBattleEndTime, rewardBattlePlayerData, rewardBattleRivalData)
 	} else {
 		response = responses.UpdateDailyBattleStatus(baseInfo, player.BattleState.BattleEndsAt, battleStatus)
 	}
@@ -266,7 +257,6 @@ func PostDailyBattleResult(helper *helper.Helper) {
 	var rewardBattlePlayerData obj.BattleData
 	var rewardBattleRivalData obj.BattleData
 	doReward := false
-	doRewardFailure := false
 	if time.Now().UTC().Unix() > player.BattleState.BattleEndsAt {
 		if player.BattleState.ScoreRecordedToday {
 			if player.BattleState.MatchedUpWithRival {
@@ -289,15 +279,21 @@ func PostDailyBattleResult(helper *helper.Helper) {
 					player.BattleState.Wins++
 					player.BattleState.WinStreak++
 					player.BattleState.LossStreak = 0
+					// Then we'd send the appropriate thing to the gift box, but...
+					// TODO: Add the reward functionality
 				} else {
 					if player.BattleState.DailyBattleHighScore < rivalPlayer.BattleState.DailyBattleHighScore {
 						player.BattleState.Losses++
 						player.BattleState.LossStreak++
 						player.BattleState.WinStreak = 0
+						// Then we'd send the appropriate thing to the gift box, but...
+						// TODO: Add the reward functionality
 					} else {
 						player.BattleState.Draws++
 						player.BattleState.WinStreak = 0
 						player.BattleState.LossStreak = 0
+						// Then we'd send the appropriate thing to the gift box, but...
+						// TODO: Add the reward functionality
 					}
 				}
 				/*if !player.BattleState.RecordedLastBattle || !rivalPlayer.BattleState.RecordedLastBattle {
@@ -306,16 +302,14 @@ func PostDailyBattleResult(helper *helper.Helper) {
 					rivalPlayer.BattleState.BattleHistory = append(rivalPlayer.BattleState.BattleHistory, battlePair)
 					rivalPlayer.BattleState.RecordedLastBattle = true
 				}*/
+				doReward = true
 			} else {
-				rewardBattleStartTime = player.BattleState.BattleStartsAt
-				rewardBattleEndTime = player.BattleState.BattleEndsAt
-				rewardBattlePlayerData = conversion.DebugPlayerToBattleData(player)
+				// There appears to be no reward for failures
+				// TODO: Is that right?
 				player.BattleState.Failures++
 				player.BattleState.LossStreak++
 				player.BattleState.WinStreak = 0
-				doRewardFailure = true
 			}
-			doReward = true
 		}
 		player.BattleState.BattleStartsAt = now.BeginningOfDay().UTC().Unix()
 		player.BattleState.BattleEndsAt = now.EndOfDay().UTC().Unix()
@@ -333,26 +327,15 @@ func PostDailyBattleResult(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	var response interface{}
 	if doReward {
-		if doRewardFailure {
-			response = responses.PostDailyBattleResultWithRewardFailure(baseInfo,
-				player.BattleState.BattleStartsAt,
-				player.BattleState.BattleEndsAt,
-				battleStatus,
-				rewardBattleStartTime,
-				rewardBattleEndTime,
-				rewardBattlePlayerData,
-			)
-		} else {
-			response = responses.PostDailyBattleResultWithReward(baseInfo,
-				player.BattleState.BattleStartsAt,
-				player.BattleState.BattleEndsAt,
-				battleStatus,
-				rewardBattleStartTime,
-				rewardBattleEndTime,
-				rewardBattlePlayerData,
-				rewardBattleRivalData,
-			)
-		}
+		response = responses.PostDailyBattleResultWithReward(baseInfo,
+			player.BattleState.BattleStartsAt,
+			player.BattleState.BattleEndsAt,
+			battleStatus,
+			rewardBattleStartTime,
+			rewardBattleEndTime,
+			rewardBattlePlayerData,
+			rewardBattleRivalData,
+		)
 	} else {
 		if player.BattleState.ScoreRecordedToday {
 			if player.BattleState.MatchedUpWithRival {
