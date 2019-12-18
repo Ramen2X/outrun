@@ -65,25 +65,47 @@ var BlankPlayer = func() netobj.Player {
 	operatorMessages := []obj.OperatorMessage{
 		obj.NewOperatorMessage(
 			1,
-			"A welcome gift from the Revival Team.", // TODO: make this configurable
+			"A welcome gift", // TODO: make this configurable
 			obj.NewMessageItem(
 				enums.ItemIDRedRing,
 				gameconf.CFile.StartingRedRings,
 				0,
 				0,
 			),
-			-1,
+			2592000,
 		),
 		obj.NewOperatorMessage(
 			2,
-			"A welcome gift from the Revival Team.", // TODO: make this configurable
+			"A welcome gift", // TODO: make this configurable
 			obj.NewMessageItem(
 				enums.ItemIDRing,
 				gameconf.CFile.StartingRings,
 				0,
 				0,
 			),
-			-1,
+			2592000,
+		),
+		obj.NewOperatorMessage(
+			3,
+			"A welcome gift", // TODO: make this configurable
+			obj.NewMessageItem(
+				enums.IDRouletteTicketPremium,
+				5,
+				0,
+				0,
+			),
+			2592000,
+		),
+		obj.NewOperatorMessage(
+			4,
+			"A welcome gift", // TODO: make this configurable
+			obj.NewMessageItem(
+				enums.IDRouletteTicketItem,
+				5,
+				0,
+				0,
+			),
+			2592000,
 		),
 	}
 	battleState := netobj.DefaultBattleState()
