@@ -123,7 +123,7 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 				player.BattleState.Failures++
 				player.BattleState.LossStreak++
 				player.BattleState.WinStreak = 0
-				doRewardFailure = false
+				doRewardFailure = true
 			}
 			doReward = true
 		}
@@ -313,7 +313,7 @@ func PostDailyBattleResult(helper *helper.Helper) {
 				player.BattleState.Failures++
 				player.BattleState.LossStreak++
 				player.BattleState.WinStreak = 0
-				doRewardFailure = false
+				doRewardFailure = true
 			}
 			doReward = true
 		}
