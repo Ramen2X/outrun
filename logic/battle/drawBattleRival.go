@@ -18,13 +18,14 @@ func DrawBattleRival(player netobj.Player) netobj.BattleState {
 			playerIDs = append(playerIDs, string(k))
 			return nil
 		})
+		currentTime := time.Now().UTC().Unix()
 		potentialRivalIDs := []string{}
 		for _, pid := range playerIDs {
 			potentialRival, err := db.GetPlayer(pid)
 			if err != nil {
 				log.Printf("[WARN] (battle.DrawBattleRival) Unable to get player '%s': %s", pid, err.Error())
 			} else {
-				if player.ID != pid && potentialRival.BattleState.ScoreRecordedToday && !potentialRival.BattleState.MatchedUpWithRival && time.Now().UTC().Unix() < potentialRival.BattleState.BattleEndsAt {
+				if player.ID != pid && potentialRival.BattleState.ScoreRecordedToday && !potentialRival.BattleState.MatchedUpWithRival && currentTime < potentialRival.BattleState.BattleEndsAt {
 					potentialRivalIDs = append(potentialRivalIDs, potentialRival.ID)
 				}
 			}

@@ -247,18 +247,18 @@ func ResetDailyBattleMatching(helper *helper.Helper) {
 		helper.InvalidRequest()
 		return
 	} else {
+		oldRival, err := db.GetPlayer(oldRivalID)
+		if err != nil {
+			helper.InternalErr("error getting rival player", err)
+			return
+		}
+		oldRival.BattleState.MatchedUpWithRival = false
+		err = db.SavePlayer(oldRival)
+		if err != nil {
+			helper.InternalErr("Error saving old rival", err)
+			return
+		}
 		player.BattleState = battle.DrawBattleRival(player)
-	}
-	oldRival, err := db.GetPlayer(oldRivalID)
-	if err != nil {
-		helper.InternalErr("error getting rival player", err)
-		return
-	}
-	oldRival.BattleState.MatchedUpWithRival = false
-	err = db.SavePlayer(oldRival)
-	if err != nil {
-		helper.InternalErr("Error saving old rival", err)
-		return
 	}
 
 	if player.BattleState.RivalID != oldRivalID && player.BattleState.MatchedUpWithRival {
@@ -519,3 +519,5 @@ func PostDailyBattleResult(helper *helper.Helper) {
 		return
 	}
 }
+
+// TODO: /Battle/getPrizeDailyBattle still needs to be implemented
