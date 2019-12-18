@@ -223,7 +223,7 @@ func ResetDailyBattleMatching(helper *helper.Helper) {
 	switch request.Type {
 	case 1:
 		if player.PlayerState.NumRedRings < 5 {
-			baseInfo.Status = status.NotEnoughRedRings
+			baseInfo.StatusCode = status.NotEnoughRedRings
 			err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
 			if err != nil {
 				helper.InternalErr("error sending response", err)
@@ -232,7 +232,7 @@ func ResetDailyBattleMatching(helper *helper.Helper) {
 		}
 	case 2:
 		if player.PlayerState.NumRedRings < 10 {
-			baseInfo.Status = status.NotEnoughRedRings
+			baseInfo.StatusCode = status.NotEnoughRedRings
 			err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
 			if err != nil {
 				helper.InternalErr("error sending response", err)
