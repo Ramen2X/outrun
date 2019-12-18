@@ -7,6 +7,7 @@ import (
 	"github.com/fluofoxxo/outrun/db"
 	"github.com/fluofoxxo/outrun/emess"
 	"github.com/fluofoxxo/outrun/helper"
+	"github.com/fluofoxxo/outrun/logic/battle"
 	"github.com/fluofoxxo/outrun/logic/conversion"
 	"github.com/fluofoxxo/outrun/obj"
 	"github.com/fluofoxxo/outrun/requests"
@@ -105,7 +106,13 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 					player.BattleState.LossStreak = 0
 				}
 			}
-			player.BattleState.BattleHistory = append(player.BattleState.BattleHistory, battlePair)
+			if !player.BattleState.RecordedLastBattle || !rivalPlayer.BattleState.RecordedLastBattle {
+				player.BattleState.BattleHistory = append(player.BattleState.BattleHistory, battlePair)
+				player.BattleState.RecordedLastBattle = true
+				rivalPlayer.BattleState.BattleHistory = append(rivalPlayer.BattleState.BattleHistory, battlePair)
+				rivalPlayer.BattleState.RecordedLastBattle = true
+			}
+
 			doReward = true
 		}
 		player.BattleState.BattleStartsAt = now.BeginningOfDay().UTC().Unix()
@@ -134,6 +141,11 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 		helper.InternalErr("Error sending response", err)
 		return
 	}
+	err = db.SavePlayer(player)
+	if err != nil {
+		helper.InternalErr("Error saving player", err)
+		return
+	}
 }
 
 // Reroll daily battle rival
@@ -145,13 +157,31 @@ func ResetDailyBattleMatching(helper *helper.Helper) {
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	battleData := conversion.DebugPlayerToBattleData(player)
-	//rivalBattleData := obj.DebugRivalBattleData()
-	startTime := now.BeginningOfDay().UTC().Unix()
-	endTime := now.EndOfDay().UTC().Unix()
-	response := responses.ResetDailyBattleMatchingNoOpponent(baseInfo, startTime, endTime, battleData, player)
+	startTime := player.BattleState.BattleStartsAt
+	endTime := player.BattleState.BattleEndsAt
+
+	player.BattleState = battle.DrawBattleRival(player)
+
+	var response interface{}
+	if player.BattleState.MatchedUpWithRival {
+		rivalPlayer, err := db.GetPlayer(player.BattleState.RivalID)
+		if err != nil {
+			helper.InternalErr("error getting rival player", err)
+			return
+		}
+		rivalBattleData := conversion.DebugPlayerToBattleData(rivalPlayer)
+		response = responses.ResetDailyBattleMatching(baseInfo, startTime, endTime, battleData, rivalBattleData, player)
+	} else {
+		response = responses.ResetDailyBattleMatchingNoOpponent(baseInfo, startTime, endTime, battleData, player)
+	}
 	err = helper.SendCompatibleResponse(response)
 	if err != nil {
 		helper.InternalErr("error sending response", err)
+	}
+	err = db.SavePlayer(player)
+	if err != nil {
+		helper.InternalErr("Error saving player", err)
+		return
 	}
 }
 

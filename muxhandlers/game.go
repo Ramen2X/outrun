@@ -19,6 +19,7 @@ import (
 	"github.com/fluofoxxo/outrun/emess"
 	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/helper"
+	"github.com/fluofoxxo/outrun/logic/battle"
 	"github.com/fluofoxxo/outrun/logic/campaign"
 	"github.com/fluofoxxo/outrun/logic/conversion"
 	"github.com/fluofoxxo/outrun/logic/gameplay"
@@ -473,6 +474,7 @@ func QuickPostGameResults(helper *helper.Helper) {
 			player.BattleState.PrevDailyBattleHighScore = player.BattleState.DailyBattleHighScore
 			player.BattleState.DailyBattleHighScore = request.Score
 			player.BattleState.ScoreRecordedToday = true
+			player.BattleState = battle.DrawBattleRival(player)
 		}
 		//player.PlayerState.TotalDistance += request.Distance  // We don't do this in timed mode!
 		// increase character(s)'s experience
