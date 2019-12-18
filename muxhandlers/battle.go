@@ -162,6 +162,13 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 
 // Reroll daily battle rival
 func ResetDailyBattleMatching(helper *helper.Helper) {
+	data := helper.GetGameRequest()
+	var request requests.ResetDailyBattleMatchingRequest
+	err := json.Unmarshal(data, &request)
+	if err != nil {
+		helper.InternalErr("Error unmarshalling", err)
+		return
+	}
 	player, err := helper.GetCallingPlayer()
 	if err != nil {
 		helper.InternalErr("error getting calling player", err)
@@ -172,6 +179,7 @@ func ResetDailyBattleMatching(helper *helper.Helper) {
 	startTime := player.BattleState.BattleStartsAt
 	endTime := player.BattleState.BattleEndsAt
 
+	helper.DebugOut("Type: %v", request.Type)
 	player.BattleState = battle.DrawBattleRival(player)
 
 	var response interface{}
@@ -182,10 +190,8 @@ func ResetDailyBattleMatching(helper *helper.Helper) {
 			return
 		}
 		rivalBattleData := conversion.DebugPlayerToBattleData(rivalPlayer)
-		helper.DebugOut("Matched up with rival!")
 		response = responses.ResetDailyBattleMatching(baseInfo, startTime, endTime, battleData, rivalBattleData, player)
 	} else {
-		helper.DebugOut("No rival was found!")
 		response = responses.ResetDailyBattleMatchingNoOpponent(baseInfo, startTime, endTime, battleData, player)
 	}
 	err = helper.SendCompatibleResponse(response)

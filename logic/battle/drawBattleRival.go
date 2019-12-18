@@ -24,7 +24,7 @@ func DrawBattleRival(player netobj.Player) netobj.BattleState {
 			if err != nil {
 				log.Printf("[WARN] (battle.DrawBattleRival) Unable to get player '%s': %s", pid, err.Error())
 			} else {
-				if potentialRival.BattleState.ScoreRecordedToday && !potentialRival.BattleState.MatchedUpWithRival && time.Now().UTC().Unix() < potentialRival.BattleState.BattleEndsAt {
+				if player.ID != pid && potentialRival.BattleState.ScoreRecordedToday && !potentialRival.BattleState.MatchedUpWithRival && time.Now().UTC().Unix() < potentialRival.BattleState.BattleEndsAt {
 					potentialRivalIDs = append(potentialRivalIDs, potentialRival.ID)
 				}
 			}
