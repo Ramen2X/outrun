@@ -220,16 +220,41 @@ func ResetDailyBattleMatching(helper *helper.Helper) {
 	endTime := player.BattleState.BattleEndsAt
 
 	helper.DebugOut("Type: %v", request.Type)
-
+	switch request.Type {
+	case 1:
+		if player.PlayerState.NumRedRings < 5 {
+			baseInfo.Status = status.NotEnoughRedRings
+			err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+			if err != nil {
+				helper.InternalErr("error sending response", err)
+			}
+			return
+		}
+	case 2:
+		if player.PlayerState.NumRedRings < 10 {
+			baseInfo.Status = status.NotEnoughRedRings
+			err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+			if err != nil {
+				helper.InternalErr("error sending response", err)
+			}
+			return
+		}
+	}
 	oldRivalID := player.BattleState.RivalID
 	if request.Type == 2 {
 		helper.InvalidRequest()
+		return
 	} else {
 		player.BattleState = battle.DrawBattleRival(player)
 	}
 
 	if player.BattleState.RivalID != oldRivalID && player.BattleState.MatchedUpWithRival {
-
+		switch request.Type {
+		case 1:
+			player.PlayerState.NumRedRings -= 5
+		case 2:
+			player.PlayerState.NumRedRings -= 10
+		}
 	}
 
 	var response interface{}
