@@ -242,23 +242,23 @@ func ResetDailyBattleMatching(helper *helper.Helper) {
 		}
 	}
 	oldRivalID := player.BattleState.RivalID
-	oldRival, err := db.GetPlayer(oldRivalID)
-	if err != nil {
-		helper.InternalErr("error getting rival player", err)
-		return
-	}
 	player.BattleState.MatchedUpWithRival = false
-	oldRival.BattleState.MatchedUpWithRival = false
-	err = db.SavePlayer(oldRival)
-	if err != nil {
-		helper.InternalErr("Error saving old rival", err)
-		return
-	}
 	if request.Type == 2 {
 		helper.InvalidRequest()
 		return
 	} else {
 		player.BattleState = battle.DrawBattleRival(player)
+	}
+	oldRival, err := db.GetPlayer(oldRivalID)
+	if err != nil {
+		helper.InternalErr("error getting rival player", err)
+		return
+	}
+	oldRival.BattleState.MatchedUpWithRival = false
+	err = db.SavePlayer(oldRival)
+	if err != nil {
+		helper.InternalErr("Error saving old rival", err)
+		return
 	}
 
 	if player.BattleState.RivalID != oldRivalID && player.BattleState.MatchedUpWithRival {
