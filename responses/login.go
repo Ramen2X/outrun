@@ -260,10 +260,11 @@ func DefaultLoginBonus(base responseobjs.BaseInfo, player netobj.Player, doLogin
 	flbrl := constobjs.DefaultFirstLoginBonusRewardList
 	st := player.LoginBonusState.LoginBonusStartTime
 	et := player.LoginBonusState.LoginBonusEndTime
-	rid := int64(0)
-	rd := int64(-1)
-	frd := int64(-1)
+	rid := int64(-1)
+	rd := player.LoginBonusState.CurrentLoginBonusDay
+	frd := player.LoginBonusState.CurrentFirstLoginBonusDay
 	if doLoginBonus {
+		rid = int64(0)
 		rd = player.LoginBonusState.CurrentLoginBonusDay - 1
 		frd = player.LoginBonusState.CurrentFirstLoginBonusDay - 1
 	}

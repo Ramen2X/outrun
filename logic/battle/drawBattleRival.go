@@ -19,19 +19,22 @@ func DrawBattleRival(player netobj.Player) netobj.BattleState {
 			return nil
 		})
 		currentTime := time.Now().UTC().Unix()
-		potentialRivalIDs := []string{}
-		for _, pid := range playerIDs {
-			potentialRival, err := db.GetPlayer(pid)
+		rivalID := ""
+		for len(playerIDs) > 0 {
+			index := rand.Intn(len(playerIDs))
+			potentialRival, err := db.GetPlayer(playerIDs[index])
 			if err != nil {
-				log.Printf("[WARN] (battle.DrawBattleRival) Unable to get player '%s': %s", pid, err.Error())
+				log.Printf("[WARN] (battle.DrawBattleRival) Unable to get player '%s': %s", playerIDs[index], err.Error())
 			} else {
-				if player.ID != pid && potentialRival.BattleState.ScoreRecordedToday && !potentialRival.BattleState.MatchedUpWithRival && currentTime < potentialRival.BattleState.BattleEndsAt {
-					potentialRivalIDs = append(potentialRivalIDs, potentialRival.ID)
+				if player.ID != playerIDs[index] && potentialRival.BattleState.ScoreRecordedToday && !potentialRival.BattleState.MatchedUpWithRival && currentTime < potentialRival.BattleState.BattleEndsAt {
+					rivalID = playerIDs[index]
+					break
 				}
 			}
+			playerIDs[index] = playerIDs[len(playerIDs)-1]
+			playerIDs = playerIDs[:len(playerIDs)-1]
 		}
-		if len(potentialRivalIDs) > 0 {
-			rivalID := potentialRivalIDs[rand.Intn(len(potentialRivalIDs))]
+		if len(rivalID) > 0 {
 			rival, err := db.GetPlayer(rivalID)
 			if err != nil {
 				log.Printf("[WARN] (battle.DrawBattleRival) Unable to get player '%s': %s", rivalID, err.Error())
