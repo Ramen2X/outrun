@@ -11,7 +11,7 @@ import (
 	"github.com/fluofoxxo/outrun/netobj"
 )
 
-func DrawBattleRival(player netobj.Player) netobj.BattleState {
+func DrawBattleRival(player netobj.Player, limit int) netobj.BattleState {
 	if !player.BattleState.MatchedUpWithRival { // are we not matched up yet?
 		playerIDs := []string{}
 		dbaccess.ForEachKey(consts.DBBucketPlayers, func(k, v []byte) error {
@@ -20,6 +20,7 @@ func DrawBattleRival(player netobj.Player) netobj.BattleState {
 		})
 		currentTime := time.Now().UTC().Unix()
 		rivalID := ""
+		iterations := 0
 		for len(playerIDs) > 0 {
 			index := rand.Intn(len(playerIDs))
 			potentialRival, err := db.GetPlayer(playerIDs[index])
@@ -33,6 +34,10 @@ func DrawBattleRival(player netobj.Player) netobj.BattleState {
 			}
 			playerIDs[index] = playerIDs[len(playerIDs)-1]
 			playerIDs = playerIDs[:len(playerIDs)-1]
+			iterations++
+			if iterations >= limit && limit > 0 {
+				break
+			}
 		}
 		if len(rivalID) > 0 {
 			rival, err := db.GetPlayer(rivalID)

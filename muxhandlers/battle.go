@@ -262,7 +262,7 @@ func ResetDailyBattleMatching(helper *helper.Helper) {
 				return
 			}
 		}
-		player.BattleState = battle.DrawBattleRival(player)
+		player.BattleState = battle.DrawBattleRival(player, 1000)
 	}
 
 	if player.BattleState.RivalID != oldRivalID && player.BattleState.MatchedUpWithRival {
