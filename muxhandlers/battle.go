@@ -443,7 +443,7 @@ func PostDailyBattleResult(helper *helper.Helper) {
 					}
 					rewardIndex := 0
 					if player.BattleState.WinStreak > 0 {
-						for player.BattleState.WinStreak < constobjs.DefaultDailyBattlePrizeList[rewardIndex].Number || rewardIndex < len(constobjs.DefaultDailyBattlePrizeList) {
+						for player.BattleState.WinStreak > constobjs.DefaultDailyBattlePrizeList[rewardIndex].Number && rewardIndex < len(constobjs.DefaultDailyBattlePrizeList) {
 							rewardIndex++
 						}
 						for _, item := range constobjs.DefaultDailyBattlePrizeList[rewardIndex].PresentList {
@@ -462,7 +462,7 @@ func PostDailyBattleResult(helper *helper.Helper) {
 					}
 					if rivalPlayer.BattleState.WinStreak > 0 {
 						rewardIndex = 0
-						for rivalPlayer.BattleState.WinStreak < constobjs.DefaultDailyBattlePrizeList[rewardIndex].Number || rewardIndex < len(constobjs.DefaultDailyBattlePrizeList) {
+						for rivalPlayer.BattleState.WinStreak > constobjs.DefaultDailyBattlePrizeList[rewardIndex].Number && rewardIndex < len(constobjs.DefaultDailyBattlePrizeList) {
 							rewardIndex++
 						}
 						for _, item := range constobjs.DefaultDailyBattlePrizeList[rewardIndex].PresentList {
