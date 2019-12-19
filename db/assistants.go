@@ -120,6 +120,7 @@ func NewAccountWithID(uid string) netobj.Player {
 		),
 	}
 	battleState := netobj.DefaultBattleState()
+	loginBonusState := netobj.DefaultLoginBonusState(0)
 	return netobj.NewPlayer(
 		uid,
 		username,
@@ -143,6 +144,7 @@ func NewAccountWithID(uid string) netobj.Player {
 		suspended,
 		operatorMessages,
 		battleState,
+		loginBonusState,
 	)
 }
 

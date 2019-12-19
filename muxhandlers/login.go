@@ -3,7 +3,11 @@ package muxhandlers
 import (
 	"encoding/json"
 	"math/rand"
+	"strconv"
 	"time"
+
+	"github.com/fluofoxxo/outrun/netobj"
+	"github.com/jinzhu/now"
 
 	"github.com/fluofoxxo/outrun/analytics"
 	"github.com/fluofoxxo/outrun/analytics/factors"
@@ -14,6 +18,7 @@ import (
 	"github.com/fluofoxxo/outrun/logic"
 	"github.com/fluofoxxo/outrun/logic/conversion"
 	"github.com/fluofoxxo/outrun/obj"
+	"github.com/fluofoxxo/outrun/obj/constobjs"
 	"github.com/fluofoxxo/outrun/requests"
 	"github.com/fluofoxxo/outrun/responses"
 	"github.com/fluofoxxo/outrun/status"
@@ -193,10 +198,92 @@ func GetTicker(helper *helper.Helper) {
 }
 
 func LoginBonus(helper *helper.Helper) {
-	// TODO: Is agnostic, but shouldn't be!
+	player, err := helper.GetCallingPlayer()
+	if err != nil {
+		helper.InternalErr("Error getting calling player", err)
+		return
+	}
+	if time.Now().UTC().Unix() > player.LoginBonusState.LoginBonusEndTime {
+		player.LoginBonusState = netobj.DefaultLoginBonusState(player.LoginBonusState.CurrentFirstLoginBonusDay)
+	}
+	doLoginBonus := false
+	if time.Now().UTC().Unix() > player.LoginBonusState.NextLoginBonusTime {
+		doLoginBonus = true
+		player.LoginBonusState.LastLoginBonusTime = time.Now().UTC().Unix()
+		player.LoginBonusState.NextLoginBonusTime = now.EndOfDay().UTC().Unix()
+		player.LoginBonusState.CurrentFirstLoginBonusDay++
+		player.LoginBonusState.CurrentLoginBonusDay++
+	}
+	err = db.SavePlayer(player)
+	if err != nil {
+		helper.InternalErr("Error saving player", err)
+		return
+	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
-	response := responses.DefaultLoginBonus(baseInfo)
-	err := helper.SendResponse(response)
+	response := responses.DefaultLoginBonus(baseInfo, player, doLoginBonus)
+	err = helper.SendResponse(response)
+	if err != nil {
+		helper.InternalErr("Error sending response", err)
+	}
+}
+
+func LoginBonusSelect(helper *helper.Helper) {
+	recv := helper.GetGameRequest()
+	var request requests.LoginBonusSelectRequest
+	err := json.Unmarshal(recv, &request)
+	if err != nil {
+		helper.Err("Error unmarshalling", err)
+		return
+	}
+	player, err := helper.GetCallingPlayer()
+	if err != nil {
+		helper.InternalErr("Error getting calling player", err)
+		return
+	}
+	rewardList := []obj.Item{}
+	firstRewardList := []obj.Item{}
+	if request.FirstRewardDays != -1 && int(request.FirstRewardDays) < len(constobjs.DefaultFirstLoginBonusRewardList) {
+		firstRewardList = constobjs.DefaultFirstLoginBonusRewardList[request.FirstRewardDays].SelectRewardList[request.FirstRewardSelect].ItemList
+	}
+	if request.RewardDays != -1 && int(request.RewardDays) < len(constobjs.DefaultLoginBonusRewardList) {
+		rewardList = constobjs.DefaultLoginBonusRewardList[request.RewardDays].SelectRewardList[request.RewardSelect].ItemList
+	}
+	for _, item := range rewardList {
+		itemid, _ := strconv.Atoi(item.ID)
+		player.AddOperatorMessage(
+			"A Login Bonus.",
+			obj.MessageItem{
+				int64(itemid),
+				item.Amount,
+				0,
+				0,
+			},
+			2592000,
+		)
+		helper.DebugOut("Sent %s x %v to gift box (Login Bonus)", item.ID, item.Amount)
+	}
+	for _, item := range firstRewardList {
+		itemid, _ := strconv.Atoi(item.ID)
+		player.AddOperatorMessage(
+			"A Debut Dash Login Bonus.",
+			obj.MessageItem{
+				int64(itemid),
+				item.Amount,
+				0,
+				0,
+			},
+			2592000,
+		)
+		helper.DebugOut("Sent %s x %v to gift box (Start Dash Login Bonus)", item.ID, item.Amount)
+	}
+	err = db.SavePlayer(player)
+	if err != nil {
+		helper.InternalErr("Error saving player", err)
+		return
+	}
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	response := responses.LoginBonusSelect(baseInfo, rewardList, firstRewardList)
+	err = helper.SendResponse(response)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}

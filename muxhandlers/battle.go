@@ -446,6 +446,7 @@ func PostDailyBattleResult(helper *helper.Helper) {
 						for player.BattleState.WinStreak > constobjs.DefaultDailyBattlePrizeList[rewardIndex].Number && rewardIndex < len(constobjs.DefaultDailyBattlePrizeList) {
 							rewardIndex++
 						}
+						helper.DebugOut("Index %v of rewards list", rewardIndex)
 						for _, item := range constobjs.DefaultDailyBattlePrizeList[rewardIndex].PresentList {
 							itemid, _ := strconv.Atoi(item.ID)
 							player.AddOperatorMessage(
@@ -458,6 +459,7 @@ func PostDailyBattleResult(helper *helper.Helper) {
 								},
 								2592000,
 							)
+							helper.DebugOut("Sent %s x %v to player's gift box", item.ID, item.Amount)
 						}
 					}
 					if rivalPlayer.BattleState.WinStreak > 0 {
@@ -465,6 +467,7 @@ func PostDailyBattleResult(helper *helper.Helper) {
 						for rivalPlayer.BattleState.WinStreak > constobjs.DefaultDailyBattlePrizeList[rewardIndex].Number && rewardIndex < len(constobjs.DefaultDailyBattlePrizeList) {
 							rewardIndex++
 						}
+						helper.DebugOut("Index %v of rewards list", rewardIndex)
 						for _, item := range constobjs.DefaultDailyBattlePrizeList[rewardIndex].PresentList {
 							itemid, _ := strconv.Atoi(item.ID)
 							rivalPlayer.AddOperatorMessage(
@@ -477,6 +480,7 @@ func PostDailyBattleResult(helper *helper.Helper) {
 								},
 								2592000,
 							)
+							helper.DebugOut("Sent %s x %v to rival's gift box", item.ID, item.Amount)
 						}
 					}
 					player.BattleState.BattleHistory = append(player.BattleState.BattleHistory, battlePair)

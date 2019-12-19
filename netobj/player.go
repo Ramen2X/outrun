@@ -35,9 +35,10 @@ type Player struct {
 	Suspended              bool                        `json:"ORN_suspended"`
 	OperatorMessages       []obj.OperatorMessage       `json:"operatorMessageList"`
 	BattleState            BattleState                 `json:"battleState"`
+	LoginBonusState        LoginBonusState             `json:"loginBonusState"`
 }
 
-func NewPlayer(id, username, password, migrationPassword, userPassword, key string, playerState PlayerState, characterState []Character, chaoState []Chao, eventState EventState, eventUserRaidbossState EventUserRaidbossState, optionUserResult OptionUserResult, mileageMapState MileageMapState, mf []MileageFriend, playerVarious PlayerVarious, wheelOptions WheelOptions, rouletteInfo RouletteInfo, chaoRouletteGroup ChaoRouletteGroup, personalEvents []eventconf.ConfiguredEvent, suspended bool, operatorMessages []obj.OperatorMessage, battleState BattleState) Player {
+func NewPlayer(id, username, password, migrationPassword, userPassword, key string, playerState PlayerState, characterState []Character, chaoState []Chao, eventState EventState, eventUserRaidbossState EventUserRaidbossState, optionUserResult OptionUserResult, mileageMapState MileageMapState, mf []MileageFriend, playerVarious PlayerVarious, wheelOptions WheelOptions, rouletteInfo RouletteInfo, chaoRouletteGroup ChaoRouletteGroup, personalEvents []eventconf.ConfiguredEvent, suspended bool, operatorMessages []obj.OperatorMessage, battleState BattleState, loginBonusState LoginBonusState) Player {
 	return Player{
 		id,
 		username,
@@ -62,6 +63,7 @@ func NewPlayer(id, username, password, migrationPassword, userPassword, key stri
 		suspended,
 		operatorMessages,
 		battleState,
+		loginBonusState,
 	}
 }
 

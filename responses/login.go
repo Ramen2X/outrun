@@ -4,8 +4,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/jinzhu/now"
-
 	"github.com/fluofoxxo/outrun/config/infoconf"
 	"github.com/fluofoxxo/outrun/logic/conversion"
 	"github.com/fluofoxxo/outrun/netobj"
@@ -256,16 +254,35 @@ func LoginBonus(base responseobjs.BaseInfo, lbs obj.LoginBonusStatus, lbrl, flbr
 	}
 }
 
-func DefaultLoginBonus(base responseobjs.BaseInfo) LoginBonusResponse {
-	lbs := obj.NewLoginBonusStatus(1, 7, 0)
+func DefaultLoginBonus(base responseobjs.BaseInfo, player netobj.Player, doLoginBonus bool) LoginBonusResponse {
+	lbs := obj.NewLoginBonusStatus(player.LoginBonusState.CurrentLoginBonusDay, player.LoginBonusState.CurrentLoginBonusDay-1, player.LoginBonusState.LastLoginBonusTime)
 	lbrl := constobjs.DefaultLoginBonusRewardList
 	flbrl := constobjs.DefaultFirstLoginBonusRewardList
-	st := int64(now.BeginningOfWeek().UTC().Unix())
-	et := int64(now.EndOfWeek().UTC().Unix())
-	rid := int64(-1)
+	st := player.LoginBonusState.LoginBonusStartTime
+	et := player.LoginBonusState.LoginBonusEndTime
+	rid := int64(0)
 	rd := int64(-1)
 	frd := int64(-1)
+	if doLoginBonus {
+		rd = player.LoginBonusState.CurrentLoginBonusDay - 1
+		frd = player.LoginBonusState.CurrentFirstLoginBonusDay - 1
+	}
 	return LoginBonus(base, lbs, lbrl, flbrl, st, et, rid, rd, frd)
+}
+
+type LoginBonusSelectResponse struct {
+	BaseResponse
+	RewardList      []obj.Item `json:"rewardList,omitempty"`
+	FirstRewardList []obj.Item `json:"firstRewardList,omitempty"`
+}
+
+func LoginBonusSelect(base responseobjs.BaseInfo, rl, frl []obj.Item) LoginBonusSelectResponse {
+	baseResponse := NewBaseResponse(base)
+	return LoginBonusSelectResponse{
+		baseResponse,
+		rl,
+		frl,
+	}
 }
 
 type MigrationPasswordResponse struct {

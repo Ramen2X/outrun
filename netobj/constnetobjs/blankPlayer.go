@@ -109,6 +109,7 @@ var BlankPlayer = func() netobj.Player {
 		),
 	}
 	battleState := netobj.DefaultBattleState()
+	loginBonusState := netobj.DefaultLoginBonusState(0)
 	return netobj.NewPlayer(
 		uid,
 		username,
@@ -132,5 +133,6 @@ var BlankPlayer = func() netobj.Player {
 		suspended,
 		operatorMessages,
 		battleState,
+		loginBonusState,
 	)
 }() // TODO: Solve duplication requirement with db/assistants.go

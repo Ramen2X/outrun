@@ -14,6 +14,14 @@ type LoginRequest struct {
 	obj.LineAuth `json:"lineAuth"`
 }
 
+type LoginBonusSelectRequest struct {
+	RewardID          int64 `json:"rewardId,string"`
+	RewardDays        int64 `json:"rewardDays,string"`
+	RewardSelect      int64 `json:"rewardSelect,string"`
+	FirstRewardDays   int64 `json:"firstRewardDays,string"`
+	FirstRewardSelect int64 `json:"firstRewardSelect,string"`
+}
+
 type GetMigrationPasswordRequest struct {
 	UserPassword string `json:"userPassword"`
 }
