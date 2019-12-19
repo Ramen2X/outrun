@@ -121,3 +121,22 @@ func (t *Toolbox) ResetBattleState(uid string, reply *ToolboxReply) error {
 	reply.Info = "OK"
 	return nil
 }
+
+func (t *Toolbox) ResetLoginBonusState(uid string, reply *ToolboxReply) error {
+	player, err := db.GetPlayer(uid)
+	if err != nil {
+		reply.Status = StatusOtherError
+		reply.Info = "unable to get player: " + err.Error()
+		return err
+	}
+	player.LoginBonusState = netobj.DefaultLoginBonusState(0)
+	err = db.SavePlayer(player)
+	if err != nil {
+		reply.Status = StatusOtherError
+		reply.Info = "unable to save player: " + err.Error()
+		return err
+	}
+	reply.Status = StatusOK
+	reply.Info = "OK"
+	return nil
+}
