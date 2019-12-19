@@ -419,3 +419,32 @@ func (p *Player) CleanUpExpiredOperatorMessages() {
 		}
 	}
 }
+
+func (p *Player) AddOperatorMessage(messageContents string, item obj.MessageItem, expiresAfter int64) {
+	// A function to add an operator message, automatically determining its ID
+	// TODO: Optimize this code. It's not pretty.
+	index := 0
+	foundPreferredID := false
+	preferredID := 1
+	for !foundPreferredID {
+		foundPreferredID = true
+		index = 0
+		for index < len(p.OperatorMessages) {
+			if p.OperatorMessages[index].ID == strconv.Itoa(preferredID) {
+				foundPreferredID = false
+			}
+			index++
+		}
+		preferredID++
+	}
+	preferredID--
+	p.OperatorMessages = append(
+		p.OperatorMessages,
+		obj.NewOperatorMessage(
+			int64(preferredID),
+			messageContents,
+			item,
+			expiresAfter,
+		),
+	)
+}

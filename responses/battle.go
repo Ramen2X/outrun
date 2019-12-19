@@ -4,6 +4,7 @@ import (
 	"github.com/fluofoxxo/outrun/logic/conversion"
 	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/obj"
+	"github.com/fluofoxxo/outrun/obj/constobjs"
 	"github.com/fluofoxxo/outrun/responses/responseobjs"
 	"github.com/jinzhu/now"
 )
@@ -253,4 +254,24 @@ func PostDailyBattleResultWithReward(base responseobjs.BaseInfo, startTime, endT
 		true,
 		battleReward,
 	}
+}
+
+type GetPrizeDailyBattleResponse struct {
+	BaseResponse
+	BattlePrizeDataList []obj.OperatorScore `json:"battlePrizeDataList"`
+}
+
+func GetPrizeDailyBattle(base responseobjs.BaseInfo, battlePrizeDataList []obj.OperatorScore) GetPrizeDailyBattleResponse {
+	baseResponse := NewBaseResponse(base)
+	return GetPrizeDailyBattleResponse{
+		baseResponse,
+		battlePrizeDataList,
+	}
+}
+
+func DefaultGetPrizeDailyBattle(base responseobjs.BaseInfo) GetPrizeDailyBattleResponse {
+	return GetPrizeDailyBattle(
+		base,
+		constobjs.DefaultDailyBattlePrizeList,
+	)
 }

@@ -194,6 +194,8 @@ func main() {
 	router.HandleFunc(prefix+"/Battle/getDailyBattleDataHistory/", h(muxhandlers.GetDailyBattleHistory, LogExecutionTime))
 	router.HandleFunc(prefix+"/Battle/getDailyBattleStatus/", h(muxhandlers.GetDailyBattleStatus, LogExecutionTime))
 	router.HandleFunc(prefix+"/Battle/postDailyBattleResult/", h(muxhandlers.PostDailyBattleResult, LogExecutionTime))
+	router.HandleFunc(prefix+"/Battle/getPrizeDailyBattle/", h(muxhandlers.GetPrizeDailyBattle, LogExecutionTime))
+
 
 	// 1.1.4
 	router.HandleFunc(prefix+"/Event/getEventReward/", h(muxhandlers.GetEventReward, LogExecutionTime))

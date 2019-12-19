@@ -2,6 +2,7 @@ package muxhandlers
 
 import (
 	"encoding/json"
+	"strconv"
 	"time"
 
 	"github.com/fluofoxxo/outrun/db"
@@ -10,6 +11,7 @@ import (
 	"github.com/fluofoxxo/outrun/logic/battle"
 	"github.com/fluofoxxo/outrun/logic/conversion"
 	"github.com/fluofoxxo/outrun/obj"
+	"github.com/fluofoxxo/outrun/obj/constobjs"
 	"github.com/fluofoxxo/outrun/requests"
 	"github.com/fluofoxxo/outrun/responses"
 	"github.com/fluofoxxo/outrun/status"
@@ -242,21 +244,23 @@ func ResetDailyBattleMatching(helper *helper.Helper) {
 		}
 	}
 	oldRivalID := player.BattleState.RivalID
-	player.BattleState.MatchedUpWithRival = false
 	if request.Type == 2 {
 		helper.InvalidRequest()
 		return
 	} else {
-		oldRival, err := db.GetPlayer(oldRivalID)
-		if err != nil {
-			helper.InternalErr("error getting rival player", err)
-			return
-		}
-		oldRival.BattleState.MatchedUpWithRival = false
-		err = db.SavePlayer(oldRival)
-		if err != nil {
-			helper.InternalErr("Error saving old rival", err)
-			return
+		if request.Type != 0 {
+			player.BattleState.MatchedUpWithRival = false
+			oldRival, err := db.GetPlayer(oldRivalID)
+			if err != nil {
+				helper.InternalErr("error getting rival player", err)
+				return
+			}
+			oldRival.BattleState.MatchedUpWithRival = false
+			err = db.SavePlayer(oldRival)
+			if err != nil {
+				helper.InternalErr("Error saving old rival", err)
+				return
+			}
 		}
 		player.BattleState = battle.DrawBattleRival(player)
 	}
@@ -294,13 +298,25 @@ func ResetDailyBattleMatching(helper *helper.Helper) {
 }
 
 func GetDailyBattleHistory(helper *helper.Helper) {
+	data := helper.GetGameRequest()
+	var request requests.GetDailyBattleHistoryRequest
+	err := json.Unmarshal(data, &request)
+	if err != nil {
+		helper.InternalErr("Error unmarshalling", err)
+		return
+	}
 	player, err := helper.GetCallingPlayer()
 	if err != nil {
 		helper.InternalErr("error getting calling player", err)
 		return
 	}
+	helper.DebugOut("Count: %v", request.Count)
+	history := player.BattleState.BattleHistory
+	if int64(len(history)) > request.Count {
+		history = player.BattleState.BattleHistory[:request.Count]
+	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
-	response := responses.GetDailyBattleHistory(baseInfo, player.BattleState.BattleHistory)
+	response := responses.GetDailyBattleHistory(baseInfo, history)
 	err = helper.SendResponse(response)
 	if err != nil {
 		helper.InternalErr("error sending response", err)
@@ -408,8 +424,6 @@ func PostDailyBattleResult(helper *helper.Helper) {
 						rivalPlayer.BattleState.Losses++
 						rivalPlayer.BattleState.LossStreak++
 						rivalPlayer.BattleState.WinStreak = 0
-						// Then we'd send the appropriate things to the gift boxes, but...
-						// TODO: Add the reward functionality
 					} else {
 						if player.BattleState.DailyBattleHighScore < rivalPlayer.BattleState.DailyBattleHighScore {
 							player.BattleState.Losses++
@@ -418,8 +432,6 @@ func PostDailyBattleResult(helper *helper.Helper) {
 							rivalPlayer.BattleState.Wins++
 							rivalPlayer.BattleState.WinStreak++
 							rivalPlayer.BattleState.LossStreak = 0
-							// Then we'd send the appropriate things to the gift boxes, but...
-							// TODO: Add the reward functionality
 						} else {
 							player.BattleState.Draws++
 							player.BattleState.WinStreak = 0
@@ -427,8 +439,44 @@ func PostDailyBattleResult(helper *helper.Helper) {
 							rivalPlayer.BattleState.Draws++
 							rivalPlayer.BattleState.WinStreak = 0
 							rivalPlayer.BattleState.LossStreak = 0
-							// Then we'd send the appropriate things to the gift boxes, but...
-							// TODO: Add the reward functionality
+						}
+					}
+					rewardIndex := 0
+					if player.BattleState.WinStreak > 0 {
+						for player.BattleState.WinStreak < constobjs.DefaultDailyBattlePrizeList[rewardIndex].Number || rewardIndex < len(constobjs.DefaultDailyBattlePrizeList) {
+							rewardIndex++
+						}
+						for _, item := range constobjs.DefaultDailyBattlePrizeList[rewardIndex].PresentList {
+							itemid, _ := strconv.Atoi(item.ID)
+							player.AddOperatorMessage(
+								"A reward for "+strconv.Itoa(int(player.BattleState.WinStreak))+" consecutive Daily Battle win(s).",
+								obj.MessageItem{
+									int64(itemid),
+									item.Amount,
+									0,
+									0,
+								},
+								2592000,
+							)
+						}
+					}
+					if rivalPlayer.BattleState.WinStreak > 0 {
+						rewardIndex = 0
+						for rivalPlayer.BattleState.WinStreak < constobjs.DefaultDailyBattlePrizeList[rewardIndex].Number || rewardIndex < len(constobjs.DefaultDailyBattlePrizeList) {
+							rewardIndex++
+						}
+						for _, item := range constobjs.DefaultDailyBattlePrizeList[rewardIndex].PresentList {
+							itemid, _ := strconv.Atoi(item.ID)
+							rivalPlayer.AddOperatorMessage(
+								"A reward for "+strconv.Itoa(int(rivalPlayer.BattleState.WinStreak))+" consecutive Daily Battle win(s).",
+								obj.MessageItem{
+									int64(itemid),
+									item.Amount,
+									0,
+									0,
+								},
+								2592000,
+							)
 						}
 					}
 					player.BattleState.BattleHistory = append(player.BattleState.BattleHistory, battlePair)
@@ -520,4 +568,12 @@ func PostDailyBattleResult(helper *helper.Helper) {
 	}
 }
 
-// TODO: /Battle/getPrizeDailyBattle still needs to be implemented
+func GetPrizeDailyBattle(helper *helper.Helper) {
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	response := responses.DefaultGetPrizeDailyBattle(baseInfo)
+	err := helper.SendCompatibleResponse(response)
+	if err != nil {
+		helper.InternalErr("Error sending response", err)
+		return
+	}
+}

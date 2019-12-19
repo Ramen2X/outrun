@@ -9,6 +9,6 @@ type ResetDailyBattleMatchingRequest struct {
 }
 
 // ResetDailyBattleMatching has 3 possible types:
-// 0: Normal search with no red ring deduction
+// 0: Initial search
 // 1: Normal search (costs 5 red rings)
 // 2: Closest match search (costs 10 red rings)

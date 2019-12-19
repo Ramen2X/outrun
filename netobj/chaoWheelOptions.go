@@ -41,7 +41,7 @@ func DefaultChaoWheelOptions(playerState PlayerState) ChaoWheelOptions {
 	//rarity := []int64{2, 1, 100, 1, 2, 1, 100, 1} // l2 Chao, l1 Chao, character...
 	//itemWeight := []int64{6, 17, 5, 17, 16, 17, 5, 17} // Could possibly fake these, but the logic shouldn't allow it to happen
 	//rarity := []int64{0, 1, 2, 100, 0, 1, 2, 100}      // TODO: REMOVE!
-	rarity := []int64{100, 1, 2, 1, 2, 1, 2, 1}
+	rarity := []int64{100, 1, 2, 1, 1, 1, 2, 1}
 	itemWeight := []int64{6, 17, 5, 17, 16, 17, 5, 17} // Could possibly fake these, but the logic shouldn't allow it to happen
 	campaignList := obj.DefaultCampaigns()
 	chaoRouletteType := enums.ChaoWheelTypeNormal
