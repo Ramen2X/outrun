@@ -87,7 +87,7 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 		doReward = true
 		if time.Now().UTC().Unix() > player.BattleState.BattleEndsAt {
 			player.BattleState.BattleStartsAt = now.BeginningOfDay().UTC().Unix()
-			player.BattleState.BattleEndsAt = now.EndOfDay().UTC().Unix()
+			player.BattleState.BattleEndsAt = now.EndOfDay().UTC().Unix() + 1
 			player.BattleState.ScoreRecordedToday = false
 			player.BattleState.MatchedUpWithRival = false
 		}
@@ -187,6 +187,14 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 						for rivalPlayer.BattleState.WinStreak > constobjs.DefaultDailyBattlePrizeList[rewardIndex].Number && rewardIndex < len(constobjs.DefaultDailyBattlePrizeList) {
 							rewardIndex++
 						}
+						if player.BattleState.WinStreak > 150 {
+							rewardIndex = len(constobjs.DefaultDailyBattlePrizeList)
+							if constobjs.DefaultDailyBattlePrizeList[rewardIndex].Operator != 2 {
+								helper.Warn("Unexpected operator type %v at daily battle prize list index %v", constobjs.DefaultDailyBattlePrizeList[rewardIndex].Operator, rewardIndex)
+								helper.InvalidRequest()
+								return
+							}
+						}
 						helper.DebugOut("Index %v of rewards list", rewardIndex)
 						for _, item := range constobjs.DefaultDailyBattlePrizeList[rewardIndex].PresentList {
 							itemid, _ := strconv.Atoi(item.ID)
@@ -220,7 +228,7 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 				}
 			}
 			player.BattleState.BattleStartsAt = now.BeginningOfDay().UTC().Unix()
-			player.BattleState.BattleEndsAt = now.EndOfDay().UTC().Unix()
+			player.BattleState.BattleEndsAt = now.EndOfDay().UTC().Unix() + 1
 			player.BattleState.ScoreRecordedToday = false
 			player.BattleState.MatchedUpWithRival = false
 		}
@@ -495,6 +503,14 @@ func PostDailyBattleResult(helper *helper.Helper) {
 					if player.BattleState.WinStreak > 0 {
 						for player.BattleState.WinStreak > constobjs.DefaultDailyBattlePrizeList[rewardIndex].Number && rewardIndex < len(constobjs.DefaultDailyBattlePrizeList) {
 							rewardIndex++
+						}
+						if player.BattleState.WinStreak > 150 {
+							rewardIndex = len(constobjs.DefaultDailyBattlePrizeList)
+							if constobjs.DefaultDailyBattlePrizeList[rewardIndex].Operator != 2 {
+								helper.Warn("Unexpected operator type %v at daily battle prize list index %v", constobjs.DefaultDailyBattlePrizeList[rewardIndex].Operator, rewardIndex)
+								helper.InvalidRequest()
+								return
+							}
 						}
 						helper.DebugOut("Index %v of rewards list", rewardIndex)
 						for _, item := range constobjs.DefaultDailyBattlePrizeList[rewardIndex].PresentList {
