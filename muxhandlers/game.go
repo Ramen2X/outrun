@@ -477,7 +477,7 @@ func QuickPostGameResults(helper *helper.Helper) {
 			player.BattleState.DailyBattleHighScore = request.Score
 			player.BattleState.ScoreRecordedToday = true
 			helper.DebugOut("Daily battle high score has been set!")
-			player.BattleState = battle.DrawBattleRival(player, 250)
+			player.BattleState = battle.DrawBattleRival(player, 500)
 			if player.BattleState.MatchedUpWithRival {
 				helper.DebugOut("Matched up with rival!")
 			} else {
