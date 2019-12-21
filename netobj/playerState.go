@@ -83,8 +83,8 @@ func DefaultPlayerState() PlayerState {
 	energyBuy := int64(0)
 	energyRenewsAt := time.Now().Unix() + 600 // in ten minutes
 	mumMessages := int64(0)
-	rankingLeague := int64(enums.RankingLeagueNone)
-	quickRankingLeague := int64(enums.RankingLeagueNone)
+	rankingLeague := int64(enums.RankingLeagueF_M)
+	quickRankingLeague := int64(enums.RankingLeagueF_M)
 	numRouletteTicket := int64(0)
 	numChaoRouletteTicket := int64(0)
 	chaoEggs := int64(0)

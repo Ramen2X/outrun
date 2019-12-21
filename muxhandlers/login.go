@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/fluofoxxo/outrun/enums"
+
 	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/jinzhu/now"
 
@@ -123,6 +125,12 @@ func Login(helper *helper.Helper) {
 			return
 		}
 		player.LastLogin = time.Now().UTC().Unix()
+		if player.PlayerState.RankingLeague == int64(enums.RankingLeagueNone) {
+			player.PlayerState.RankingLeague = int64(enums.RankingLeagueF_M)
+		}
+		if player.PlayerState.QuickRankingLeague == int64(enums.RankingLeagueNone) {
+			player.PlayerState.QuickRankingLeague = int64(enums.RankingLeagueF_M)
+		}
 		err = db.SavePlayer(player)
 		if err != nil {
 			helper.InternalErr("Error saving player", err)

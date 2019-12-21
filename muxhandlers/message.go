@@ -55,6 +55,7 @@ func GetMessage(helper *helper.Helper) {
 	}
 
 	presentList := []obj.Present{}
+	blankParams := 0
 
 	switch messageIds := request.MessageIDs.(type) {
 	case []interface{}:
@@ -64,6 +65,7 @@ func GetMessage(helper *helper.Helper) {
 		}
 	case string:
 		helper.DebugOut("No messages to accept")
+		blankParams++
 	default:
 		helper.Warn("Unexpected type of request.MessageIDs")
 	}
@@ -81,8 +83,21 @@ func GetMessage(helper *helper.Helper) {
 		}
 	case string:
 		helper.DebugOut("No operator messages to accept")
+		blankParams++
 	default:
 		helper.Warn("Unexpected type of request.OperatorMessageIDs")
+	}
+
+	if blankParams == 2 {
+		//both messageIDs and operatorMessageIDs are blank; assume we're accepting all gifts
+		player.CleanUpExpiredOperatorMessages()
+		for _, omsgid := range player.GetAllOperatorMessageIDs() {
+			helper.DebugOut("Accepting operator message ID %v", omsgid)
+			present := player.AcceptOperatorMessage(omsgid)
+			if present != nil {
+				presentList = append(presentList, present.(obj.Present))
+			}
+		}
 	}
 
 	helper.DebugOut("%v", presentList)
