@@ -65,7 +65,7 @@ func Login(helper *helper.Helper) {
 		helper.InvalidRequest()
 		return
 	} else if uid != "0" && password == "" {
-		helper.Out("Entering LoginCharlie (initial log in)")
+		helper.Out("Entering LoginCharlie (initial login attempt)")
 		// game wants to log in
 		baseInfo.StatusCode = status.InvalidPassword
 		baseInfo.SetErrorMessage(emess.BadPassword)
@@ -86,7 +86,7 @@ func Login(helper *helper.Helper) {
 		}
 		return
 	} else if uid != "0" && password != "" {
-		helper.Out("Entering LoginDelta (log in with key)")
+		helper.Out("Entering LoginDelta (login with passkey)")
 		// game is attempting to log in using key
 
 		baseInfo.StatusCode = status.OK
@@ -105,12 +105,36 @@ func Login(helper *helper.Helper) {
 			}
 			return
 		}
-
-		helper.DebugOut("Password sent: %s", request.Password) // TODO: Encode the stored password so checks can be performed correctly
-		helper.DebugOut("Correct password: %s", logic.GenerateLoginPassword(player))
-		if logic.GenerateLoginPassword(player) != request.Password {
+		if logic.GenerateLoginPassword(player) == request.Password {
+			sid, err := db.AssignSessionID(uid)
+			if err != nil {
+				helper.InternalErr("Error assigning session ID", err)
+				return
+			}
+			player.LastLogin = time.Now().UTC().Unix()
+			if player.PlayerState.RankingLeague == int64(enums.RankingLeagueNone) {
+				player.PlayerState.RankingLeague = int64(enums.RankingLeagueF_M)
+			}
+			if player.PlayerState.QuickRankingLeague == int64(enums.RankingLeagueNone) {
+				player.PlayerState.QuickRankingLeague = int64(enums.RankingLeagueF_M)
+			}
+			err = db.SavePlayer(player)
+			if err != nil {
+				helper.InternalErr("Error saving player", err)
+				return
+			}
+			response := responses.LoginSuccess(baseInfo, sid, player.Username)
+			err = helper.SendResponse(response)
+			if err != nil {
+				helper.InternalErr("Error sending response", err)
+				return
+			}
+			analytics.Store(player.ID, factors.AnalyticTypeLogins)
+			return
+		} else {
 			baseInfo.StatusCode = status.InvalidPassword
 			baseInfo.SetErrorMessage(emess.BadPassword)
+			helper.DebugOut("Incorrect passkey sent: \"%s\"", request.Password)
 			err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
 			if err != nil {
 				helper.InternalErr("Error sending response", err)
@@ -118,32 +142,6 @@ func Login(helper *helper.Helper) {
 			}
 			return
 		}
-
-		sid, err := db.AssignSessionID(uid)
-		if err != nil {
-			helper.InternalErr("Error assigning session ID", err)
-			return
-		}
-		player.LastLogin = time.Now().UTC().Unix()
-		if player.PlayerState.RankingLeague == int64(enums.RankingLeagueNone) {
-			player.PlayerState.RankingLeague = int64(enums.RankingLeagueF_M)
-		}
-		if player.PlayerState.QuickRankingLeague == int64(enums.RankingLeagueNone) {
-			player.PlayerState.QuickRankingLeague = int64(enums.RankingLeagueF_M)
-		}
-		err = db.SavePlayer(player)
-		if err != nil {
-			helper.InternalErr("Error saving player", err)
-			return
-		}
-		response := responses.LoginSuccess(baseInfo, sid, player.Username)
-		err = helper.SendResponse(response)
-		if err != nil {
-			helper.InternalErr("Error sending response", err)
-			return
-		}
-		analytics.Store(player.ID, factors.AnalyticTypeLogins)
-		return
 	}
 }
 

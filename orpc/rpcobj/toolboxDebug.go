@@ -178,6 +178,12 @@ func (t *Toolbox) Debug_MigrateUser(uidToUID string, reply *ToolboxReply) error 
 		reply.Info = err.Error()
 		return err
 	}
+	err = db.SavePlayer(oldPlayer)
+	if err != nil {
+		reply.Status = StatusOtherError
+		reply.Info = err.Error()
+		return err
+	}
 
 	reply.Status = StatusOK
 	reply.Info = "OK"
