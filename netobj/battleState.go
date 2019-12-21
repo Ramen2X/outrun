@@ -51,7 +51,7 @@ func DefaultBattleState() BattleState {
 	dailyBattleHighScore := int64(0)
 	prevDailyBattleHighScore := int64(0)
 	battleStartTime := now.BeginningOfDay().UTC().Unix()
-	battleEndTime := now.EndOfDay().UTC().Unix()
+	battleEndTime := now.EndOfDay().UTC().Unix() + 1
 	matchedUpWithRival := false
 	rivalID := ""
 	wins := int64(0)

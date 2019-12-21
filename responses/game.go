@@ -3,6 +3,8 @@ package responses
 import (
 	"strconv"
 
+	"github.com/jinzhu/now"
+
 	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/logic"
 	"github.com/fluofoxxo/outrun/netobj"
@@ -37,7 +39,8 @@ func DailyChallengeData(base responseobjs.BaseInfo) DailyChallengeDataResponse {
 	numDailyChallengeCount := int64(0)
 	numDailyChallengeDay := int64(2)
 	maxDailyChallengeDay := int64(10) // is this how many you can get a day? In that case, doesn't 10 make no sense?
-	endTime := int64(1470322800)      // 08/04/2016 @ 3:00PM (UTC)
+	//endTime := int64(1470322800)      // 08/04/2016 @ 3:00PM (UTC)
+	endTime := now.EndOfDay().UTC().Unix()
 	baseResponse := NewBaseResponse(base)
 	return DailyChallengeDataResponse{
 		baseResponse,

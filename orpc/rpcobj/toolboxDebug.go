@@ -164,6 +164,13 @@ func (t *Toolbox) Debug_MigrateUser(uidToUID string, reply *ToolboxReply) error 
 	currentPlayer.LastWheelOptions = oldPlayer.LastWheelOptions
 	currentPlayer.ChaoRouletteGroup = oldPlayer.ChaoRouletteGroup
 	currentPlayer.RouletteInfo = oldPlayer.RouletteInfo
+	currentPlayer.EventState = oldPlayer.EventState
+	currentPlayer.EventUserRaidbossState = oldPlayer.EventUserRaidbossState
+	currentPlayer.BattleState = oldPlayer.BattleState
+	currentPlayer.LoginBonusState = oldPlayer.LoginBonusState
+	currentPlayer.OperatorMessages = oldPlayer.OperatorMessages
+	oldPlayer.Username = "(Migrated User " + currentPlayer.ID + ")"
+	oldPlayer.Suspended = true
 
 	err = db.SavePlayer(currentPlayer)
 	if err != nil {
