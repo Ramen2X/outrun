@@ -107,8 +107,8 @@ func Login(helper *helper.Helper) {
 		}
 
 		helper.DebugOut("Password sent: %s", request.Password) // TODO: Encode the stored password so checks can be performed correctly
-		helper.DebugOut("Correct password: %s", player.Password)
-		/*if player.Password != request.Password {
+		helper.DebugOut("Correct password: %s", logic.GenerateLoginPassword(player))
+		if logic.GenerateLoginPassword(player) != request.Password {
 			baseInfo.StatusCode = status.InvalidPassword
 			baseInfo.SetErrorMessage(emess.BadPassword)
 			err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
@@ -117,7 +117,7 @@ func Login(helper *helper.Helper) {
 				return
 			}
 			return
-		}*/
+		}
 
 		sid, err := db.AssignSessionID(uid)
 		if err != nil {
