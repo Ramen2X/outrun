@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"math/rand"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/fluofoxxo/outrun/enums"
@@ -367,6 +368,8 @@ func Migration(helper *helper.Helper) {
 	}
 	password := request.LineAuth.MigrationPassword
 	migrationUserPassword := request.LineAuth.MigrationUserPassword
+
+	password = strings.Replace(password, "-", "", -1)
 
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 
