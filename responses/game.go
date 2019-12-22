@@ -36,8 +36,8 @@ func DailyChallengeData(base responseobjs.BaseInfo) DailyChallengeDataResponse {
 		incentiveList = append(incentiveList, incentive)
 	}
 	incentiveListCount := int64(len(incentiveList))
-	numDailyChallengeCount := int64(0)
-	numDailyChallengeDay := int64(2)
+	numDailyChallengeCount := int64(1)
+	numDailyChallengeDay := int64(3)
 	maxDailyChallengeDay := int64(10) // is this how many you can get a day? In that case, doesn't 10 make no sense?
 	//endTime := int64(1470322800)      // 08/04/2016 @ 3:00PM (UTC)
 	endTime := now.EndOfDay().UTC().Unix()

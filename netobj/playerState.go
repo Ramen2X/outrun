@@ -92,9 +92,9 @@ func DefaultPlayerState() PlayerState {
 	timedHighScore := int64(0)
 	totalDistance := int64(0)
 	highDistance := int64(0)
-	dailyMissionID := int64(enums.DailyMissionDontKnowYet) //TODO: Research this.
+	dailyMissionID := int64(enums.DailyMissionDistanceSet1Day1)
 	dailyMissionEndTime := now.EndOfDay().UTC().Unix()
-	dailyChallengeValue := int64(28282)
+	dailyChallengeValue := int64(0)
 	dailyChallengeComplete := int64(0)
 	numDailyChallenge := int64(0)
 	numPlayer := int64(0)
