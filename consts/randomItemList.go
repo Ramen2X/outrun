@@ -57,7 +57,7 @@ var NormalWheelItemAmountRange = map[string]AmountRange{
 	enums.ItemIDStrLaser:              AmountRange{1, 5, 1},
 	enums.ItemIDStrDrill:              AmountRange{1, 5, 1},
 	enums.ItemIDStrAsteroid:           AmountRange{1, 5, 1},
-	strconv.Itoa(enums.IDTypeRedRing): AmountRange{5, 25, 5},
+	strconv.Itoa(enums.IDTypeRedRing): AmountRange{15, 35, 5},
 	//strconv.Itoa(enums.IDTypeItemRouletteWin): AmountRange{1, 1, 1},
 }
 
@@ -83,7 +83,7 @@ var BigWheelItemAmountRange = map[string]AmountRange{
 	enums.ItemIDStrLaser:              AmountRange{5, 10, 1},
 	enums.ItemIDStrDrill:              AmountRange{5, 10, 1},
 	enums.ItemIDStrAsteroid:           AmountRange{5, 10, 1},
-	strconv.Itoa(enums.IDTypeRedRing): AmountRange{10, 50, 10},
+	strconv.Itoa(enums.IDTypeRedRing): AmountRange{30, 100, 10},
 	//strconv.Itoa(enums.IDTypeItemRouletteWin): AmountRange{1, 1, 1},
 }
 
@@ -109,6 +109,6 @@ var SuperWheelItemAmountRange = map[string]AmountRange{
 	enums.ItemIDStrLaser:              AmountRange{10, 20, 2},
 	enums.ItemIDStrDrill:              AmountRange{10, 20, 2},
 	enums.ItemIDStrAsteroid:           AmountRange{10, 20, 2},
-	strconv.Itoa(enums.IDTypeRedRing): AmountRange{20, 160, 20},
+	strconv.Itoa(enums.IDTypeRedRing): AmountRange{60, 240, 20},
 	//strconv.Itoa(enums.IDTypeItemRouletteWin): AmountRange{1, 1, 1},
 }

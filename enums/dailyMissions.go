@@ -39,7 +39,7 @@ const (
 	DailyMissionEnemySet9Day2 = 26 // 80 enemies
 	DailyMissionEnemySet9Day3 = 27 // 90 enemies
 
-	DailyMissionEnemySet10Day1 = 28 // 50 enemies
+	DailyMissionEnemySet10Day1 = 28 // 70 enemies
 	DailyMissionEnemySet10Day2 = 29 // 80 enemies
 	DailyMissionEnemySet10Day3 = 30 // 90 enemies
 
@@ -51,6 +51,14 @@ const (
 	DailyMissionGoldEnemySet1Day1 = 34 // 5 golden enemies
 	DailyMissionGoldEnemySet1Day2 = 35 // 5 golden enemies
 	DailyMissionGoldEnemySet1Day3 = 36 // 5 golden enemies
+
+	DailyMissionGoldEnemySet2Day1 = 37 // 5 golden enemies
+	DailyMissionGoldEnemySet2Day2 = 38 // 10 golden enemies
+	DailyMissionGoldEnemySet2Day3 = 39 // 15 golden enemies
+
+	DailyMissionGoldEnemySet3Day1 = 40 // ? golden enemies
+	DailyMissionGoldEnemySet3Day2 = 41 // ? golden enemies
+	DailyMissionGoldEnemySet3Day3 = 42 // ? golden enemies
 
 	// "Run for x meters!" daily missions
 	DailyMissionDistanceSet1Day1 = 67 // 500 meters

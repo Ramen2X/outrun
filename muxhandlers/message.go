@@ -155,6 +155,22 @@ func GetMessage(helper *helper.Helper) {
 				player.ChaoState[chaoIndex].Level = maxChaoLevel              // reset to maximum
 				player.ChaoState[chaoIndex].Status = enums.ChaoStatusMaxLevel // set status to MaxLevel
 			}
+		} else if itemid[:2] == "30" { // ID is a character
+			charIndex := player.IndexOfChara(itemid)
+			if charIndex == -1 { // character index not found, should never happen
+				helper.InternalErr("cannot get index of character '"+strconv.Itoa(charIndex)+"'", err)
+				return
+			}
+			if player.CharacterState[charIndex].Status == enums.CharacterStatusLocked {
+				// unlock the character
+				player.CharacterState[charIndex].Status = enums.CharacterStatusUnlocked
+			} else {
+				starUpCount := currentPresent.NumItem
+				for starUpCount > 0 && player.CharacterState[charIndex].Star < 10 { // 10 is max amount of stars a character can have before game breaks
+					starUpCount--
+					player.CharacterState[charIndex].Star++
+				}
+			}
 		} else {
 			helper.Out("Unknown present ID %s", itemid)
 		}

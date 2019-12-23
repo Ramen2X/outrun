@@ -107,6 +107,10 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 				strconv.Itoa(int(enums.ItemIDRedRing)),
 				25,
 			),
+			obj.NewItem(
+				strconv.Itoa(int(enums.ChaoIDChaoWalker)),
+				1,
+			),
 		},
 	),
 	obj.NewOperatorScore(
@@ -206,6 +210,10 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 			obj.NewItem(
 				strconv.Itoa(int(enums.ItemIDRedRing)),
 				25,
+			),
+			obj.NewItem(
+				strconv.Itoa(int(enums.ChaoIDChaoWalker)),
+				1,
 			),
 		},
 	),
@@ -307,6 +315,10 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 				strconv.Itoa(int(enums.ItemIDRedRing)),
 				25,
 			),
+			obj.NewItem(
+				strconv.Itoa(int(enums.ChaoIDChaoWalker)),
+				1,
+			),
 		},
 	),
 	obj.NewOperatorScore(
@@ -406,6 +418,10 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 			obj.NewItem(
 				strconv.Itoa(int(enums.ItemIDRedRing)),
 				25,
+			),
+			obj.NewItem(
+				strconv.Itoa(int(enums.ChaoIDChaoWalker)),
+				1,
 			),
 		},
 	),
@@ -507,6 +523,10 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 				strconv.Itoa(int(enums.ItemIDRedRing)),
 				25,
 			),
+			obj.NewItem(
+				strconv.Itoa(int(enums.ChaoIDChaoWalker)),
+				1,
+			),
 		},
 	),
 	obj.NewOperatorScore(
@@ -546,6 +566,10 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 			obj.NewItem(
 				strconv.Itoa(int(enums.ItemIDRedRing)),
 				25,
+			),
+			obj.NewItem(
+				strconv.Itoa(int(enums.ChaoIDChaoWalker)),
+				1,
 			),
 		},
 	),
@@ -587,6 +611,10 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 				strconv.Itoa(int(enums.ItemIDRedRing)),
 				25,
 			),
+			obj.NewItem(
+				strconv.Itoa(int(enums.ChaoIDChaoWalker)),
+				1,
+			),
 		},
 	),
 	obj.NewOperatorScore(
@@ -626,6 +654,10 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 			obj.NewItem(
 				strconv.Itoa(int(enums.ItemIDRedRing)),
 				25,
+			),
+			obj.NewItem(
+				strconv.Itoa(int(enums.ChaoIDChaoWalker)),
+				1,
 			),
 		},
 	),
@@ -667,6 +699,10 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 				strconv.Itoa(int(enums.ItemIDRedRing)),
 				25,
 			),
+			obj.NewItem(
+				strconv.Itoa(int(enums.ChaoIDChaoWalker)),
+				1,
+			),
 		},
 	),
 	obj.NewOperatorScore(
@@ -706,6 +742,10 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 			obj.NewItem(
 				strconv.Itoa(int(enums.ItemIDRedRing)),
 				100,
+			),
+			obj.NewItem(
+				strconv.Itoa(int(enums.ChaoIDChaoWalker)),
+				1,
 			),
 		},
 	),
@@ -747,6 +787,10 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 				strconv.Itoa(int(enums.ItemIDRedRing)),
 				25,
 			),
+			obj.NewItem(
+				strconv.Itoa(int(enums.ChaoIDChaoWalker)),
+				1,
+			),
 		},
 	),
 	obj.NewOperatorScore(
@@ -786,6 +830,10 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 			obj.NewItem(
 				strconv.Itoa(int(enums.ItemIDRedRing)),
 				25,
+			),
+			obj.NewItem(
+				strconv.Itoa(int(enums.ChaoIDChaoWalker)),
+				1,
 			),
 		},
 	),
@@ -827,6 +875,10 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 				strconv.Itoa(int(enums.ItemIDRedRing)),
 				25,
 			),
+			obj.NewItem(
+				strconv.Itoa(int(enums.ChaoIDChaoWalker)),
+				1,
+			),
 		},
 	),
 	obj.NewOperatorScore(
@@ -867,6 +919,10 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 				strconv.Itoa(int(enums.ItemIDRedRing)),
 				25,
 			),
+			obj.NewItem(
+				strconv.Itoa(int(enums.ChaoIDChaoWalker)),
+				1,
+			),
 		},
 	),
 	obj.NewOperatorScore(
@@ -906,6 +962,10 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 			obj.NewItem(
 				strconv.Itoa(int(enums.ItemIDRedRing)),
 				50,
+			),
+			obj.NewItem(
+				strconv.Itoa(int(enums.ChaoIDChaoWalker)),
+				1,
 			),
 		},
 	),
