@@ -1,6 +1,7 @@
 package enums
 
-// Daily missions appear to be divided into sets of 3
+// Daily missions appear to be divided into 11 sets of 3, making for 33 daily missions for each category
+// Thus, there are 198 daily missions across all 5 categories.
 const (
 	// "Take out x enemies!" daily missions
 	DailyMissionEnemySet1Day1 = 1 // 10 enemies
@@ -56,9 +57,41 @@ const (
 	DailyMissionGoldEnemySet2Day2 = 38 // 10 golden enemies
 	DailyMissionGoldEnemySet2Day3 = 39 // 15 golden enemies
 
-	DailyMissionGoldEnemySet3Day1 = 40 // ? golden enemies
-	DailyMissionGoldEnemySet3Day2 = 41 // ? golden enemies
-	DailyMissionGoldEnemySet3Day3 = 42 // ? golden enemies
+	DailyMissionGoldEnemySet3Day1 = 40 // 10 golden enemies
+	DailyMissionGoldEnemySet3Day2 = 41 // 15 golden enemies
+	DailyMissionGoldEnemySet3Day3 = 42 // 20 golden enemies
+
+	DailyMissionGoldEnemySet4Day1 = 43 // 10 golden enemies
+	DailyMissionGoldEnemySet4Day2 = 44 // 15 golden enemies
+	DailyMissionGoldEnemySet4Day3 = 45 // 20 golden enemies
+
+	DailyMissionGoldEnemySet5Day1 = 46 // 15 golden enemies
+	DailyMissionGoldEnemySet5Day2 = 47 // 20 golden enemies
+	DailyMissionGoldEnemySet5Day3 = 48 // 25 golden enemies
+
+	DailyMissionGoldEnemySet6Day1 = 49 // 15 golden enemies
+	DailyMissionGoldEnemySet6Day2 = 50 // 20 golden enemies
+	DailyMissionGoldEnemySet6Day3 = 51 // 25 golden enemies
+
+	DailyMissionGoldEnemySet7Day1 = 52 // 20 golden enemies
+	DailyMissionGoldEnemySet7Day2 = 53 // 25 golden enemies
+	DailyMissionGoldEnemySet7Day3 = 54 // 30 golden enemies
+
+	DailyMissionGoldEnemySet8Day1 = 55 // 20 golden enemies
+	DailyMissionGoldEnemySet8Day2 = 56 // 25 golden enemies
+	DailyMissionGoldEnemySet8Day3 = 57 // 30 golden enemies
+
+	DailyMissionGoldEnemySet9Day1 = 58 // 25 golden enemies
+	DailyMissionGoldEnemySet9Day2 = 59 // 30 golden enemies
+	DailyMissionGoldEnemySet9Day3 = 60 // 35 golden enemies
+
+	DailyMissionGoldEnemySet10Day1 = 61 // 25 golden enemies
+	DailyMissionGoldEnemySet10Day2 = 62 // 30 golden enemies
+	DailyMissionGoldEnemySet10Day3 = 63 // 35 golden enemies
+
+	DailyMissionGoldEnemySet11Day1 = 64 // 30 golden enemies
+	DailyMissionGoldEnemySet11Day2 = 65 // 35 golden enemies
+	DailyMissionGoldEnemySet11Day3 = 66 // 40 golden enemies
 
 	// "Run for x meters!" daily missions
 	DailyMissionDistanceSet1Day1 = 67 // 500 meters
@@ -68,4 +101,55 @@ const (
 	DailyMissionDistanceSet2Day1 = 70 // 1000 meters
 	DailyMissionDistanceSet2Day2 = 71 // 1500 meters
 	DailyMissionDistanceSet2Day3 = 72 // 2000 meters
+
+	DailyMissionDistanceSet3Day1 = 73 // 1500 meters
+	DailyMissionDistanceSet3Day2 = 74 // 2000 meters
+	DailyMissionDistanceSet3Day3 = 75 // 2500 meters
+
+	DailyMissionDistanceSet4Day1 = 76 // 2500 meters
+	DailyMissionDistanceSet4Day2 = 77 // ? meters
+	DailyMissionDistanceSet4Day3 = 78 // ? meters
+
+	DailyMissionDistanceSet5Day1 = 79 // 3000 meters
+	DailyMissionDistanceSet5Day2 = 80 // ? meters
+	DailyMissionDistanceSet5Day3 = 81 // ? meters
+
+	DailyMissionDistanceSet6Day1 = 82 // ? meters
+	DailyMissionDistanceSet6Day2 = 83 // ? meters
+	DailyMissionDistanceSet6Day3 = 84 // ? meters
+
+	DailyMissionDistanceSet7Day1 = 85 // ? meters
+	DailyMissionDistanceSet7Day2 = 86 // ? meters
+	DailyMissionDistanceSet7Day3 = 87 // ? meters
+
+	DailyMissionDistanceSet8Day1 = 88 // ? meters
+	DailyMissionDistanceSet8Day2 = 89 // ? meters
+	DailyMissionDistanceSet8Day3 = 90 // ? meters
+
+	DailyMissionDistanceSet9Day1 = 91 // ? meters
+	DailyMissionDistanceSet9Day2 = 92 // ? meters
+	DailyMissionDistanceSet9Day3 = 93 // ? meters
+
+	DailyMissionDistanceSet10Day1 = 94 // ? meters
+	DailyMissionDistanceSet10Day2 = 95 // ? meters
+	DailyMissionDistanceSet10Day3 = 96 // ? meters
+
+	DailyMissionDistanceSet11Day1 = 97 // ? meters
+	DailyMissionDistanceSet11Day2 = 98 // ? meters
+	DailyMissionDistanceSet11Day3 = 99 // ? meters
+
+	// "Save x Animals!" daily missions
+	DailyMissionAnimalSet1Day1 = 100 // 20 animals
+	DailyMissionAnimalSet1Day2 = 101 // 20 animals
+	DailyMissionAnimalSet1Day3 = 102 // 20 animals
+
+	// "Score x points!" daily missions
+	DailyMissionScoreSet1Day1 = 133 // 50000 points
+	DailyMissionScoreSet1Day2 = 134 // 50000 points
+	DailyMissionScoreSet1Day3 = 135 // 50000 points
+
+	// "Collect x Rings!" daily missions
+	DailyMissionRingSet1Day1 = 166 // 300 rings
+	DailyMissionRingSet1Day2 = 167 // 300 rings
+	DailyMissionRingSet1Day3 = 168 // 300 rings
 )

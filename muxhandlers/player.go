@@ -2,6 +2,7 @@ package muxhandlers
 
 import (
 	"encoding/json"
+	"math/rand"
 	"strconv"
 	"time"
 
@@ -35,15 +36,23 @@ func GetPlayerState(helper *helper.Helper) {
 		player.PlayerState.EnergyRenewsAt += player.PlayerVarious.EnergyRecoveryTime
 	}
 	if time.Now().UTC().Unix() >= player.PlayerState.DailyMissionEndTime {
+		if player.PlayerState.DailyChallengeComplete == 1 && player.PlayerState.DailyMissionID%33 != 0 {
+			helper.DebugOut("Advancing to next daily mission...")
+			player.PlayerState.DailyMissionID++
+		} else {
+			player.PlayerState.DailyMissionID = int64((rand.Intn(5) * 33) + 1)
+		}
 		player.PlayerState.DailyChallengeValue = int64(0)
 		player.PlayerState.DailyChallengeComplete = int64(0)
 		player.PlayerState.DailyMissionEndTime = now.EndOfDay().UTC().Unix() + 1
+		helper.DebugOut("New daily mission ID: %v", player.PlayerState.DailyMissionID)
 		err = db.SavePlayer(player)
 		if err != nil {
 			helper.InternalErr("Error saving player", err)
 			return
 		}
 	}
+	player.PlayerState.DailyMissionID = int64(165)
 	response := responses.PlayerState(baseInfo, player.PlayerState)
 	helper.SendResponse(response)
 }

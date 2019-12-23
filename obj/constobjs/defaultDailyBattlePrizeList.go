@@ -21,36 +21,6 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 	),
 	obj.NewOperatorScore(
 		0,
-		2,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		3,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		4,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
 		5,
 		[]obj.Item{
 			obj.NewItem(
@@ -62,36 +32,6 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 	obj.NewOperatorScore(
 		0,
 		6,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		7,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		8,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		9,
 		[]obj.Item{
 			obj.NewItem(
 				strconv.Itoa(int(enums.ItemIDRedRing)),
@@ -125,36 +65,6 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 	),
 	obj.NewOperatorScore(
 		0,
-		12,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		13,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		14,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
 		15,
 		[]obj.Item{
 			obj.NewItem(
@@ -166,36 +76,6 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 	obj.NewOperatorScore(
 		0,
 		16,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		17,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		18,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		19,
 		[]obj.Item{
 			obj.NewItem(
 				strconv.Itoa(int(enums.ItemIDRedRing)),
@@ -229,36 +109,6 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 	),
 	obj.NewOperatorScore(
 		0,
-		22,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		23,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		24,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
 		25,
 		[]obj.Item{
 			obj.NewItem(
@@ -270,36 +120,6 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 	obj.NewOperatorScore(
 		0,
 		26,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		27,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		28,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		29,
 		[]obj.Item{
 			obj.NewItem(
 				strconv.Itoa(int(enums.ItemIDRedRing)),
@@ -333,36 +153,6 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 	),
 	obj.NewOperatorScore(
 		0,
-		32,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		33,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		34,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
 		35,
 		[]obj.Item{
 			obj.NewItem(
@@ -374,36 +164,6 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 	obj.NewOperatorScore(
 		0,
 		36,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		37,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		38,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		39,
 		[]obj.Item{
 			obj.NewItem(
 				strconv.Itoa(int(enums.ItemIDRedRing)),
@@ -437,36 +197,6 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 	),
 	obj.NewOperatorScore(
 		0,
-		42,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		43,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		44,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
 		45,
 		[]obj.Item{
 			obj.NewItem(
@@ -478,36 +208,6 @@ var DefaultDailyBattlePrizeList = []obj.OperatorScore{
 	obj.NewOperatorScore(
 		0,
 		46,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		47,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		48,
-		[]obj.Item{
-			obj.NewItem(
-				strconv.Itoa(int(enums.ItemIDRedRing)),
-				5,
-			),
-		},
-	),
-	obj.NewOperatorScore(
-		0,
-		49,
 		[]obj.Item{
 			obj.NewItem(
 				strconv.Itoa(int(enums.ItemIDRedRing)),

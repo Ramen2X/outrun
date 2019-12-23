@@ -1,6 +1,7 @@
 package netobj
 
 import (
+	"math/rand"
 	"time"
 
 	"github.com/fluofoxxo/outrun/config/gameconf"
@@ -92,7 +93,7 @@ func DefaultPlayerState() PlayerState {
 	timedHighScore := int64(0)
 	totalDistance := int64(0)
 	highDistance := int64(0)
-	dailyMissionID := int64(enums.DailyMissionDistanceSet1Day1)
+	dailyMissionID := int64((rand.Intn(5) * 33) + 1)
 	dailyMissionEndTime := now.EndOfDay().UTC().Unix()
 	dailyChallengeValue := int64(0)
 	dailyChallengeComplete := int64(0)

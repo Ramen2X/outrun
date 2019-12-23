@@ -484,6 +484,8 @@ func QuickPostGameResults(helper *helper.Helper) {
 				helper.DebugOut("No rival was found!")
 			}
 		}
+		player.PlayerState.DailyChallengeValue = request.DailyChallengeValue
+		player.PlayerState.DailyChallengeComplete = request.DailyChallengeComplete
 		//player.PlayerState.TotalDistance += request.Distance  // We don't do this in timed mode!
 		// increase character(s)'s experience
 		expIncrease := request.Rings + request.FailureRings // all rings collected
@@ -718,6 +720,8 @@ func PostGameResults(helper *helper.Helper) {
 		if player.PlayerState.TotalScoreThisPeriod > player.OptionUserResult.TotalSumHighScore {
 			player.OptionUserResult.TotalSumHighScore = player.PlayerState.TotalScoreThisPeriod
 		}
+		player.PlayerState.DailyChallengeValue = request.DailyChallengeValue
+		player.PlayerState.DailyChallengeComplete = request.DailyChallengeComplete
 		// increase character(s)'s experience
 		expIncrease := request.Rings + request.FailureRings // all rings collected
 		abilityIndex := 1
