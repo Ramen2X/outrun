@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/fluofoxxo/outrun/consts"
+
 	"github.com/fluofoxxo/outrun/db"
 	"github.com/fluofoxxo/outrun/emess"
 	"github.com/fluofoxxo/outrun/helper"
@@ -46,6 +48,9 @@ func GetPlayerState(helper *helper.Helper) {
 			player.PlayerState.NumDailyChallenge = int64(0)
 		} else {
 			player.PlayerState.NumDailyChallenge++
+			if int(player.PlayerState.NumDailyChallenge) >= len(consts.DailyMissionRewards) {
+				player.PlayerState.NumDailyChallenge = int64(0) //restart from beginning
+			}
 		}
 		player.PlayerState.DailyChallengeValue = int64(0)
 		player.PlayerState.DailyChallengeComplete = int64(0)
