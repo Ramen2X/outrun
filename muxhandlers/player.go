@@ -52,7 +52,6 @@ func GetPlayerState(helper *helper.Helper) {
 			return
 		}
 	}
-	player.PlayerState.DailyMissionID = int64(165)
 	response := responses.PlayerState(baseInfo, player.PlayerState)
 	helper.SendResponse(response)
 }
