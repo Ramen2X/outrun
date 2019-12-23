@@ -484,7 +484,8 @@ func QuickPostGameResults(helper *helper.Helper) {
 				helper.DebugOut("No rival was found!")
 			}
 		}
-		if player.PlayerState.DailyChallengeComplete == 0 && request.DailyChallengeComplete == 1 {
+		player.PlayerState.DailyChallengeComplete = request.DailyChallengeComplete
+		if player.PlayerState.DailyChallengeComplete == 0 && request.DailyChallengeValue >= consts.DailyMissionGoals[player.PlayerState.DailyMissionID] {
 			player.AddOperatorMessage(
 				"A Daily Challenge Reward.",
 				obj.NewMessageItem(
@@ -495,9 +496,9 @@ func QuickPostGameResults(helper *helper.Helper) {
 				),
 				2592000,
 			)
+			player.PlayerState.DailyChallengeComplete = int64(1)
 		}
 		player.PlayerState.DailyChallengeValue = request.DailyChallengeValue
-		player.PlayerState.DailyChallengeComplete = request.DailyChallengeComplete
 		//player.PlayerState.TotalDistance += request.Distance  // We don't do this in timed mode!
 		// increase character(s)'s experience
 		expIncrease := request.Rings + request.FailureRings // all rings collected
@@ -732,7 +733,8 @@ func PostGameResults(helper *helper.Helper) {
 		if player.PlayerState.TotalScoreThisPeriod > player.OptionUserResult.TotalSumHighScore {
 			player.OptionUserResult.TotalSumHighScore = player.PlayerState.TotalScoreThisPeriod
 		}
-		if player.PlayerState.DailyChallengeComplete == 0 && request.DailyChallengeComplete == 1 {
+		player.PlayerState.DailyChallengeComplete = request.DailyChallengeComplete
+		if player.PlayerState.DailyChallengeComplete == 0 && request.DailyChallengeValue >= consts.DailyMissionGoals[player.PlayerState.DailyMissionID] {
 			player.AddOperatorMessage(
 				"A Daily Challenge Reward.",
 				obj.NewMessageItem(
@@ -743,9 +745,9 @@ func PostGameResults(helper *helper.Helper) {
 				),
 				2592000,
 			)
+			player.PlayerState.DailyChallengeComplete = int64(1)
 		}
 		player.PlayerState.DailyChallengeValue = request.DailyChallengeValue
-		player.PlayerState.DailyChallengeComplete = request.DailyChallengeComplete
 		// increase character(s)'s experience
 		expIncrease := request.Rings + request.FailureRings // all rings collected
 		abilityIndex := 1
