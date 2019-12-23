@@ -732,6 +732,18 @@ func PostGameResults(helper *helper.Helper) {
 		if player.PlayerState.TotalScoreThisPeriod > player.OptionUserResult.TotalSumHighScore {
 			player.OptionUserResult.TotalSumHighScore = player.PlayerState.TotalScoreThisPeriod
 		}
+		if player.PlayerState.DailyChallengeComplete == 0 && request.DailyChallengeComplete == 1 {
+			player.AddOperatorMessage(
+				"A Daily Challenge Reward.",
+				obj.NewMessageItem(
+					consts.DailyMissionRewards[player.PlayerState.NumDailyChallenge],
+					consts.DailyMissionRewardCounts[player.PlayerState.NumDailyChallenge],
+					0,
+					0,
+				),
+				2592000,
+			)
+		}
 		player.PlayerState.DailyChallengeValue = request.DailyChallengeValue
 		player.PlayerState.DailyChallengeComplete = request.DailyChallengeComplete
 		// increase character(s)'s experience
