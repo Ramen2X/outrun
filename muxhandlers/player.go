@@ -42,6 +42,11 @@ func GetPlayerState(helper *helper.Helper) {
 		} else {
 			player.PlayerState.DailyMissionID = int64((rand.Intn(5) * 33) + 1)
 		}
+		if player.PlayerState.DailyChallengeComplete == 0 {
+			player.PlayerState.NumDailyChallenge = int64(0)
+		} else {
+			player.PlayerState.NumDailyChallenge++
+		}
 		player.PlayerState.DailyChallengeValue = int64(0)
 		player.PlayerState.DailyChallengeComplete = int64(0)
 		player.PlayerState.DailyMissionEndTime = now.EndOfDay().UTC().Unix() + 1

@@ -5,7 +5,7 @@ import (
 
 	"github.com/jinzhu/now"
 
-	"github.com/fluofoxxo/outrun/enums"
+	"github.com/fluofoxxo/outrun/consts"
 	"github.com/fluofoxxo/outrun/logic"
 	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/obj"
@@ -23,12 +23,13 @@ type DailyChallengeDataResponse struct {
 	EndTime                int64           `json:"chalEndTime"`
 }
 
-func DailyChallengeData(base responseobjs.BaseInfo) DailyChallengeDataResponse {
-	ilSrc := []int64{enums.ItemIDRing, enums.ItemIDBarrier, enums.ItemIDMagnet, enums.ItemIDTrampoline, enums.ItemIDAsteroid, enums.ItemIDDrill, enums.ItemIDRedRing} // must be length of seven!
-	//ilSrc := []int64{900000, 900000, 900000, 900000, 900000, 900000, 900000} // TODO: good candidate for discovering item IDs
+func DailyChallengeData(base responseobjs.BaseInfo, numDailyChallenge int64) DailyChallengeDataResponse {
+	ilSrc := consts.DailyMissionRewards
+	//ilSrc := []int64{enums.ItemIDRing, enums.ItemIDBarrier, enums.ItemIDMagnet, enums.ItemIDTrampoline, enums.ItemIDAsteroid, enums.ItemIDDrill, enums.ItemIDRedRing} // must be length of seven!
+	//ilSrc := []int64{900000, 900000, 900000, 900000, 900000, 900000, 900000}
 	incentiveList := []obj.Incentive{}
 	for amountSrc, id := range ilSrc {
-		item := obj.NewItem(strconv.Itoa(int(id)), int64(amountSrc+1))
+		item := obj.NewItem(strconv.Itoa(int(id)), consts.DailyMissionRewardCounts[amountSrc])
 		incentive := obj.NewIncentive(
 			item,
 			int64(amountSrc+1),
@@ -37,8 +38,8 @@ func DailyChallengeData(base responseobjs.BaseInfo) DailyChallengeDataResponse {
 	}
 	incentiveListCount := int64(len(incentiveList))
 	numDailyChallengeCount := int64(1)
-	numDailyChallengeDay := int64(3)
-	maxDailyChallengeDay := int64(10) // is this how many you can get a day? In that case, doesn't 10 make no sense?
+	maxDailyChallengeDay := int64(7)
+	numDailyChallengeDay := int64(maxDailyChallengeDay - 1 - numDailyChallenge)
 	//endTime := int64(1470322800)      // 08/04/2016 @ 3:00PM (UTC)
 	endTime := now.EndOfDay().UTC().Unix()
 	baseResponse := NewBaseResponse(base)

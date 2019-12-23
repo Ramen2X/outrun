@@ -1,5 +1,9 @@
 package consts
 
+import (
+	"github.com/fluofoxxo/outrun/enums"
+)
+
 var DailyMissionGoals = map[int64]int64{
 	// Enemy missions
 	1:  10,
@@ -205,4 +209,25 @@ var DailyMissionGoals = map[int64]int64{
 	196: 20000,
 	197: 20000,
 	198: 20000,
+}
+
+//
+var DailyMissionRewards = []int64{
+	enums.ItemIDRing,
+	enums.ItemIDRedRing,
+	enums.ItemIDRing,
+	enums.ItemIDRedRing,
+	enums.ItemIDRing,
+	enums.ItemIDRedRing,
+	enums.ItemIDRedRing,
+}
+
+var DailyMissionRewardCounts = []int64{
+	500,
+	10,
+	1000,
+	20,
+	2500,
+	30,
+	75,
 }

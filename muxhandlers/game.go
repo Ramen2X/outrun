@@ -47,7 +47,7 @@ func GetDailyChallengeData(helper *helper.Helper) {
 		}
 		return
 	}
-	response := responses.DailyChallengeData(baseInfo)
+	response := responses.DailyChallengeData(baseInfo, player.PlayerState.NumDailyChallenge)
 	err = helper.SendResponse(response)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
@@ -483,6 +483,18 @@ func QuickPostGameResults(helper *helper.Helper) {
 			} else {
 				helper.DebugOut("No rival was found!")
 			}
+		}
+		if player.PlayerState.DailyChallengeComplete == 0 && request.DailyChallengeComplete == 1 {
+			player.AddOperatorMessage(
+				"A Daily Challenge Reward.",
+				obj.NewMessageItem(
+					consts.DailyMissionRewards[player.PlayerState.NumDailyChallenge],
+					consts.DailyMissionRewardCounts[player.PlayerState.NumDailyChallenge],
+					0,
+					0,
+				),
+				2592000,
+			)
 		}
 		player.PlayerState.DailyChallengeValue = request.DailyChallengeValue
 		player.PlayerState.DailyChallengeComplete = request.DailyChallengeComplete
