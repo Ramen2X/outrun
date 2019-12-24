@@ -41,11 +41,12 @@ func GetPlayerState(helper *helper.Helper) {
 		player.PlayerState.NumDailyChallenge = int64(1)
 	}
 	if time.Now().UTC().Unix() >= player.PlayerState.DailyMissionEndTime {
-		if player.PlayerState.DailyChallengeComplete == 1 && player.PlayerState.DailyMissionID%33 != 0 {
+		if player.PlayerState.DailyChallengeComplete == 1 && player.PlayerState.DailyChalSetNum < 10 {
 			helper.DebugOut("Advancing to next daily mission...")
-			player.PlayerState.DailyMissionID++
+			player.PlayerState.DailyChalSetNum++
 		} else {
-			player.PlayerState.DailyMissionID = int64((rand.Intn(5) * 33) + 1)
+			player.PlayerState.DailyChalCatNum = int64(rand.Intn(5))
+			player.PlayerState.DailyChalSetNum = int64(0)
 		}
 		if player.PlayerState.DailyChallengeComplete == 0 {
 			player.PlayerState.NumDailyChallenge = int64(0)
@@ -53,8 +54,12 @@ func GetPlayerState(helper *helper.Helper) {
 			player.PlayerState.NumDailyChallenge++
 			if int(player.PlayerState.NumDailyChallenge) > len(consts.DailyMissionRewards) {
 				player.PlayerState.NumDailyChallenge = int64(1) //restart from beginning
+				player.PlayerState.DailyChalCatNum = int64(rand.Intn(5))
+				player.PlayerState.DailyChalSetNum = int64(0)
 			}
 		}
+		player.PlayerState.DailyChalPosNum = int64(1 + rand.Intn(2))
+		player.PlayerState.DailyMissionID = int64((player.PlayerState.DailyChalCatNum * 33) + (player.PlayerState.DailyChalSetNum * 3) + player.PlayerState.DailyChalPosNum)
 		player.PlayerState.DailyChallengeValue = int64(0)
 		player.PlayerState.DailyChallengeComplete = int64(0)
 		player.PlayerState.DailyMissionEndTime = now.EndOfDay().UTC().Unix() + 1
