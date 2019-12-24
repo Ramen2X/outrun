@@ -37,9 +37,9 @@ func DailyChallengeData(base responseobjs.BaseInfo, numDailyChallenge int64) Dai
 		incentiveList = append(incentiveList, incentive)
 	}
 	incentiveListCount := int64(len(incentiveList))
-	numDailyChallengeCount := int64(1)
+	numDailyChallengeCount := int64(0)
 	maxDailyChallengeDay := int64(7)
-	numDailyChallengeDay := int64(maxDailyChallengeDay - 1 - numDailyChallenge)
+	numDailyChallengeDay := int64(maxDailyChallengeDay - numDailyChallenge)
 	//endTime := int64(1470322800)      // 08/04/2016 @ 3:00PM (UTC)
 	endTime := now.EndOfDay().UTC().Unix()
 	baseResponse := NewBaseResponse(base)

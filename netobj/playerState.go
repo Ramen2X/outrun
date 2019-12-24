@@ -97,7 +97,7 @@ func DefaultPlayerState() PlayerState {
 	dailyMissionEndTime := now.EndOfDay().UTC().Unix()
 	dailyChallengeValue := int64(0)
 	dailyChallengeComplete := int64(0)
-	numDailyChallenge := int64(0)
+	numDailyChallenge := int64(1)
 	numPlayer := int64(0)
 	animals := int64(0)
 	rank := int64(0) //appears to be offset by 1?

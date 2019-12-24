@@ -48,8 +48,8 @@ func GetPlayerState(helper *helper.Helper) {
 			player.PlayerState.NumDailyChallenge = int64(0)
 		} else {
 			player.PlayerState.NumDailyChallenge++
-			if int(player.PlayerState.NumDailyChallenge) >= len(consts.DailyMissionRewards) {
-				player.PlayerState.NumDailyChallenge = int64(0) //restart from beginning
+			if int(player.PlayerState.NumDailyChallenge) > len(consts.DailyMissionRewards) {
+				player.PlayerState.NumDailyChallenge = int64(1) //restart from beginning
 			}
 		}
 		player.PlayerState.DailyChallengeValue = int64(0)

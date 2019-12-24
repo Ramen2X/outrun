@@ -484,20 +484,21 @@ func QuickPostGameResults(helper *helper.Helper) {
 				helper.DebugOut("No rival was found!")
 			}
 		}
-		player.PlayerState.DailyChallengeComplete = request.DailyChallengeComplete
-		if player.PlayerState.DailyChallengeComplete == 0 && request.DailyChallengeValue >= consts.DailyMissionGoals[player.PlayerState.DailyMissionID] {
+		helper.DebugOut("request.DailyChallengeValue: %v", request.DailyChallengeValue)
+		helper.DebugOut("request.DailyChallengeComplete: %v", request.DailyChallengeComplete)
+		if player.PlayerState.DailyChallengeComplete == 0 && request.DailyChallengeComplete == 1 {
 			player.AddOperatorMessage(
 				"A Daily Challenge Reward.",
 				obj.NewMessageItem(
-					consts.DailyMissionRewards[player.PlayerState.NumDailyChallenge],
-					consts.DailyMissionRewardCounts[player.PlayerState.NumDailyChallenge],
+					consts.DailyMissionRewards[player.PlayerState.NumDailyChallenge-1],
+					consts.DailyMissionRewardCounts[player.PlayerState.NumDailyChallenge-1],
 					0,
 					0,
 				),
 				2592000,
 			)
-			player.PlayerState.DailyChallengeComplete = int64(1)
 		}
+		player.PlayerState.DailyChallengeComplete = request.DailyChallengeComplete
 		player.PlayerState.DailyChallengeValue = request.DailyChallengeValue
 		//player.PlayerState.TotalDistance += request.Distance  // We don't do this in timed mode!
 		// increase character(s)'s experience
@@ -733,20 +734,21 @@ func PostGameResults(helper *helper.Helper) {
 		if player.PlayerState.TotalScoreThisPeriod > player.OptionUserResult.TotalSumHighScore {
 			player.OptionUserResult.TotalSumHighScore = player.PlayerState.TotalScoreThisPeriod
 		}
-		player.PlayerState.DailyChallengeComplete = request.DailyChallengeComplete
-		if player.PlayerState.DailyChallengeComplete == 0 && request.DailyChallengeValue >= consts.DailyMissionGoals[player.PlayerState.DailyMissionID] {
+		helper.DebugOut("request.DailyChallengeValue: %v", request.DailyChallengeValue)
+		helper.DebugOut("request.DailyChallengeComplete: %v", request.DailyChallengeComplete)
+		if player.PlayerState.DailyChallengeComplete == 0 && request.DailyChallengeComplete == 1 {
 			player.AddOperatorMessage(
 				"A Daily Challenge Reward.",
 				obj.NewMessageItem(
-					consts.DailyMissionRewards[player.PlayerState.NumDailyChallenge],
-					consts.DailyMissionRewardCounts[player.PlayerState.NumDailyChallenge],
+					consts.DailyMissionRewards[player.PlayerState.NumDailyChallenge-1],
+					consts.DailyMissionRewardCounts[player.PlayerState.NumDailyChallenge-1],
 					0,
 					0,
 				),
 				2592000,
 			)
-			player.PlayerState.DailyChallengeComplete = int64(1)
 		}
+		player.PlayerState.DailyChallengeComplete = request.DailyChallengeComplete
 		player.PlayerState.DailyChallengeValue = request.DailyChallengeValue
 		// increase character(s)'s experience
 		expIncrease := request.Rings + request.FailureRings // all rings collected
