@@ -23,7 +23,7 @@ type DailyChallengeDataResponse struct {
 	EndTime                int64           `json:"chalEndTime"`
 }
 
-func DailyChallengeData(base responseobjs.BaseInfo, numDailyChallenge int64) DailyChallengeDataResponse {
+func DailyChallengeData(base responseobjs.BaseInfo, numDailyChallenge, nextNumDailyChallenge int64) DailyChallengeDataResponse {
 	ilSrc := consts.DailyMissionRewards
 	//ilSrc := []int64{enums.ItemIDRing, enums.ItemIDBarrier, enums.ItemIDMagnet, enums.ItemIDTrampoline, enums.ItemIDAsteroid, enums.ItemIDDrill, enums.ItemIDRedRing} // must be length of seven!
 	//ilSrc := []int64{900000, 900000, 900000, 900000, 900000, 900000, 900000}
@@ -37,9 +37,9 @@ func DailyChallengeData(base responseobjs.BaseInfo, numDailyChallenge int64) Dai
 		incentiveList = append(incentiveList, incentive)
 	}
 	incentiveListCount := int64(len(incentiveList))
-	numDailyChallengeCount := int64(0)
+	numDailyChallengeCount := int64(numDailyChallenge)
 	maxDailyChallengeDay := int64(7)
-	numDailyChallengeDay := int64(maxDailyChallengeDay - numDailyChallenge)
+	numDailyChallengeDay := int64(maxDailyChallengeDay - nextNumDailyChallenge)
 	//endTime := int64(1470322800)      // 08/04/2016 @ 3:00PM (UTC)
 	endTime := now.EndOfDay().UTC().Unix()
 	baseResponse := NewBaseResponse(base)

@@ -47,7 +47,7 @@ func GetDailyChallengeData(helper *helper.Helper) {
 		}
 		return
 	}
-	response := responses.DailyChallengeData(baseInfo, player.PlayerState.NumDailyChallenge)
+	response := responses.DailyChallengeData(baseInfo, player.PlayerState.NumDailyChallenge, player.PlayerState.NextNumDailyChallenge)
 	err = helper.SendResponse(response)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
@@ -487,6 +487,10 @@ func QuickPostGameResults(helper *helper.Helper) {
 		helper.DebugOut("request.DailyChallengeValue: %v", request.DailyChallengeValue)
 		helper.DebugOut("request.DailyChallengeComplete: %v", request.DailyChallengeComplete)
 		if player.PlayerState.DailyChallengeComplete == 0 && request.DailyChallengeComplete == 1 {
+			if player.PlayerState.NextNumDailyChallenge <= 0 {
+				player.PlayerState.NumDailyChallenge = int64(0)
+				player.PlayerState.NextNumDailyChallenge = int64(1)
+			}
 			player.AddOperatorMessage(
 				"A Daily Challenge Reward.",
 				obj.NewMessageItem(
@@ -738,6 +742,10 @@ func PostGameResults(helper *helper.Helper) {
 		helper.DebugOut("request.DailyChallengeValue: %v", request.DailyChallengeValue)
 		helper.DebugOut("request.DailyChallengeComplete: %v", request.DailyChallengeComplete)
 		if player.PlayerState.DailyChallengeComplete == 0 && request.DailyChallengeComplete == 1 {
+			if player.PlayerState.NextNumDailyChallenge <= 0 {
+				player.PlayerState.NumDailyChallenge = int64(0)
+				player.PlayerState.NextNumDailyChallenge = int64(1)
+			}
 			player.AddOperatorMessage(
 				"A Daily Challenge Reward.",
 				obj.NewMessageItem(
