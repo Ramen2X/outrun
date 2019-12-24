@@ -490,13 +490,14 @@ func QuickPostGameResults(helper *helper.Helper) {
 			player.AddOperatorMessage(
 				"A Daily Challenge Reward.",
 				obj.NewMessageItem(
-					consts.DailyMissionRewards[player.PlayerState.NumDailyChallenge-1],
-					consts.DailyMissionRewardCounts[player.PlayerState.NumDailyChallenge-1],
+					consts.DailyMissionRewards[player.PlayerState.NextNumDailyChallenge-1],
+					consts.DailyMissionRewardCounts[player.PlayerState.NextNumDailyChallenge-1],
 					0,
 					0,
 				),
 				2592000,
 			)
+			player.PlayerState.NumDailyChallenge = player.PlayerState.NextNumDailyChallenge
 		}
 		player.PlayerState.DailyChallengeComplete = request.DailyChallengeComplete
 		player.PlayerState.DailyChallengeValue = request.DailyChallengeValue
@@ -740,13 +741,14 @@ func PostGameResults(helper *helper.Helper) {
 			player.AddOperatorMessage(
 				"A Daily Challenge Reward.",
 				obj.NewMessageItem(
-					consts.DailyMissionRewards[player.PlayerState.NumDailyChallenge-1],
-					consts.DailyMissionRewardCounts[player.PlayerState.NumDailyChallenge-1],
+					consts.DailyMissionRewards[player.PlayerState.NextNumDailyChallenge-1],
+					consts.DailyMissionRewardCounts[player.PlayerState.NextNumDailyChallenge-1],
 					0,
 					0,
 				),
 				2592000,
 			)
+			player.PlayerState.NumDailyChallenge = player.PlayerState.NextNumDailyChallenge
 		}
 		player.PlayerState.DailyChallengeComplete = request.DailyChallengeComplete
 		player.PlayerState.DailyChallengeValue = request.DailyChallengeValue
