@@ -37,6 +37,9 @@ func GetPlayerState(helper *helper.Helper) {
 		player.PlayerState.Energy++
 		player.PlayerState.EnergyRenewsAt += player.PlayerVarious.EnergyRecoveryTime
 	}
+	if player.PlayerState.NumDailyChallenge <= 0 || int(player.PlayerState.NumDailyChallenge) > len(consts.DailyMissionRewards) {
+		player.PlayerState.NumDailyChallenge = int64(1)
+	}
 	if time.Now().UTC().Unix() >= player.PlayerState.DailyMissionEndTime {
 		if player.PlayerState.DailyChallengeComplete == 1 && player.PlayerState.DailyMissionID%33 != 0 {
 			helper.DebugOut("Advancing to next daily mission...")
