@@ -67,11 +67,11 @@ func GetPlayerState(helper *helper.Helper) {
 		player.PlayerState.DailyChallengeComplete = int64(0)
 		player.PlayerState.DailyMissionEndTime = now.EndOfDay().UTC().Unix() + 1
 		helper.DebugOut("New daily mission ID: %v", player.PlayerState.DailyMissionID)
-		err = db.SavePlayer(player)
-		if err != nil {
-			helper.InternalErr("Error saving player", err)
-			return
-		}
+	}
+	err = db.SavePlayer(player)
+	if err != nil {
+		helper.InternalErr("Error saving player", err)
+		return
 	}
 	response := responses.PlayerState(baseInfo, player.PlayerState)
 	helper.SendResponse(response)
