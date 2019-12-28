@@ -40,6 +40,7 @@ func GetPlayerState(helper *helper.Helper) {
 	if player.PlayerState.NextNumDailyChallenge <= 0 || int(player.PlayerState.NextNumDailyChallenge) > len(consts.DailyMissionRewards) {
 		player.PlayerState.NumDailyChallenge = int64(0)
 		player.PlayerState.NextNumDailyChallenge = int64(1)
+		player.PlayerState.DailyChalCatNum = int64(rand.Intn(5))
 	}
 	if time.Now().UTC().Unix() >= player.PlayerState.DailyMissionEndTime {
 		if player.PlayerState.DailyChallengeComplete == 1 && player.PlayerState.DailyChalSetNum < 10 {

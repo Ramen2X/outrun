@@ -93,6 +93,9 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 		}
 	} else {
 		if time.Now().UTC().Unix() > player.BattleState.BattleEndsAt {
+			rewardBattleStartTime = player.BattleState.BattleStartsAt
+			rewardBattleEndTime = player.BattleState.BattleEndsAt
+			doReward = true
 			if player.BattleState.ScoreRecordedToday {
 				if player.BattleState.MatchedUpWithRival {
 					rivalPlayer, err := db.GetPlayer(player.BattleState.RivalID)
@@ -100,8 +103,6 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 						helper.InternalErr("error getting rival player", err)
 						return
 					}
-					rewardBattleStartTime = player.BattleState.BattleStartsAt
-					rewardBattleEndTime = player.BattleState.BattleEndsAt
 					rewardBattlePlayerData = conversion.DebugPlayerToBattleData(player)
 					rewardBattleRivalData = conversion.DebugPlayerToBattleData(rivalPlayer)
 					battlePair := obj.NewBattlePair(
@@ -130,8 +131,6 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 						rivalPlayer.BattleState.Losses++
 						rivalPlayer.BattleState.LossStreak++
 						rivalPlayer.BattleState.WinStreak = 0
-						// Then we'd send the appropriate things to the gift boxes, but...
-						// TODO: Add the reward functionality
 					} else {
 						if player.BattleState.DailyBattleHighScore < rivalPlayer.BattleState.DailyBattleHighScore {
 							player.BattleState.Losses++
@@ -140,8 +139,6 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 							rivalPlayer.BattleState.Wins++
 							rivalPlayer.BattleState.WinStreak++
 							rivalPlayer.BattleState.LossStreak = 0
-							// Then we'd send the appropriate things to the gift boxes, but...
-							// TODO: Add the reward functionality
 						} else {
 							player.BattleState.Draws++
 							player.BattleState.WinStreak = 0
@@ -149,8 +146,6 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 							rivalPlayer.BattleState.Draws++
 							rivalPlayer.BattleState.WinStreak = 0
 							rivalPlayer.BattleState.LossStreak = 0
-							// Then we'd send the appropriate things to the gift boxes, but...
-							// TODO: Add the reward functionality
 						}
 					}
 					rewardIndex := 0
@@ -218,14 +213,47 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 						helper.InternalErr("Error saving player", err)
 						return
 					}
-					doReward = true
 				} else {
-					// There appears to be no reward for failures
-					// TODO: Is that right?
-					player.BattleState.Failures++
-					player.BattleState.LossStreak++
-					player.BattleState.WinStreak = 0
+					// no rival; count as win
+					player.BattleState.Wins++
+					player.BattleState.WinStreak++
+					player.BattleState.LossStreak = 0
+					rewardIndex := 0
+					if player.BattleState.WinStreak > 0 {
+						for player.BattleState.WinStreak > constobjs.DefaultDailyBattlePrizeList[rewardIndex].Number && rewardIndex < len(constobjs.DefaultDailyBattlePrizeList) {
+							rewardIndex++
+						}
+						if player.BattleState.WinStreak > 150 {
+							rewardIndex = len(constobjs.DefaultDailyBattlePrizeList)
+							if constobjs.DefaultDailyBattlePrizeList[rewardIndex].Operator != 2 {
+								helper.Warn("Unexpected operator type %v at daily battle prize list index %v", constobjs.DefaultDailyBattlePrizeList[rewardIndex].Operator, rewardIndex)
+								helper.InvalidRequest()
+								return
+							}
+						}
+						helper.DebugOut("Index %v of rewards list", rewardIndex)
+						for _, item := range constobjs.DefaultDailyBattlePrizeList[rewardIndex].PresentList {
+							itemid, _ := strconv.Atoi(item.ID)
+							player.AddOperatorMessage(
+								"A reward for "+strconv.Itoa(int(player.BattleState.WinStreak))+" consecutive Daily Battle win(s).",
+								obj.MessageItem{
+									int64(itemid),
+									item.Amount,
+									0,
+									0,
+								},
+								2592000,
+							)
+							helper.DebugOut("Sent %s x %v to player's gift box", item.ID, item.Amount)
+						}
+					}
+					//TODO: Add to the battle history
 				}
+			} else {
+				// no score recorded; count as failure
+				player.BattleState.Failures++
+				player.BattleState.LossStreak++
+				player.BattleState.WinStreak = 0
 			}
 			player.BattleState.BattleStartsAt = now.BeginningOfDay().UTC().Unix()
 			player.BattleState.BattleEndsAt = now.EndOfDay().UTC().Unix() + 1
@@ -445,6 +473,9 @@ func PostDailyBattleResult(helper *helper.Helper) {
 		}
 	} else {
 		if time.Now().UTC().Unix() > player.BattleState.BattleEndsAt {
+			rewardBattleStartTime = player.BattleState.BattleStartsAt
+			rewardBattleEndTime = player.BattleState.BattleEndsAt
+			doReward = true
 			if player.BattleState.ScoreRecordedToday {
 				if player.BattleState.MatchedUpWithRival {
 					rivalPlayer, err := db.GetPlayer(player.BattleState.RivalID)
@@ -452,8 +483,6 @@ func PostDailyBattleResult(helper *helper.Helper) {
 						helper.InternalErr("error getting rival player", err)
 						return
 					}
-					rewardBattleStartTime = player.BattleState.BattleStartsAt
-					rewardBattleEndTime = player.BattleState.BattleEndsAt
 					rewardBattlePlayerData = conversion.DebugPlayerToBattleData(player)
 					rewardBattleRivalData = conversion.DebugPlayerToBattleData(rivalPlayer)
 					battlePair := obj.NewBattlePair(
@@ -564,14 +593,47 @@ func PostDailyBattleResult(helper *helper.Helper) {
 						helper.InternalErr("Error saving player", err)
 						return
 					}
-					doReward = true
 				} else {
-					// There appears to be no reward for failures
-					// TODO: Is that right?
-					player.BattleState.Failures++
-					player.BattleState.LossStreak++
-					player.BattleState.WinStreak = 0
+					// no rival; count as win
+					player.BattleState.Wins++
+					player.BattleState.WinStreak++
+					player.BattleState.LossStreak = 0
+					rewardIndex := 0
+					if player.BattleState.WinStreak > 0 {
+						for player.BattleState.WinStreak > constobjs.DefaultDailyBattlePrizeList[rewardIndex].Number && rewardIndex < len(constobjs.DefaultDailyBattlePrizeList) {
+							rewardIndex++
+						}
+						if player.BattleState.WinStreak > 150 {
+							rewardIndex = len(constobjs.DefaultDailyBattlePrizeList)
+							if constobjs.DefaultDailyBattlePrizeList[rewardIndex].Operator != 2 {
+								helper.Warn("Unexpected operator type %v at daily battle prize list index %v", constobjs.DefaultDailyBattlePrizeList[rewardIndex].Operator, rewardIndex)
+								helper.InvalidRequest()
+								return
+							}
+						}
+						helper.DebugOut("Index %v of rewards list", rewardIndex)
+						for _, item := range constobjs.DefaultDailyBattlePrizeList[rewardIndex].PresentList {
+							itemid, _ := strconv.Atoi(item.ID)
+							player.AddOperatorMessage(
+								"A reward for "+strconv.Itoa(int(player.BattleState.WinStreak))+" consecutive Daily Battle win(s).",
+								obj.MessageItem{
+									int64(itemid),
+									item.Amount,
+									0,
+									0,
+								},
+								2592000,
+							)
+							helper.DebugOut("Sent %s x %v to player's gift box", item.ID, item.Amount)
+						}
+					}
+					//TODO: Add to the battle history
 				}
+			} else {
+				// no score recorded; count as failure
+				player.BattleState.Failures++
+				player.BattleState.LossStreak++
+				player.BattleState.WinStreak = 0
 			}
 			player.BattleState.BattleStartsAt = now.BeginningOfDay().UTC().Unix()
 			player.BattleState.BattleEndsAt = now.EndOfDay().UTC().Unix()

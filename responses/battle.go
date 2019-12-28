@@ -93,6 +93,25 @@ type UpdateDailyBattleStatusResponseWithReward struct {
 	obj.RewardBattlePair
 }
 
+type UpdateDailyBattleStatusResponseWithRewardNoRival struct {
+	BaseResponse
+	EndTime          int64            `json:"endTime"`
+	BattleStatus     obj.BattleStatus `json:"battleStatus"`
+	RewardFlag       bool             `json:"rewardFlag"` // TODO: allow not false after testing
+	RewardStartTime  int64            `json:"rewardStartTime"`
+	RewardEndTime    int64            `json:"rewardEndTime"`
+	RewardBattleData obj.BattleData   `json:"rewardBattleData"`
+}
+
+type UpdateDailyBattleStatusResponseWithRewardNoData struct {
+	BaseResponse
+	EndTime         int64            `json:"endTime"`
+	BattleStatus    obj.BattleStatus `json:"battleStatus"`
+	RewardFlag      bool             `json:"rewardFlag"` // TODO: allow not false after testing
+	RewardStartTime int64            `json:"rewardStartTime"`
+	RewardEndTime   int64            `json:"rewardEndTime"`
+}
+
 func UpdateDailyBattleStatus(base responseobjs.BaseInfo, endTime int64, battleStatus obj.BattleStatus) UpdateDailyBattleStatusResponse {
 	baseResponse := NewBaseResponse(base)
 	return UpdateDailyBattleStatusResponse{
@@ -103,15 +122,38 @@ func UpdateDailyBattleStatus(base responseobjs.BaseInfo, endTime int64, battleSt
 	}
 }
 
-func UpdateDailyBattleStatusWithReward(base responseobjs.BaseInfo, endTime int64, battleStatus obj.BattleStatus, rewardStartTime, rewardEndTime int64, rewardBattleData, rewardRivalBattleData obj.BattleData) UpdateDailyBattleStatusResponseWithReward {
+func UpdateDailyBattleStatusWithReward(base responseobjs.BaseInfo, endTime int64, battleStatus obj.BattleStatus, rewardStartTime, rewardEndTime int64, rewardBattleData, rewardRivalBattleData interface{}) interface{} {
 	baseResponse := NewBaseResponse(base)
-	battleReward := obj.NewRewardBattlePair(rewardStartTime, rewardEndTime, rewardBattleData, rewardRivalBattleData)
-	return UpdateDailyBattleStatusResponseWithReward{
-		baseResponse,
-		endTime,
-		battleStatus,
-		true,
-		battleReward,
+	if rewardBattleData != nil {
+		if rewardRivalBattleData != nil {
+			battleReward := obj.NewRewardBattlePair(rewardStartTime, rewardEndTime, rewardBattleData.(obj.BattleData), rewardRivalBattleData.(obj.BattleData))
+			return UpdateDailyBattleStatusResponseWithReward{
+				baseResponse,
+				endTime,
+				battleStatus,
+				true,
+				battleReward,
+			}
+		} else {
+			return UpdateDailyBattleStatusResponseWithRewardNoRival{
+				baseResponse,
+				endTime,
+				battleStatus,
+				true,
+				rewardStartTime,
+				rewardEndTime,
+				rewardBattleData.(obj.BattleData),
+			}
+		}
+	} else {
+		return UpdateDailyBattleStatusResponseWithRewardNoData{
+			baseResponse,
+			endTime,
+			battleStatus,
+			true,
+			rewardStartTime,
+			rewardEndTime,
+		}
 	}
 }
 
@@ -210,6 +252,27 @@ type PostDailyBattleResultResponseWithReward struct {
 	obj.RewardBattlePair
 }
 
+type PostDailyBattleResultResponseWithRewardNoRival struct {
+	BaseResponse
+	StartTime        int64            `json:"startTime"`
+	EndTime          int64            `json:"endTime"`
+	BattleStatus     obj.BattleStatus `json:"battleStatus"`
+	RewardFlag       bool             `json:"rewardFlag"` // TODO: allow not false after testing
+	RewardStartTime  int64            `json:"rewardStartTime"`
+	RewardEndTime    int64            `json:"rewardEndTime"`
+	RewardBattleData obj.BattleData   `json:"rewardBattleData"`
+}
+
+type PostDailyBattleResultResponseWithRewardNoData struct {
+	BaseResponse
+	StartTime       int64            `json:"startTime"`
+	EndTime         int64            `json:"endTime"`
+	BattleStatus    obj.BattleStatus `json:"battleStatus"`
+	RewardFlag      bool             `json:"rewardFlag"` // TODO: allow not false after testing
+	RewardStartTime int64            `json:"rewardStartTime"`
+	RewardEndTime   int64            `json:"rewardEndTime"`
+}
+
 func PostDailyBattleResult(base responseobjs.BaseInfo, startTime, endTime int64, battleData, rivalBattleData obj.BattleData, battleStatus obj.BattleStatus) PostDailyBattleResultResponse {
 	baseResponse := NewBaseResponse(base)
 	return PostDailyBattleResultResponse{
@@ -243,16 +306,41 @@ func PostDailyBattleResultNoRival(base responseobjs.BaseInfo, startTime, endTime
 	}
 }
 
-func PostDailyBattleResultWithReward(base responseobjs.BaseInfo, startTime, endTime int64, battleStatus obj.BattleStatus, rewardStartTime, rewardEndTime int64, rewardBattleData, rewardRivalBattleData obj.BattleData) PostDailyBattleResultResponseWithReward {
+func PostDailyBattleResultWithReward(base responseobjs.BaseInfo, startTime, endTime int64, battleStatus obj.BattleStatus, rewardStartTime, rewardEndTime int64, rewardBattleData, rewardRivalBattleData interface{}) interface{} {
 	baseResponse := NewBaseResponse(base)
-	battleReward := obj.NewRewardBattlePair(rewardStartTime, rewardEndTime, rewardBattleData, rewardRivalBattleData)
-	return PostDailyBattleResultResponseWithReward{
-		baseResponse,
-		startTime,
-		endTime,
-		battleStatus,
-		true,
-		battleReward,
+	if rewardBattleData != nil {
+		if rewardRivalBattleData != nil {
+			battleReward := obj.NewRewardBattlePair(rewardStartTime, rewardEndTime, rewardBattleData.(obj.BattleData), rewardRivalBattleData.(obj.BattleData))
+			return PostDailyBattleResultResponseWithReward{
+				baseResponse,
+				startTime,
+				endTime,
+				battleStatus,
+				true,
+				battleReward,
+			}
+		} else {
+			return PostDailyBattleResultResponseWithRewardNoRival{
+				baseResponse,
+				startTime,
+				endTime,
+				battleStatus,
+				true,
+				rewardStartTime,
+				rewardEndTime,
+				rewardBattleData.(obj.BattleData),
+			}
+		}
+	} else {
+		return PostDailyBattleResultResponseWithRewardNoData{
+			baseResponse,
+			startTime,
+			endTime,
+			battleStatus,
+			true,
+			rewardStartTime,
+			rewardEndTime,
+		}
 	}
 }
 
