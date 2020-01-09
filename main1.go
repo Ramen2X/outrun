@@ -250,6 +250,13 @@ func main() {
 	// == Migration ==
 	router.HandleFunc(prefix+"/Login/getMigrationPassword/", h(muxhandlers.GetMigrationPassword, LogExecutionTime))
 	router.HandleFunc(prefix+"/Login/migration/", h(muxhandlers.Migration, LogExecutionTime))
+	
+	// == Debug ==
+	//router.HandleFunc(prefix+"/Debug/addMessage/", h(muxhandlers.DebugSendMessage, LogExecutionTime))
+	//router.HandleFunc(prefix+"/Debug/addOpeMessage/", h(muxhandlers.DebugSendOperatorMessage, LogExecutionTime))
+	//router.HandleFunc(prefix+"/Debug/deleteUserData/", h(muxhandlers.DebugDeleteUserData, LogExecutionTime))
+	//router.HandleFunc(prefix+"/Debug/forceDrawRaidboss/", h(muxhandlers.DebugForceDrawRaidboss, LogExecutionTime))
+	//router.HandleFunc(prefix+"/Debug/getSpecialItem/", h(muxhandlers.DebugGetSpecialItem, LogExecutionTime))
 
 	// == Misc. ==
 	router.HandleFunc(prefix+"/Sgn/sendApollo/", h(muxhandlers.SendApollo, LogExecutionTime))

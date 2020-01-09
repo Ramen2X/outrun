@@ -54,7 +54,7 @@ func DefaultRaidbossWheelOptions(numRouletteTicket, numSpecialEgg, rouletteCount
 	costItemList := []obj.CostItem{
 		obj.NewCostItem(
 			strconv.Itoa(enums.ItemIDRaidbossRing),
-			10000,
+			5000,
 			27272,
 		),
 	}

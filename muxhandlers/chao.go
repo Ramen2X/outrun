@@ -35,7 +35,6 @@ func GetChaoWheelOptions(helper *helper.Helper) {
 		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
 		if err != nil {
 			helper.InternalErr("Error sending response", err)
-			return
 		}
 		return
 	}
@@ -280,16 +279,21 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 					lowRange := int(consts.ChaoRouletteChaoLevelIncreaseLow)
 					prizeChaoLevel := int64(rand.Intn(highRange-lowRange+1) + lowRange) // This level is added to the current Chao level
 					//amtWon = int(prizeChaoLevel)
-					player.ChaoState[chaoIndex].Level += prizeChaoLevel
 					maxChaoLevel := int64(10)
 					if request.Version == "1.1.4" {
 						maxChaoLevel = int64(5)
 					}
-					if player.ChaoState[chaoIndex].Level > maxChaoLevel { // if max chao level (https://www.deviantart.com/vocaloidbrsfreak97/journal/So-Sonic-Runners-just-recently-updated-574789098)
-						excess := player.ChaoState[chaoIndex].Level - maxChaoLevel    // get amount gone over
-						prizeChaoLevel -= excess                                      // shave it from prize level
-						player.ChaoState[chaoIndex].Level = maxChaoLevel              // reset to maximum
-						player.ChaoState[chaoIndex].Status = enums.ChaoStatusMaxLevel // set status to MaxLevel
+					if player.ChaoState[chaoIndex].Level < maxChaoLevel {
+						player.ChaoState[chaoIndex].Level += prizeChaoLevel
+						if player.ChaoState[chaoIndex].Level > maxChaoLevel { // if max chao level (https://www.deviantart.com/vocaloidbrsfreak97/journal/So-Sonic-Runners-just-recently-updated-574789098)
+							excess := player.ChaoState[chaoIndex].Level - maxChaoLevel    // get amount gone over
+							prizeChaoLevel -= excess                                      // shave it from prize level
+							player.ChaoState[chaoIndex].Level = maxChaoLevel              // reset to maximum
+							player.ChaoState[chaoIndex].Status = enums.ChaoStatusMaxLevel // set status to MaxLevel
+						}
+					} else {
+						player.PlayerState.ChaoEggs += 3 // maxed out; give 3 special eggs as compensation
+						spinResult.ItemList = append(spinResult.ItemList, obj.NewItem(strconv.Itoa(enums.IDSpecialEgg), 3))
 					}
 					spinResult.WonPrize.Level = player.ChaoState[chaoIndex].Level
 				}

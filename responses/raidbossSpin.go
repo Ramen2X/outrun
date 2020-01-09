@@ -1,6 +1,9 @@
 package responses
 
 import (
+	"strconv"
+
+	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/obj"
 	"github.com/fluofoxxo/outrun/obj/constobjs"
@@ -39,4 +42,26 @@ func RaidbossWheelOptions(base responseobjs.BaseInfo, raidbossWheelOptions netob
 		raidbossWheelOptions,
 	}
 	return out
+}
+
+type PrizeRaidbossWheelResponse struct {
+	BaseResponse
+	PrizeList []obj.RaidbossPrize `json:"raidbossPrizeList"`
+}
+
+func PrizeRaidbossWheel(base responseobjs.BaseInfo, prizeList []obj.RaidbossPrize) PrizeRaidbossWheelResponse {
+	baseResponse := NewBaseResponse(base)
+	out := PrizeRaidbossWheelResponse{
+		baseResponse,
+		prizeList,
+	}
+	return out
+}
+
+func DefaultPrizeRaidbossWheel(base responseobjs.BaseInfo) PrizeRaidbossWheelResponse {
+	prizeList := []obj.RaidbossPrize{
+		obj.NewRaidbossPrize(strconv.Itoa(int(enums.ItemIDAsteroid)), 5, 10, 0),
+		obj.NewRaidbossPrize(strconv.Itoa(int(enums.ItemIDRedRing)), 15, 1, 0),
+	}
+	return PrizeRaidbossWheel(base, prizeList)
 }

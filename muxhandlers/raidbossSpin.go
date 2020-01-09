@@ -23,11 +23,23 @@ func GetItemStockNum(helper *helper.Helper) {
 
 //1.1.4
 func GetRaidbossWheelOptions(helper *helper.Helper) {
-	// TODO: is agnostic; shouldn't be!
-	wheelOptions := netobj.DefaultRaidbossWheelOptions(7, 0, 0, enums.WheelRankNormal, 0)
+	player, err := helper.GetCallingPlayer()
+	if err != nil {
+		helper.InternalErr("Error getting calling player", err)
+		return
+	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	if player.Suspended {
+		baseInfo.StatusCode = status.MissingPlayer
+		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		if err != nil {
+			helper.InternalErr("Error sending response", err)
+		}
+		return
+	}
+	wheelOptions := netobj.DefaultRaidbossWheelOptions(0, player.PlayerState.ChaoEggs, 0, enums.WheelRankNormal, 0)
 	response := responses.RaidbossWheelOptions(baseInfo, wheelOptions)
-	err := helper.SendCompatibleResponse(response)
+	err = helper.SendCompatibleResponse(response)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -36,7 +48,7 @@ func GetRaidbossWheelOptions(helper *helper.Helper) {
 func GetPrizeRaidbossWheelSpin(helper *helper.Helper) {
 	// agnostic
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
-	response := responses.DefaultPrizeChaoWheel(baseInfo)
+	response := responses.DefaultPrizeRaidbossWheel(baseInfo)
 	err := helper.SendResponse(response)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
