@@ -214,9 +214,9 @@ func main() {
 	// == Roulette ==
 	router.HandleFunc(prefix+"/Spin/getWheelOptions/", h(muxhandlers.GetWheelOptions, LogExecutionTime))
 	router.HandleFunc(prefix+"/Chao/getChaoWheelOptions/", h(muxhandlers.GetChaoWheelOptions, LogExecutionTime))
-	//router.HandleFunc(prefix+"/RaidbossSpin/getRaidbossWheelOptions/", h(muxhandlers.GetRaidbossWheelOptions, LogExecutionTime))
+	router.HandleFunc(prefix+"/RaidbossSpin/getRaidbossWheelOptions/", h(muxhandlers.GetRaidbossWheelOptions, LogExecutionTime))
 	router.HandleFunc(prefix+"/Chao/getPrizeChaoWheelSpin/", h(muxhandlers.GetPrizeChaoWheelSpin, LogExecutionTime))
-	//router.HandleFunc(prefix+"/RaidbossSpin/getPrizeRaidbossWheelSpin/", h(muxhandlers.GetPrizeRaidbossWheelSpin, LogExecutionTime))
+	router.HandleFunc(prefix+"/RaidbossSpin/getPrizeRaidbossWheelSpin/", h(muxhandlers.GetPrizeRaidbossWheelSpin, LogExecutionTime))
 	router.HandleFunc(prefix+"/RaidbossSpin/getItemStockNum/", h(muxhandlers.GetItemStockNum, LogExecutionTime))
 	router.HandleFunc(prefix+"/Spin/commitWheelSpin/", h(muxhandlers.CommitWheelSpin, LogExecutionTime))
 	router.HandleFunc(prefix+"/Chao/commitChaoWheelSpin/", h(muxhandlers.CommitChaoWheelSpin, LogExecutionTime))

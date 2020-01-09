@@ -1,6 +1,7 @@
 package responses
 
 import (
+	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/obj"
 	"github.com/fluofoxxo/outrun/obj/constobjs"
 	"github.com/fluofoxxo/outrun/responses/responseobjs"
@@ -26,7 +27,7 @@ func DefaultItemStockNum(base responseobjs.BaseInfo) ItemStockNumResponse {
 	)
 }
 
-/*type RaidbossWheelOptionsResponse struct {
+type RaidbossWheelOptionsResponse struct {
 	BaseResponse
 	RaidbossWheelOptions netobj.RaidbossWheelOptions `json:"raidbossWheelOptions"`
 }
@@ -38,4 +39,4 @@ func RaidbossWheelOptions(base responseobjs.BaseInfo, raidbossWheelOptions netob
 		raidbossWheelOptions,
 	}
 	return out
-}*/
+}

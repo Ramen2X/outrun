@@ -1,10 +1,12 @@
 package responses
 
 import (
+	"strconv"
+
+	"github.com/fluofoxxo/outrun/consts"
 	"github.com/fluofoxxo/outrun/enums"
 	"github.com/fluofoxxo/outrun/netobj"
 	"github.com/fluofoxxo/outrun/obj"
-	"github.com/fluofoxxo/outrun/obj/constobjs"
 	"github.com/fluofoxxo/outrun/responses/responseobjs"
 )
 
@@ -46,7 +48,22 @@ func PrizeChaoWheel(base responseobjs.BaseInfo, prizeList []obj.ChaoPrize) Prize
 }
 
 func DefaultPrizeChaoWheel(base responseobjs.BaseInfo) PrizeChaoWheelResponse {
-	prizeList := constobjs.DefaultChaoPrizeWheelPrizeList
+	//prizeList := constobjs.DefaultChaoPrizeWheelPrizeList
+	prizeList := []obj.ChaoPrize{}
+	chaoids := []string{}
+	chaorarities := []int64{}
+	for chid := range consts.RandomChaoWheelChaoPrizes {
+		rarity, _ := strconv.Atoi(string(chid[2]))
+		chaoids = append(chaoids, chid)
+		chaorarities = append(chaorarities, int64(rarity))
+	}
+	for chid := range consts.RandomChaoWheelCharacterPrizes {
+		chaoids = append(chaoids, chid)
+		chaorarities = append(chaorarities, int64(100))
+	}
+	for index := range chaoids {
+		prizeList = append(prizeList, obj.NewChaoPrize(chaoids[index], chaorarities[index]))
+	}
 	return PrizeChaoWheel(base, prizeList)
 }
 
