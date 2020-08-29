@@ -24,7 +24,7 @@ import (
 )
 
 func GetChaoWheelOptions(helper *helper.Helper) {
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -64,7 +64,7 @@ func EquipChao(helper *helper.Helper) {
 		return
 	}
 
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -159,7 +159,7 @@ completed:
 }
 
 func CommitChaoWheelSpin(helper *helper.Helper) {
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return

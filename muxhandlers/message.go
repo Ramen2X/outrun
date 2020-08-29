@@ -18,7 +18,7 @@ import (
 )
 
 func GetMessageList(helper *helper.Helper) {
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("error getting calling player", err)
 		return
@@ -44,7 +44,7 @@ func GetMessage(helper *helper.Helper) {
 		helper.InternalErr("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("error getting calling player", err)
 		return

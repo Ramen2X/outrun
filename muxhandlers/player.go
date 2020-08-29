@@ -18,7 +18,7 @@ import (
 )
 
 func GetPlayerState(helper *helper.Helper) {
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -86,7 +86,7 @@ func GetCharacterState(helper *helper.Helper) {
 		helper.Err("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -118,7 +118,14 @@ func GetCharacterState(helper *helper.Helper) {
 }
 
 func GetChaoState(helper *helper.Helper) {
-	player, err := helper.GetCallingPlayer()
+	src := helper.GetGameRequest()
+	var request requests.Base
+	err := json.Unmarshal(src, &request)
+	if err != nil {
+		helper.Err("Error unmarshalling", err)
+		return
+	}
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -133,7 +140,18 @@ func GetChaoState(helper *helper.Helper) {
 		}
 		return
 	}
-	response := responses.ChaoState(baseInfo, player.ChaoState)
+	//cap max levels to prevent hang
+	chaoState := player.ChaoState
+	maxLevel := 10
+	if request.Version == "1.1.4" {
+		maxLevel = 5
+	}
+	for index, chao := range chaoState {
+		if int(chao.Level) > maxLevel {
+			chaoState[index].Level = int64(maxLevel)
+		}
+	}
+	response := responses.ChaoState(baseInfo, chaoState)
 	helper.SendResponse(response)
 }
 
@@ -145,7 +163,7 @@ func SetUsername(helper *helper.Helper) {
 		helper.Err("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return

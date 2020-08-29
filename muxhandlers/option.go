@@ -8,7 +8,7 @@ import (
 )
 
 func GetOptionUserResult(helper *helper.Helper) {
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return

@@ -17,6 +17,10 @@ var Defaults = map[string]interface{}{
 	"DEnableTickers":       false,
 	"DTickers":             []ConfiguredTicker{},
 	"DHideWatermarkTicker": false,
+	"DEOLMessageEnabled":   false,
+	"DEOLMessageJP":        "",
+	"DEOLMessageEN":        "",
+	"DEOLMessageURL":       "",
 }
 
 /*
@@ -137,6 +141,10 @@ type ConfigFile struct {
 	EnableTickers       bool               `json:"enableTickers"`
 	Tickers             []ConfiguredTicker `json:"tickers"`
 	HideWatermarkTicker bool               `json:"hideWatermarkTicker"`
+	EOLMessageEnabled   bool               `json:"eolMessageEnabled"`
+	EOLMessageJP        string             `json:"eolMessageJP"`
+	EOLMessageEN        string             `json:"eolMessageEN"`
+	EOLMessageURL       string             `json:"eolMessageURL"`
 }
 
 func Parse(filename string) error {
@@ -146,6 +154,10 @@ func Parse(filename string) error {
 		Defaults["DEnableTickers"].(bool),
 		Defaults["DTickers"].([]ConfiguredTicker),
 		Defaults["DHideWatermarkTicker"].(bool),
+		Defaults["DEOLMessageEnabled"].(bool),
+		Defaults["DEOLMessageJP"].(string),
+		Defaults["DEOLMessageEN"].(string),
+		Defaults["DEOLMessageURL"].(string),
 	}
 	file, err := loadFile(filename)
 	if err != nil {

@@ -52,7 +52,7 @@ func GetRedStarExchangeList(helper *helper.Helper) {
 	} else if request.ItemType == 4 { // raid boss energy
 		redStarItems = constobjs.RedStarItemsType4
 	} else {
-		helper.Respond([]byte("Invalid request"))
+		helper.InvalidRequest()
 		return
 	}
 	index := 0
@@ -108,7 +108,7 @@ func RedStarExchange(helper *helper.Helper) {
 		return
 	}
 
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return

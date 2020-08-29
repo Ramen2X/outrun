@@ -56,7 +56,7 @@ func MakeHelper(callerName string, r http.ResponseWriter, request *http.Request)
 func (r *Helper) GetGameRequest() []byte {
 	recv, err := cryption.GetReceivedMessage(r.Request)
 	if err != nil {
-		r.SendCompatibleResponse(responses.NewBaseResponse(r.BaseInfo(emess.OK, status.DecryptionFailure)))
+		r.SendCompatibleResponse(responses.NewBaseResponse(r.BaseInfo(emess.OK, status.DecryptionFailure)), false)
 	}
 	return recv
 }
@@ -65,7 +65,7 @@ func (r *Helper) SendResponse(i interface{}) error {
 	if err != nil {
 		return err
 	}
-	r.Respond(out)
+	r.Respond(out, true)
 	return nil
 }
 func (r *Helper) SendInsecureResponse(i interface{}) error {
@@ -73,10 +73,10 @@ func (r *Helper) SendInsecureResponse(i interface{}) error {
 	if err != nil {
 		return err
 	}
-	r.RespondInsecure(out)
+	r.RespondInsecure(out, true)
 	return nil
 }
-func (r *Helper) RespondRaw(out []byte, secureFlag, iv string) {
+func (r *Helper) RespondRaw(out []byte, secureFlag, iv string, sendErrorResponseOnError bool) {
 	if config.CFile.LogAllResponses {
 		nano := time.Now().UnixNano()
 		nanoStr := strconv.Itoa(int(nano))
@@ -84,7 +84,7 @@ func (r *Helper) RespondRaw(out []byte, secureFlag, iv string) {
 		filename = strings.ReplaceAll(filename, ".", "-")
 		filename = strings.ReplaceAll(filename, "/", "-") + ".txt"
 		filepath := "logging/all_responses/" + filename
-		r.Out("DEBUG: Saving request to " + filepath)
+		r.Out("DEBUG: Saving response to " + filepath)
 		err := ioutil.WriteFile(filepath, out, 0644)
 		if err != nil {
 			r.Out("DEBUG ERROR: Unable to write file '" + filepath + "'")
@@ -105,15 +105,21 @@ func (r *Helper) RespondRaw(out []byte, secureFlag, iv string) {
 	}
 	toClient, err := json.Marshal(response)
 	if err != nil {
+		if sendErrorResponseOnError {
+			r.SendCompatibleResponse(responses.NewBaseResponse(r.BaseInfo(emess.OK, status.InvalidResponse)), false)
+		}
 		r.InternalErr("Error marshalling in RespondRaw", err)
 		return
 	}
 	r.RespW.Write(toClient)
 }
-func (r *Helper) SendCompatibleResponse(out interface{}) error {
+func (r *Helper) SendCompatibleResponse(out interface{}, sendErrorResponseOnError bool) error {
 	response := map[string]interface{}{"secure": "0", "param": out}
 	toClient, err := json.Marshal(response)
 	if err != nil {
+		if sendErrorResponseOnError {
+			r.SendCompatibleResponse(responses.NewBaseResponse(r.BaseInfo(emess.OK, status.InvalidResponse)), false)
+		}
 		r.InternalErr("Error marshalling in SendCompatibleResponse", err)
 		return err
 	}
@@ -124,7 +130,7 @@ func (r *Helper) SendCompatibleResponse(out interface{}) error {
 		filename = strings.ReplaceAll(filename, ".", "-")
 		filename = strings.ReplaceAll(filename, "/", "-") + ".txt"
 		filepath := "logging/all_responses/" + filename
-		r.Out("DEBUG: Saving request to " + filepath)
+		r.Out("DEBUG: Saving response to " + filepath)
 		err := ioutil.WriteFile(filepath, toClient, 0644)
 		if err != nil {
 			r.Out("DEBUG ERROR: Unable to write file '" + filepath + "'")
@@ -133,11 +139,11 @@ func (r *Helper) SendCompatibleResponse(out interface{}) error {
 	r.RespW.Write(toClient)
 	return nil
 }
-func (r *Helper) Respond(out []byte) {
-	r.RespondRaw(out, "1", DefaultIV)
+func (r *Helper) Respond(out []byte, sendErrorResponseOnError bool) {
+	r.RespondRaw(out, "1", DefaultIV, sendErrorResponseOnError)
 }
-func (r *Helper) RespondInsecure(out []byte) {
-	r.RespondRaw(out, "0", "")
+func (r *Helper) RespondInsecure(out []byte, sendErrorResponseOnError bool) {
+	r.RespondRaw(out, "0", "", sendErrorResponseOnError)
 }
 func (r *Helper) Out(s string, a ...interface{}) {
 	msg := fmt.Sprintf(s, a...)
@@ -163,13 +169,13 @@ func (r *Helper) InternalErr(msg string, err error) {
 	log.Printf(LogErrBase, PrefixErr, r.CallerName, msg, err.Error())
 	//	r.RespW.WriteHeader(http.StatusBadRequest)
 	//	r.RespW.Write([]byte(BadRequest))
-	r.SendCompatibleResponse(responses.NewBaseResponse(r.BaseInfo(emess.OK, status.InternalServerError)))
+	r.SendCompatibleResponse(responses.NewBaseResponse(r.BaseInfo(emess.OK, status.InternalServerError)), false)
 }
 func (r *Helper) Err(msg string, err error) {
 	log.Printf(LogErrBase, PrefixErr, r.CallerName, msg, err.Error())
 	//	r.RespW.WriteHeader(http.StatusBadRequest)
 	//	r.RespW.Write([]byte(BadRequest))
-	r.SendCompatibleResponse(responses.NewBaseResponse(r.BaseInfo(emess.OK, status.ServerSystemError)))
+	r.SendCompatibleResponse(responses.NewBaseResponse(r.BaseInfo(emess.OK, status.ServerSystemError)), false)
 }
 func (r *Helper) ErrRespond(msg string, err error, response string) {
 	// TODO: remove if never used in stable builds
@@ -181,13 +187,13 @@ func (r *Helper) InternalFatal(msg string, err error) {
 	log.Fatalf(LogErrBase, PrefixErr, r.CallerName, msg, err.Error())
 	//	r.RespW.WriteHeader(http.StatusBadRequest)
 	//	r.RespW.Write([]byte(BadRequest))
-	r.SendCompatibleResponse(responses.NewBaseResponse(r.BaseInfo(emess.OK, status.InternalServerError)))
+	r.SendCompatibleResponse(responses.NewBaseResponse(r.BaseInfo(emess.OK, status.InternalServerError)), false)
 }
 func (r *Helper) Fatal(msg string, err error) {
 	log.Fatalf(LogErrBase, PrefixErr, r.CallerName, msg, err.Error())
 	//	r.RespW.WriteHeader(http.StatusBadRequest)
 	//	r.RespW.Write([]byte(BadRequest))
-	r.SendCompatibleResponse(responses.NewBaseResponse(r.BaseInfo(emess.OK, status.ServerSystemError)))
+	r.SendCompatibleResponse(responses.NewBaseResponse(r.BaseInfo(emess.OK, status.ServerSystemError)), false)
 }
 func (r *Helper) BaseInfo(em string, statusCode int64) responseobjs.BaseInfo {
 	return responseobjs.NewBaseInfo(em, statusCode)
@@ -195,19 +201,25 @@ func (r *Helper) BaseInfo(em string, statusCode int64) responseobjs.BaseInfo {
 func (r *Helper) InvalidRequest() {
 	//	r.RespW.WriteHeader(http.StatusBadRequest)
 	//	r.RespW.Write([]byte(BadRequest))
-	r.SendCompatibleResponse(responses.NewBaseResponse(r.BaseInfo(emess.OK, status.ClientError)))
+	r.SendCompatibleResponse(responses.NewBaseResponse(r.BaseInfo(emess.OK, status.ClientError)), false)
 }
-func (r *Helper) GetCallingPlayer() (netobj.Player, error) {
+func (r *Helper) GetCallingPlayer(sendErrorResponseOnError bool) (netobj.Player, error) {
 	// Powerful function to get the player directly from the response
 	recv := r.GetGameRequest()
 	var request requests.Base
 	err := json.Unmarshal(recv, &request)
 	if err != nil {
+		if sendErrorResponseOnError {
+			r.SendCompatibleResponse(responses.NewBaseResponse(r.BaseInfo(emess.OK, status.RequestParamError)), false)
+		}
 		return constnetobjs.BlankPlayer, err
 	}
 	sid := request.SessionID
 	player, err := db.GetPlayerBySessionID(sid)
 	if err != nil {
+		if sendErrorResponseOnError {
+			r.SendCompatibleResponse(responses.NewBaseResponse(r.BaseInfo(emess.OK, status.ExpiredSession)), false)
+		}
 		return constnetobjs.BlankPlayer, err
 	}
 	if config.CFile.PrintPlayerNames {

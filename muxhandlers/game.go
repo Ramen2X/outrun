@@ -32,7 +32,7 @@ import (
 )
 
 func GetDailyChallengeData(helper *helper.Helper) {
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting player", err)
 		return
@@ -65,7 +65,7 @@ func GetCostList(helper *helper.Helper) {
 }
 
 func GetMileageData(helper *helper.Helper) {
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting player", err)
 		return
@@ -112,7 +112,7 @@ func QuickActStart(helper *helper.Helper) {
 		helper.Err("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -210,7 +210,7 @@ func ActStart(helper *helper.Helper) {
 		helper.Err("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -316,7 +316,7 @@ func ActStart(helper *helper.Helper) {
 }
 
 func ActRetry(helper *helper.Helper) {
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -354,7 +354,7 @@ func ActRetry(helper *helper.Helper) {
 }
 
 func ActRetryFree(helper *helper.Helper) {
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -390,7 +390,7 @@ func QuickPostGameResults(helper *helper.Helper) {
 		helper.Err("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -640,7 +640,7 @@ func PostGameResults(helper *helper.Helper) {
 		helper.Err("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -1034,7 +1034,7 @@ func GetMileageReward(helper *helper.Helper) {
 		return
 	}
 	/*
-		player, err := helper.GetCallingPlayer()
+		player, err := helper.GetCallingPlayer(true)
 		if err != nil {
 			helper.InternalErr("Error getting calling player", err)
 			return
@@ -1058,7 +1058,7 @@ func DrawRaidBoss(helper *helper.Helper) {
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.DrawRaidBoss(baseInfo, netobj.DefaultRaidbossState())
-	err = helper.SendCompatibleResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}

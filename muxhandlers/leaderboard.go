@@ -36,7 +36,7 @@ func GetWeeklyLeaderboardEntries(helper *helper.Helper) {
 		helper.Err("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return

@@ -35,3 +35,20 @@ func SendApollo(helper *helper.Helper) {
 		helper.InternalErr("Error sending response", err)
 	}
 }
+
+func SetNoahID(helper *helper.Helper) {
+	recv := helper.GetGameRequest()
+	var request requests.SetNoahIDRequest
+	err := json.Unmarshal(recv, &request)
+	if err != nil {
+		helper.Err("Error unmarshalling", err)
+		return
+	}
+	helper.DebugOut("Noah ID: %v", request.NoahID)
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	response := responses.NewBaseResponse(baseInfo)
+	err = helper.SendResponse(response)
+	if err != nil {
+		helper.InternalErr("Error sending response", err)
+	}
+}

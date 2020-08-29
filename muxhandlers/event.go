@@ -24,7 +24,7 @@ import (
 )
 
 func GetEventList(helper *helper.Helper) {
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -79,7 +79,7 @@ func GetEventState(helper *helper.Helper) {
 		helper.Err("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -111,7 +111,7 @@ func GetEventUserRaidbossState(helper *helper.Helper) {
 		helper.Err("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -122,7 +122,7 @@ func GetEventUserRaidbossState(helper *helper.Helper) {
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.EventUserRaidbossState(baseInfo, player.EventUserRaidbossState)
-	err = helper.SendCompatibleResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -136,7 +136,7 @@ func GetEventUserRaidbossList(helper *helper.Helper) {
 		helper.Err("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -147,7 +147,7 @@ func GetEventUserRaidbossList(helper *helper.Helper) {
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.DefaultEventUserRaidbossList(baseInfo, player.EventUserRaidbossState)
-	err = helper.SendCompatibleResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -161,7 +161,7 @@ func EventActStart(helper *helper.Helper) {
 		helper.Err("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -239,7 +239,7 @@ func EventActStart(helper *helper.Helper) {
 		respPlayer.CharacterState = cState
 	}
 	response := responses.DefaultEventActStart(baseInfo, respPlayer)
-	err = helper.SendCompatibleResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 		return
@@ -260,7 +260,7 @@ func EventPostGameResults(helper *helper.Helper) {
 		helper.Err("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -281,7 +281,7 @@ func EventPostGameResults(helper *helper.Helper) {
 	}
 	player.EventUserRaidbossState.NumRaidbossRings += request.NumRaidbossRings
 	response := responses.EventUserRaidbossState(baseInfo, player.EventUserRaidbossState)
-	err = helper.SendCompatibleResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -300,7 +300,7 @@ func EventUpdateGameResults(helper *helper.Helper) {
 		helper.Err("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -490,7 +490,7 @@ func EventUpdateGameResults(helper *helper.Helper) {
 	}
 	helper.DebugOut(fmt.Sprintf("%v", player.PlayerState.Items))
 
-	err = helper.SendCompatibleResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 		return

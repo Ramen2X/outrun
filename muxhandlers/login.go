@@ -35,6 +35,7 @@ func Login(helper *helper.Helper) {
 		helper.Err("Error unmarshalling", err)
 		return
 	}
+
 	uid := request.LineAuth.UserID
 	password := request.LineAuth.Password
 
@@ -124,7 +125,19 @@ func Login(helper *helper.Helper) {
 				helper.InternalErr("Error saving player", err)
 				return
 			}
-			response := responses.LoginSuccess(baseInfo, sid, player.Username)
+			var response interface{}
+			response = responses.LoginSuccess(baseInfo, sid, player.Username)
+			if infoconf.CFile.EOLMessageEnabled {
+				baseInfo.StatusCode = status.ServerNextVersion
+				response = responses.NewNextVersionResponse(baseInfo,
+					player.PlayerState.NumRedRings,
+					player.PlayerState.NumBuyRedRings,
+					player.Username,
+					infoconf.CFile.EOLMessageJP,
+					infoconf.CFile.EOLMessageEN,
+					infoconf.CFile.EOLMessageURL,
+				)
+			}
 			err = helper.SendResponse(response)
 			if err != nil {
 				helper.InternalErr("Error sending response", err)
@@ -147,7 +160,7 @@ func Login(helper *helper.Helper) {
 }
 
 func GetVariousParameter(helper *helper.Helper) {
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -191,7 +204,7 @@ func GetInformation(helper *helper.Helper) {
 }
 
 func GetTicker(helper *helper.Helper) {
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -205,7 +218,7 @@ func GetTicker(helper *helper.Helper) {
 }
 
 func LoginBonus(helper *helper.Helper) {
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -242,7 +255,7 @@ func LoginBonusSelect(helper *helper.Helper) {
 		helper.Err("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -322,7 +335,7 @@ func GetMigrationPassword(helper *helper.Helper) {
 		helper.Err("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return

@@ -19,7 +19,7 @@ import (
 )
 
 func GetDailyBattleData(helper *helper.Helper) {
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("error getting calling player", err)
 		return
@@ -54,7 +54,7 @@ func GetDailyBattleData(helper *helper.Helper) {
 			player.BattleState.BattleEndsAt,
 		)
 	}
-	err = helper.SendCompatibleResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("error sending response", err)
 	}
@@ -68,7 +68,7 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 		helper.InternalErr("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("error getting calling player", err)
 		return
@@ -277,7 +277,7 @@ func UpdateDailyBattleStatus(helper *helper.Helper) {
 		response = responses.UpdateDailyBattleStatus(baseInfo, player.BattleState.BattleEndsAt, battleStatus)
 	}
 
-	err = helper.SendCompatibleResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 		return
@@ -298,7 +298,7 @@ func ResetDailyBattleMatching(helper *helper.Helper) {
 		helper.InternalErr("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("error getting calling player", err)
 		return
@@ -372,7 +372,7 @@ func ResetDailyBattleMatching(helper *helper.Helper) {
 	} else {
 		response = responses.ResetDailyBattleMatchingNoOpponent(baseInfo, startTime, endTime, battleData, player)
 	}
-	err = helper.SendCompatibleResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("error sending response", err)
 	}
@@ -391,7 +391,7 @@ func GetDailyBattleHistory(helper *helper.Helper) {
 		helper.InternalErr("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("error getting calling player", err)
 		return
@@ -417,7 +417,7 @@ func GetDailyBattleStatus(helper *helper.Helper) {
 		helper.InternalErr("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("error getting calling player", err)
 		return
@@ -433,7 +433,7 @@ func GetDailyBattleStatus(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 
 	response := responses.GetDailyBattleStatus(baseInfo, player.BattleState.BattleEndsAt, battleStatus)
-	err = helper.SendCompatibleResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 		return
@@ -448,7 +448,7 @@ func PostDailyBattleResult(helper *helper.Helper) {
 		helper.InternalErr("Error unmarshalling", err)
 		return
 	}
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("error getting calling player", err)
 		return
@@ -696,7 +696,7 @@ func PostDailyBattleResult(helper *helper.Helper) {
 		}
 	}
 
-	err = helper.SendCompatibleResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 		return
@@ -711,7 +711,7 @@ func PostDailyBattleResult(helper *helper.Helper) {
 func GetPrizeDailyBattle(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.DefaultGetPrizeDailyBattle(baseInfo)
-	err := helper.SendCompatibleResponse(response)
+	err := helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 		return

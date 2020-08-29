@@ -29,23 +29,26 @@ import (
 const UNKNOWN_REQUEST_DIRECTORY = "logging/unknown_requests/"
 
 var (
-	LogExecutionTime = true
+	LogExecutionTime   = true
+	LogUnknownRequests = false
 )
 
-func OutputUnknownRequest(w http.ResponseWriter, r *http.Request) {
+func HandleUnknownRequest(w http.ResponseWriter, r *http.Request) {
 	recv, _ := cryption.GetReceivedMessage(r)
-	// make a new logging path
-	timeStr := strconv.Itoa(int(time.Now().Unix()))
-	os.MkdirAll(UNKNOWN_REQUEST_DIRECTORY, 0644)
-	normalizedReq := strings.ReplaceAll(r.URL.Path, "/", "-")
-	path := UNKNOWN_REQUEST_DIRECTORY + normalizedReq + "_" + timeStr + ".txt"
-	err := ioutil.WriteFile(path, recv, 0644)
-	if err != nil {
-		log.Println("[OUT] UNABLE TO WRITE UNKNOWN REQUEST: " + err.Error())
-		w.Write([]byte(""))
-		return
+	if LogUnknownRequests {
+		// make a new logging path
+		timeStr := strconv.Itoa(int(time.Now().Unix()))
+		os.MkdirAll(UNKNOWN_REQUEST_DIRECTORY, 0644)
+		normalizedReq := strings.ReplaceAll(r.URL.Path, "/", "-")
+		path := UNKNOWN_REQUEST_DIRECTORY + normalizedReq + "_" + timeStr + ".txt"
+		err := ioutil.WriteFile(path, recv, 0644)
+		if err != nil {
+			log.Println("[OUT] UNABLE TO WRITE UNKNOWN REQUEST: " + err.Error())
+			w.Write([]byte(""))
+			return
+		}
+		log.Println("[OUT] !!!!!!!!!!!! Unknown request, output to " + path)
 	}
-	log.Println("[OUT] !!!!!!!!!!!! Unknown request, output to " + path)
 	w.Write([]byte(""))
 }
 
@@ -133,6 +136,7 @@ func main() {
 	router := mux.NewRouter()
 	router.StrictSlash(true)
 	LogExecutionTime = config.CFile.DoTimeLogging
+	LogUnknownRequests = config.CFile.LogUnknownRequests
 	prefix := config.CFile.EndpointPrefix
 	// == Login ==
 	router.HandleFunc(prefix+"/Login/login/", h(muxhandlers.Login, LogExecutionTime))
@@ -250,7 +254,7 @@ func main() {
 	// == Migration ==
 	router.HandleFunc(prefix+"/Login/getMigrationPassword/", h(muxhandlers.GetMigrationPassword, LogExecutionTime))
 	router.HandleFunc(prefix+"/Login/migration/", h(muxhandlers.Migration, LogExecutionTime))
-	
+
 	// == Debug ==
 	//router.HandleFunc(prefix+"/Debug/addMessage/", h(muxhandlers.DebugSendMessage, LogExecutionTime))
 	//router.HandleFunc(prefix+"/Debug/addOpeMessage/", h(muxhandlers.DebugSendOperatorMessage, LogExecutionTime))
@@ -260,7 +264,7 @@ func main() {
 
 	// == Misc. ==
 	router.HandleFunc(prefix+"/Sgn/sendApollo/", h(muxhandlers.SendApollo, LogExecutionTime))
-	//router.HandleFunc(prefix+"/Sgn/setNoahId/", h(muxhandlers.SetNoahID, LogExecutionTime))
+	router.HandleFunc(prefix+"/Sgn/setNoahId/", h(muxhandlers.SetNoahID, LogExecutionTime))
 	//router.HandleFunc(prefix+"/Sgn/setSerialCode/", h(muxhandlers.SetSerialCode, LogExecutionTime))
 
 	// Server information
@@ -268,9 +272,7 @@ func main() {
 		router.HandleFunc("/outrunInfo/stats", inforeporters.Stats)
 	}
 
-	if config.CFile.LogUnknownRequests {
-		router.PathPrefix("/").HandlerFunc(OutputUnknownRequest)
-	}
+	router.PathPrefix("/").HandlerFunc(HandleUnknownRequest)
 
 	go bgtasks.TouchAnalyticsDB()
 

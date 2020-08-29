@@ -23,7 +23,7 @@ func GetItemStockNum(helper *helper.Helper) {
 
 //1.1.4
 func GetRaidbossWheelOptions(helper *helper.Helper) {
-	player, err := helper.GetCallingPlayer()
+	player, err := helper.GetCallingPlayer(true)
 	if err != nil {
 		helper.InternalErr("Error getting calling player", err)
 		return
@@ -39,7 +39,7 @@ func GetRaidbossWheelOptions(helper *helper.Helper) {
 	}
 	wheelOptions := netobj.DefaultRaidbossWheelOptions(0, player.PlayerState.ChaoEggs, 0, enums.WheelRankNormal, 0)
 	response := responses.RaidbossWheelOptions(baseInfo, wheelOptions)
-	err = helper.SendCompatibleResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}

@@ -9,7 +9,7 @@ import (
 
 func GetFacebookIncentive(helper *helper.Helper) {
     // We respond with no presents for now.
-    player, err := helper.GetCallingPlayer()
+    player, err := helper.GetCallingPlayer(true)
     if err != nil {
         helper.InternalErr("Error getting calling player", err)
         return
