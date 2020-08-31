@@ -70,3 +70,15 @@ func (t *Toolbox) GetTransferID(uid string, reply *ToolboxReply) error {
 	reply.Info = player.MigrationPassword
 	return nil
 }
+
+func (t *Toolbox) GetPassword(uid string, reply *ToolboxReply) error {
+	player, err := db.GetPlayer(uid)
+	if err != nil {
+		reply.Status = StatusOtherError
+		reply.Info = "unable to get player: " + err.Error()
+		return err
+	}
+	reply.Status = StatusOK
+	reply.Info = player.Password
+	return nil
+}
