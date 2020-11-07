@@ -255,7 +255,7 @@ func LoginBonus(base responseobjs.BaseInfo, lbs obj.LoginBonusStatus, lbrl, flbr
 }
 
 func DefaultLoginBonus(base responseobjs.BaseInfo, player netobj.Player, doLoginBonus bool) LoginBonusResponse {
-	lbs := obj.NewLoginBonusStatus(player.LoginBonusState.CurrentFirstLoginBonusDay-1, player.LoginBonusState.CurrentLoginBonusDay, player.LoginBonusState.LastLoginBonusTime)
+	lbs := obj.NewLoginBonusStatus(player.LoginBonusState.CurrentFirstLoginBonusDay-1, player.LoginBonusState.CurrentLoginBonusDay-1, player.LoginBonusState.LastLoginBonusTime)
 	lbrl := constobjs.DefaultLoginBonusRewardList
 	flbrl := constobjs.DefaultFirstLoginBonusRewardList
 	st := player.LoginBonusState.LoginBonusStartTime
