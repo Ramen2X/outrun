@@ -5,11 +5,11 @@ import "time"
 type EventRaidbossState struct {
 	ID               int64  `json:"raidbossId"`
 	Level            int64  `json:"raidbossLevel"`
-	Rarity           int64  `json:"raidbossRarity"` // TODO: research
+	Rarity           int64  `json:"raidbossRarity"` // 0: Normal, 1: Rare, 2: Super-rare
 	HP               int64  `json:"raidbossHitPoint"`
 	MaxHP            int64  `json:"raidbossMaxHitPoint"`
 	Status           int64  `json:"raidbossStatus"`   // TODO: research
-	EscapeAt         int64  `json:"raidbossEscapeAt"` // the time when the raid boss expires?
+	EscapeAt         int64  `json:"raidbossEscapeAt"` // the time when the raid boss expires
 	EncounterName    string `json:"encounterName"`
 	EncounterFlg     int64  `json:"encounterFlg"`
 	CrowdedFlg       int64  `json:"crowdedFlg"`       // raid boss is full?
@@ -43,8 +43,8 @@ func DefaultRaidbossState() EventRaidbossState {
 	// TODO: establish as constants
 	id := int64(0)
 	level := int64(8)
-	rarity := int64(0)
-	encounterName := "(Test Entry)"
+	rarity := int64(2)
+	encounterName := "System"
 	return NewRaidbossState(
 		id,
 		level,

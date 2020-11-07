@@ -14,7 +14,7 @@ type BaseResponse struct {
 func NewBaseResponse(base responseobjs.BaseInfo) BaseResponse {
 	return BaseResponse{
 		base,
-		"049",
+		"050",
 		"2.0.3",
 		"15",
 		"017",
@@ -24,9 +24,9 @@ func NewBaseResponse(base responseobjs.BaseInfo) BaseResponse {
 
 type NextVersionResponse struct {
 	responseobjs.BaseInfo
-	NumRedRingsIOS        int64  `json:"numRedRingsIOS,string"` // UNCONFIRMED!
+	NumRedRingsIOS        int64  `json:"numRedRingsIPHONE,string"` // UNCONFIRMED!
 	NumRedRingsANDROID    int64  `json:"numRedRingsANDROID,string"`
-	NumBuyRedRingsIOS     int64  `json:"numBuyRedRingsIOS,string"` // UNCONFIRMED!
+	NumBuyRedRingsIOS     int64  `json:"numBuyRedRingsIPHONE,string"` // UNCONFIRMED!
 	NumBuyRedRingsANDROID int64  `json:"numBuyRedRingsANDROID,string"`
 	Username              string `json:"userName"`
 	CloseMessageJP        string `json:"closeMessageJP"`

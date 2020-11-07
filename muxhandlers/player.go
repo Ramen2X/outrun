@@ -33,6 +33,12 @@ func GetPlayerState(helper *helper.Helper) {
 		}
 		return
 	}
+	if player.PlayerState.NumRings < 0 {
+		player.PlayerState.NumRings = 0
+	}
+	if player.PlayerState.NumRedRings < 0 {
+		player.PlayerState.NumRedRings = 0
+	}
 	for time.Now().UTC().Unix() >= player.PlayerState.EnergyRenewsAt && player.PlayerState.Energy < player.PlayerVarious.EnergyRecoveryMax {
 		player.PlayerState.Energy++
 		player.PlayerState.EnergyRenewsAt += player.PlayerVarious.EnergyRecoveryTime

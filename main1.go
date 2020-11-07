@@ -52,6 +52,14 @@ func HandleUnknownRequest(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(""))
 }
 
+func HandleDSFile(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte(""))
+}
+
+func HandlePPAdsFile(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte(""))
+}
+
 func removePrependingSlashes(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		for len(r.URL.Path) != 0 && string(r.URL.Path[0]) == "/" {
@@ -271,6 +279,10 @@ func main() {
 	if config.CFile.EnablePublicStats {
 		router.HandleFunc("/outrunInfo/stats", inforeporters.Stats)
 	}
+
+	// Noah-related files
+	router.HandleFunc("/ds.txt", HandleDSFile)
+	router.HandleFunc("/pp-ads.txt", HandlePPAdsFile)
 
 	router.PathPrefix("/").HandlerFunc(HandleUnknownRequest)
 
