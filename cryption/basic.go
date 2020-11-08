@@ -7,7 +7,9 @@ import (
 )
 
 var EncryptionIv = []byte("")
-var EncryptionKey = []byte("Ec7bLaTdSuXuf5pW")
+
+//var EncryptionKey = []byte("Ec7bLaTdSuXuf5pW") // encryption key in UnmanagedProcess
+var EncryptionKey = []byte("vMdkkY8bfVmUS6qr") // encryption key in Assembly-CSharp
 
 func CleanBytes(b []byte) []byte {
 	re := regexp.MustCompile("[^\u0020-\u007f]+")

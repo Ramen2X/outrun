@@ -15,10 +15,10 @@ func NewBaseResponse(base responseobjs.BaseInfo) BaseResponse {
 	return BaseResponse{
 		base,
 		"050",
-		"2.0.3",
+		"1.0.0",
 		"15",
 		"017",
-		"2.0.3",
+		"1.0.0",
 	}
 }
 
