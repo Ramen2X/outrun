@@ -1,7 +1,7 @@
 package constobjs
 
 import (
-    "github.com/fluofoxxo/outrun/obj"
+    "github.com/Ramen2X/outrun/obj"
 )
 
 func GetMileageIncentives(episode, chapter int64) []obj.MileageIncentive {

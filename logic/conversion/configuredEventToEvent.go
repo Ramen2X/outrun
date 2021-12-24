@@ -3,8 +3,8 @@ package conversion
 import (
     "time"
 
-    "github.com/fluofoxxo/outrun/config/eventconf"
-    "github.com/fluofoxxo/outrun/obj"
+    "github.com/Ramen2X/outrun/config/eventconf"
+    "github.com/Ramen2X/outrun/obj"
     "github.com/jinzhu/now"
 )
 

@@ -4,12 +4,12 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/fluofoxxo/outrun/config/infoconf"
-	"github.com/fluofoxxo/outrun/logic/conversion"
-	"github.com/fluofoxxo/outrun/netobj"
-	"github.com/fluofoxxo/outrun/obj"
-	"github.com/fluofoxxo/outrun/obj/constobjs"
-	"github.com/fluofoxxo/outrun/responses/responseobjs"
+	"github.com/Ramen2X/outrun/config/infoconf"
+	"github.com/Ramen2X/outrun/logic/conversion"
+	"github.com/Ramen2X/outrun/netobj"
+	"github.com/Ramen2X/outrun/obj"
+	"github.com/Ramen2X/outrun/obj/constobjs"
+	"github.com/Ramen2X/outrun/responses/responseobjs"
 )
 
 type LoginCheckKeyResponse struct {

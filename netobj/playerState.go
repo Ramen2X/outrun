@@ -4,10 +4,10 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/fluofoxxo/outrun/config/gameconf"
-	"github.com/fluofoxxo/outrun/enums"
-	"github.com/fluofoxxo/outrun/obj"
-	"github.com/fluofoxxo/outrun/obj/constobjs"
+	"github.com/Ramen2X/outrun/config/gameconf"
+	"github.com/Ramen2X/outrun/enums"
+	"github.com/Ramen2X/outrun/obj"
+	"github.com/Ramen2X/outrun/obj/constobjs"
 	"github.com/jinzhu/now"
 )
 

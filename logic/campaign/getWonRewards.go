@@ -3,9 +3,9 @@ package campaign
 import (
 	"log"
 
-	"github.com/fluofoxxo/outrun/config"
-	"github.com/fluofoxxo/outrun/obj"
-	"github.com/fluofoxxo/outrun/obj/constobjs"
+	"github.com/Ramen2X/outrun/config"
+	"github.com/Ramen2X/outrun/obj"
+	"github.com/Ramen2X/outrun/obj/constobjs"
 )
 
 func GetRewardsByPoint(episode, chapter, point int64) []obj.MileageReward {

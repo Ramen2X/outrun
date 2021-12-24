@@ -1,9 +1,9 @@
 package rpcobj
 
 import (
-    "github.com/fluofoxxo/outrun/config"
-    "github.com/fluofoxxo/outrun/config/eventconf"
-    "github.com/fluofoxxo/outrun/config/infoconf"
+    "github.com/Ramen2X/outrun/config"
+    "github.com/Ramen2X/outrun/config/eventconf"
+    "github.com/Ramen2X/outrun/config/infoconf"
 )
 
 type Config struct {

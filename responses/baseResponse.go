@@ -1,6 +1,6 @@
 package responses
 
-import "github.com/fluofoxxo/outrun/responses/responseobjs"
+import "github.com/Ramen2X/outrun/responses/responseobjs"
 
 type BaseResponse struct {
 	responseobjs.BaseInfo

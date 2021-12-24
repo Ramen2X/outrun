@@ -3,8 +3,8 @@ package bgtasks
 import (
 	"log"
 
-	"github.com/fluofoxxo/outrun/consts"
-	"github.com/fluofoxxo/outrun/db/dbaccess"
+	"github.com/Ramen2X/outrun/consts"
+	"github.com/Ramen2X/outrun/db/dbaccess"
 )
 
 func TouchAnalyticsDB() {

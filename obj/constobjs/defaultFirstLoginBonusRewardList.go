@@ -1,6 +1,6 @@
 package constobjs
 
-import "github.com/fluofoxxo/outrun/obj"
+import "github.com/Ramen2X/outrun/obj"
 
 var DefaultFirstLoginBonusRewardList = func() []obj.LoginBonusReward {
 	return []obj.LoginBonusReward{

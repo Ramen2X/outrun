@@ -10,16 +10,16 @@ import (
 	"strings"
 	"time"
 
-	"github.com/fluofoxxo/outrun/config"
-	"github.com/fluofoxxo/outrun/cryption"
-	"github.com/fluofoxxo/outrun/db"
-	"github.com/fluofoxxo/outrun/emess"
-	"github.com/fluofoxxo/outrun/netobj"
-	"github.com/fluofoxxo/outrun/netobj/constnetobjs"
-	"github.com/fluofoxxo/outrun/requests"
-	"github.com/fluofoxxo/outrun/responses"
-	"github.com/fluofoxxo/outrun/responses/responseobjs"
-	"github.com/fluofoxxo/outrun/status"
+	"github.com/Ramen2X/outrun/config"
+	"github.com/Ramen2X/outrun/cryption"
+	"github.com/Ramen2X/outrun/db"
+	"github.com/Ramen2X/outrun/emess"
+	"github.com/Ramen2X/outrun/netobj"
+	"github.com/Ramen2X/outrun/netobj/constnetobjs"
+	"github.com/Ramen2X/outrun/requests"
+	"github.com/Ramen2X/outrun/responses"
+	"github.com/Ramen2X/outrun/responses/responseobjs"
+	"github.com/Ramen2X/outrun/status"
 )
 
 const (

@@ -5,11 +5,11 @@ import (
 	"math/rand"
 	"strconv"
 
-	"github.com/fluofoxxo/outrun/config"
-	"github.com/fluofoxxo/outrun/consts"
-	"github.com/fluofoxxo/outrun/enums"
-	"github.com/fluofoxxo/outrun/logic/roulette"
-	"github.com/fluofoxxo/outrun/obj"
+	"github.com/Ramen2X/outrun/config"
+	"github.com/Ramen2X/outrun/consts"
+	"github.com/Ramen2X/outrun/enums"
+	"github.com/Ramen2X/outrun/logic/roulette"
+	"github.com/Ramen2X/outrun/obj"
 	"github.com/jinzhu/now"
 )
 

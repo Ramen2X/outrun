@@ -5,12 +5,12 @@ import (
 
 	"github.com/jinzhu/now"
 
-	"github.com/fluofoxxo/outrun/consts"
-	"github.com/fluofoxxo/outrun/logic"
-	"github.com/fluofoxxo/outrun/netobj"
-	"github.com/fluofoxxo/outrun/obj"
-	"github.com/fluofoxxo/outrun/obj/constobjs"
-	"github.com/fluofoxxo/outrun/responses/responseobjs"
+	"github.com/Ramen2X/outrun/consts"
+	"github.com/Ramen2X/outrun/logic"
+	"github.com/Ramen2X/outrun/netobj"
+	"github.com/Ramen2X/outrun/obj"
+	"github.com/Ramen2X/outrun/obj/constobjs"
+	"github.com/Ramen2X/outrun/responses/responseobjs"
 )
 
 type DailyChallengeDataResponse struct {

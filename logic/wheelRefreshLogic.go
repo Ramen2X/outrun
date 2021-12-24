@@ -1,12 +1,12 @@
 package logic
 
 import (
-	"github.com/fluofoxxo/outrun/config/campaignconf"
-	"github.com/fluofoxxo/outrun/consts"
-	"github.com/fluofoxxo/outrun/enums"
-	"github.com/fluofoxxo/outrun/logic/conversion"
-	"github.com/fluofoxxo/outrun/netobj"
-	"github.com/fluofoxxo/outrun/obj"
+	"github.com/Ramen2X/outrun/config/campaignconf"
+	"github.com/Ramen2X/outrun/consts"
+	"github.com/Ramen2X/outrun/enums"
+	"github.com/Ramen2X/outrun/logic/conversion"
+	"github.com/Ramen2X/outrun/netobj"
+	"github.com/Ramen2X/outrun/obj"
 )
 
 func WheelRefreshLogic(player netobj.Player, wheel netobj.WheelOptions) netobj.WheelOptions {

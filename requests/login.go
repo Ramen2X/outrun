@@ -1,6 +1,6 @@
 package requests
 
-import "github.com/fluofoxxo/outrun/obj"
+import "github.com/Ramen2X/outrun/obj"
 
 type LoginRequest struct {
 	Version      string `json:"version"`

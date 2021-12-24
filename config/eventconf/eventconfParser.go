@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 
-	"github.com/fluofoxxo/outrun/enums"
+	"github.com/Ramen2X/outrun/enums"
 )
 
 // defaults

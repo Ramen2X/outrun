@@ -1,10 +1,10 @@
 package muxhandlers
 
 import (
-	"github.com/fluofoxxo/outrun/emess"
-	"github.com/fluofoxxo/outrun/helper"
-	"github.com/fluofoxxo/outrun/responses"
-	"github.com/fluofoxxo/outrun/status"
+	"github.com/Ramen2X/outrun/emess"
+	"github.com/Ramen2X/outrun/helper"
+	"github.com/Ramen2X/outrun/responses"
+	"github.com/Ramen2X/outrun/status"
 )
 
 func GetOptionUserResult(helper *helper.Helper) {

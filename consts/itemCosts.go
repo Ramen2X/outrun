@@ -1,6 +1,6 @@
 package consts
 
-import "github.com/fluofoxxo/outrun/enums"
+import "github.com/Ramen2X/outrun/enums"
 
 var ItemPrices = map[string]int64{
     enums.ItemIDStrInvincible: 3000,

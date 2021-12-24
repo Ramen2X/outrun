@@ -1,7 +1,7 @@
 package consts
 
 import (
-	"github.com/fluofoxxo/outrun/enums"
+	"github.com/Ramen2X/outrun/enums"
 )
 
 var DailyMissionGoals = map[int64]int64{

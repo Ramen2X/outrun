@@ -5,11 +5,11 @@ import (
 	"log"
 	"time"
 
-	"github.com/fluofoxxo/outrun/analytics/anobj"
-	"github.com/fluofoxxo/outrun/analytics/factors"
-	"github.com/fluofoxxo/outrun/config"
-	"github.com/fluofoxxo/outrun/consts"
-	"github.com/fluofoxxo/outrun/db/dbaccess"
+	"github.com/Ramen2X/outrun/analytics/anobj"
+	"github.com/Ramen2X/outrun/analytics/factors"
+	"github.com/Ramen2X/outrun/config"
+	"github.com/Ramen2X/outrun/consts"
+	"github.com/Ramen2X/outrun/db/dbaccess"
 )
 
 func Store(pid string, atype int, value ...int64) (bool, error) {

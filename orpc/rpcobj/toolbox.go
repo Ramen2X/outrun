@@ -1,9 +1,9 @@
 package rpcobj
 
 import (
-	"github.com/fluofoxxo/outrun/db"
-	"github.com/fluofoxxo/outrun/netobj"
-	"github.com/fluofoxxo/outrun/obj"
+	"github.com/Ramen2X/outrun/db"
+	"github.com/Ramen2X/outrun/netobj"
+	"github.com/Ramen2X/outrun/obj"
 )
 
 type Toolbox struct {

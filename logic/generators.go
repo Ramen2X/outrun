@@ -4,7 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 
-	"github.com/fluofoxxo/outrun/netobj"
+	"github.com/Ramen2X/outrun/netobj"
 )
 
 // Generates the correct login password

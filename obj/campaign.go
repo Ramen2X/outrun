@@ -3,7 +3,7 @@ package obj
 import (
 	"time"
 
-	"github.com/fluofoxxo/outrun/enums"
+	"github.com/Ramen2X/outrun/enums"
 	"github.com/jinzhu/now"
 )
 

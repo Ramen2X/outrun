@@ -1,9 +1,9 @@
 package conversion
 
 import (
-	"github.com/fluofoxxo/outrun/enums"
-	"github.com/fluofoxxo/outrun/netobj"
-	"github.com/fluofoxxo/outrun/obj"
+	"github.com/Ramen2X/outrun/enums"
+	"github.com/Ramen2X/outrun/netobj"
+	"github.com/Ramen2X/outrun/obj"
 )
 
 func PlayerToRaidbossUserState(player netobj.Player, place int64) obj.RaidbossUserState {

@@ -5,8 +5,8 @@ import (
 	"math/rand"
 	"strconv"
 
-	"github.com/fluofoxxo/outrun/consts"
-	"github.com/fluofoxxo/outrun/enums"
+	"github.com/Ramen2X/outrun/consts"
+	"github.com/Ramen2X/outrun/enums"
 )
 
 type LogicChao struct { // TODO: Find a better way to replace this!

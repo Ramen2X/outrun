@@ -1,12 +1,12 @@
 package muxhandlers
 
 import (
-	"github.com/fluofoxxo/outrun/emess"
-	"github.com/fluofoxxo/outrun/enums"
-	"github.com/fluofoxxo/outrun/helper"
-	"github.com/fluofoxxo/outrun/netobj"
-	"github.com/fluofoxxo/outrun/responses"
-	"github.com/fluofoxxo/outrun/status"
+	"github.com/Ramen2X/outrun/emess"
+	"github.com/Ramen2X/outrun/enums"
+	"github.com/Ramen2X/outrun/helper"
+	"github.com/Ramen2X/outrun/netobj"
+	"github.com/Ramen2X/outrun/responses"
+	"github.com/Ramen2X/outrun/status"
 )
 
 func GetItemStockNum(helper *helper.Helper) {

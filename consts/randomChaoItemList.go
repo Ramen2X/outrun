@@ -1,6 +1,6 @@
 package consts
 
-import "github.com/fluofoxxo/outrun/enums"
+import "github.com/Ramen2X/outrun/enums"
 
 type PrizeInfo struct {
 	AppearanceChance float64 // % chance for it to be chosen to be in wheel by the server

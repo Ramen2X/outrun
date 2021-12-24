@@ -1,6 +1,6 @@
 package netobj
 
-import "github.com/fluofoxxo/outrun/obj"
+import "github.com/Ramen2X/outrun/obj"
 
 type ChaoSpinResult struct {
 	WonPrize ChaoSpinPrize `json:"getChao"` // chao or character

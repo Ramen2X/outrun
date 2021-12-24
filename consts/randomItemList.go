@@ -4,7 +4,7 @@ import (
 	"math/rand"
 	"strconv"
 
-	"github.com/fluofoxxo/outrun/enums"
+	"github.com/Ramen2X/outrun/enums"
 )
 
 type AmountRange struct {

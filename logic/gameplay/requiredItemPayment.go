@@ -1,9 +1,9 @@
 package gameplay
 
 import (
-	"github.com/fluofoxxo/outrun/netobj"
-	"github.com/fluofoxxo/outrun/obj"
-	"github.com/fluofoxxo/outrun/obj/constobjs"
+	"github.com/Ramen2X/outrun/netobj"
+	"github.com/Ramen2X/outrun/obj"
+	"github.com/Ramen2X/outrun/obj/constobjs"
 )
 
 func findItem(id string) obj.ConsumedItem {

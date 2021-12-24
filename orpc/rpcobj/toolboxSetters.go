@@ -3,9 +3,9 @@ package rpcobj
 import (
 	"encoding/json"
 
-	"github.com/fluofoxxo/outrun/config/eventconf"
-	"github.com/fluofoxxo/outrun/db"
-	"github.com/fluofoxxo/outrun/netobj"
+	"github.com/Ramen2X/outrun/config/eventconf"
+	"github.com/Ramen2X/outrun/db"
+	"github.com/Ramen2X/outrun/netobj"
 )
 
 func (t *Toolbox) SetRings(args ChangeValueArgs, reply *ToolboxReply) error {
