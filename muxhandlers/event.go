@@ -49,7 +49,7 @@ func GetEventList(helper *helper.Helper) {
 	helper.DebugOut("Global event list: %v", eventconf.CFile.CurrentEvents)
 	helper.DebugOut("Event list: %v", eventList)
 	response := responses.EventList(baseInfo, eventList)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -65,7 +65,7 @@ func GetEventReward(helper *helper.Helper) {
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.DefaultEventRewardList(baseInfo)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -96,7 +96,7 @@ func GetEventState(helper *helper.Helper) {
 		helper.InternalErr("Error saving player", err)
 		return
 	}
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -225,12 +225,12 @@ func EventActStart(helper *helper.Helper) {
 		baseInfo.StatusCode = status.NotEnoughEnergy
 	}
 	respPlayer := player
-	if request.Version == "1.1.4" { // must send fewer characters
+	if request.Version == "1.0.0" { // must send fewer characters
 		// only get first 21 characters
 		// TODO: enforce order 300000 to 300020?
 		//cState = cState[:len(cState)-(len(cState)-10)]
 		cState := respPlayer.CharacterState
-		cState = cState[:16]
+		cState = cState[:15]
 		helper.DebugOut("cState length: " + strconv.Itoa(len(cState)))
 		helper.DebugOut("Sent character IDs: ")
 		for _, char := range cState {

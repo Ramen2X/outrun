@@ -15,5 +15,5 @@ func GetOptionUserResult(helper *helper.Helper) {
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.OptionUserResult(baseInfo, player.OptionUserResult)
-	helper.SendResponse(response)
+	helper.SendCompatibleResponse(response, true)
 }

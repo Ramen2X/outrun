@@ -161,12 +161,12 @@ func UpgradeCharacter(helper *helper.Helper) {
 	}
 
 	respPlayer := player
-	if request.Version == "1.1.4" { // must send fewer characters
+	if request.Version == "1.0.0" { // must send fewer characters
 		// only get first 21 characters
 		// TODO: enforce order 300000 to 300020?
 		//cState = cState[:len(cState)-(len(cState)-10)]
 		cState := respPlayer.CharacterState
-		cState = cState[:16]
+		cState = cState[:15]
 		helper.DebugOut("cState length: " + strconv.Itoa(len(cState)))
 		helper.DebugOut("Sent character IDs: ")
 		for _, char := range cState {

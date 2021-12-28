@@ -48,7 +48,7 @@ func GetDailyChallengeData(helper *helper.Helper) {
 		return
 	}
 	response := responses.DailyChallengeData(baseInfo, player.PlayerState.NumDailyChallenge, player.PlayerState.NextNumDailyChallenge)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -58,7 +58,7 @@ func GetCostList(helper *helper.Helper) {
 	// no player, agonstic
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.DefaultCostList(baseInfo)
-	err := helper.SendResponse(response)
+	err := helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -81,7 +81,7 @@ func GetMileageData(helper *helper.Helper) {
 		return
 	}
 	response := responses.DefaultMileageData(baseInfo, player)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -98,7 +98,7 @@ func GetCampaignList(helper *helper.Helper) {
 	helper.DebugOut("Campaign list: %v", campaignList)
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.CampaignList(baseInfo, campaignList)
-	err := helper.SendResponse(response)
+	err := helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -186,7 +186,7 @@ func QuickActStart(helper *helper.Helper) {
 	}
 	helper.DebugOut(fmt.Sprintf("%v", player.PlayerState.Items))
 	response := responses.DefaultQuickActStart(baseInfo, player, campaignList)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 		return
@@ -285,12 +285,12 @@ func ActStart(helper *helper.Helper) {
 		baseInfo.StatusCode = status.NotEnoughEnergy
 	}
 	respPlayer := player
-	if request.Version == "1.1.4" { // must send fewer characters
+	if request.Version == "1.0.0" { // must send fewer characters
 		// only get first 21 characters
 		// TODO: enforce order 300000 to 300020?
 		//cState = cState[:len(cState)-(len(cState)-10)]
 		cState := respPlayer.CharacterState
-		cState = cState[:16]
+		cState = cState[:15]
 		helper.DebugOut("cState length: " + strconv.Itoa(len(cState)))
 		helper.DebugOut("Sent character IDs: ")
 		for _, char := range cState {
@@ -299,7 +299,7 @@ func ActStart(helper *helper.Helper) {
 		respPlayer.CharacterState = cState
 	}
 	response := responses.DefaultActStart(baseInfo, respPlayer, campaignList)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 		return
@@ -342,7 +342,7 @@ func ActRetry(helper *helper.Helper) {
 		baseInfo.StatusCode = status.NotEnoughRedRings
 	}
 	response := responses.NewBaseResponse(baseInfo)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 		return
@@ -371,7 +371,7 @@ func ActRetryFree(helper *helper.Helper) {
 		return
 	}
 	response := responses.NewBaseResponse(baseInfo)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 		return
@@ -604,7 +604,7 @@ func QuickPostGameResults(helper *helper.Helper) {
 	}
 
 	response := responses.DefaultQuickPostGameResults(baseInfo, player, playCharacters)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 		return
@@ -969,12 +969,12 @@ func PostGameResults(helper *helper.Helper) {
 	}
 
 	respPlayer := player
-	if request.Version == "1.1.4" { // must send fewer characters
+	if request.Version == "1.0.0" { // must send fewer characters
 		// only get first 21 characters
 		// TODO: enforce order 300000 to 300020?
 		//cState = cState[:len(cState)-(len(cState)-10)]
 		cState := respPlayer.CharacterState
-		cState = cState[:16]
+		cState = cState[:15]
 		helper.DebugOut("cState length: %v", len(cState))
 		helper.DebugOut("Sent character IDs: ")
 		for _, char := range cState {
@@ -983,7 +983,7 @@ func PostGameResults(helper *helper.Helper) {
 		respPlayer.CharacterState = cState
 	}
 	response := responses.DefaultPostGameResults(baseInfo, respPlayer, playCharacters, incentives, respPlayer.EventState)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 		return
@@ -1019,7 +1019,7 @@ func GetFreeItemList(helper *helper.Helper) {
 	} else {
 		response = responses.FreeItemList(baseInfo, []obj.Item{}) // No free items
 	}
-	err := helper.SendResponse(response)
+	err := helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -1042,7 +1042,7 @@ func GetMileageReward(helper *helper.Helper) {
 	*/
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.DefaultMileageReward(baseInfo, request.Chapter, request.Episode)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}

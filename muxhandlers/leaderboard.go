@@ -22,7 +22,7 @@ func GetWeeklyLeaderboardOptions(helper *helper.Helper) {
 	mode := request.Mode
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.DefaultWeeklyLeaderboardOptions(baseInfo, mode)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -49,7 +49,7 @@ func GetWeeklyLeaderboardEntries(helper *helper.Helper) {
 	helper.DebugOut("Mode: " + strconv.Itoa(int(mode)))
 	helper.DebugOut("Type: " + strconv.Itoa(int(lbtype)))
 	response := responses.DefaultWeeklyLeaderboardEntries(baseInfo, player, mode, lbtype, first)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -66,7 +66,7 @@ func GetLeagueData(helper *helper.Helper) {
 	mode := request.Mode
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.DefaultLeagueData(baseInfo, mode)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}

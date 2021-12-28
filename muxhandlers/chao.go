@@ -210,7 +210,7 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 	// spin logic
 	primaryLogic := func(usingTickets bool) {
 		actions := request.Count
-		if request.Version == "1.1.4" {
+		if request.Version == "1.0.0" {
 			// 1.1.4 does not specify a value for request.Count; so we'll make it always one spin
 			actions = 1
 		}
@@ -280,7 +280,7 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 					prizeChaoLevel := int64(rand.Intn(highRange-lowRange+1) + lowRange) // This level is added to the current Chao level
 					//amtWon = int(prizeChaoLevel)
 					maxChaoLevel := int64(10)
-					if request.Version == "1.1.4" {
+					if request.Version == "1.0.0" {
 						maxChaoLevel = int64(5)
 					}
 					if player.ChaoState[chaoIndex].Level < maxChaoLevel {
@@ -308,7 +308,7 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 			spinResults = append(spinResults, spinResult) // add spin result to results list (See spinResults declaration)
 		}
 		// create a new wheel; must be done after ALL player operations are done
-		chaoCanBeLevelled := !player.AllChaoMaxLevel(request.Version == "1.1.4")
+		chaoCanBeLevelled := !player.AllChaoMaxLevel(request.Version == "1.0.0")
 		charactersCanBeLevelled := !player.AllCharactersMaxLevel()
 		helper.DebugOut("Chao can be levelled: %v", chaoCanBeLevelled)
 		helper.DebugOut("Characters can be levelled: %v", charactersCanBeLevelled)
@@ -352,7 +352,7 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 		}
 		//newItems, err := roulette.GetRandomChaoRouletteItems(player.ChaoRouletteGroup.ChaoWheelOptions.Rarity, player.GetAllMaxLevelIDs()) // create new wheel items
 		//newItems, err := roulette.GetRandomChaoRouletteItems(player.ChaoRouletteGroup.ChaoWheelOptions.Rarity, player.GetAllNonMaxedChaoAndCharacters()) // create new wheel items
-		newItems, newRarities, err := roulette.GetRandomChaoRouletteItems(player.ChaoRouletteGroup.ChaoWheelOptions.Rarity, player.GetAllNonMaxedCharacters(), player.GetAllNonMaxedChao(request.Version == "1.1.4"), request.Version == "1.1.4")
+		newItems, newRarities, err := roulette.GetRandomChaoRouletteItems(player.ChaoRouletteGroup.ChaoWheelOptions.Rarity, player.GetAllNonMaxedCharacters(), player.GetAllNonMaxedChao(request.Version == "1.0.0"), request.Version == "1.0.0")
 		if err != nil {
 			helper.InternalErr("Error getting new items", err)
 			return
@@ -386,11 +386,11 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 	helper.DebugOut("Chao Roulette spin cost: %v", player.ChaoRouletteGroup.ChaoWheelOptions.SpinCost)
 
 	cState := player.CharacterState
-	if request.Version == "1.1.4" { // must send fewer characters
+	if request.Version == "1.0.0" { // must send fewer characters
 		// only get first 21 characters
 		// TODO: enforce order 300000 to 300020?
 		//cState = cState[:len(cState)-(len(cState)-10)]
-		cState = cState[:16]
+		cState = cState[:15]
 		helper.DebugOut("cState length: " + strconv.Itoa(len(cState)))
 		helper.DebugOut("Sent character IDs: ")
 		for _, char := range cState {

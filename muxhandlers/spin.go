@@ -52,7 +52,7 @@ func GetWheelOptions(helper *helper.Helper) {
 	player.LastWheelOptions = logic.WheelRefreshLogic(player, player.LastWheelOptions)
 
 	response := responses.WheelOptions(baseInfo, player.LastWheelOptions)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -157,7 +157,7 @@ func CommitWheelSpin(helper *helper.Helper) {
 				}
 				player.ChaoState[chaoIndex].Level += amountOfItemWon
 				maxChaoLevel := int64(10)
-				if request.Version == "1.1.4" {
+				if request.Version == "1.0.0" {
 					maxChaoLevel = int64(5)
 				}
 				if player.ChaoState[chaoIndex].Level > maxChaoLevel { // if max chao level
@@ -213,11 +213,11 @@ func CommitWheelSpin(helper *helper.Helper) {
 	}
 
 	cState := player.CharacterState
-	if request.Version == "1.1.4" { // must send fewer characters
+	if request.Version == "1.0.0" { // must send fewer characters
 		// only get first 21 characters
 		// TODO: enforce order 300000 to 300020?
 		//cState = cState[:len(cState)-(len(cState)-10)]
-		cState = cState[:16]
+		cState = cState[:15]
 		helper.DebugOut("cState length: " + strconv.Itoa(len(cState)))
 		helper.DebugOut("Sent character IDs: ")
 		for _, char := range cState {
@@ -232,7 +232,7 @@ func CommitWheelSpin(helper *helper.Helper) {
 		return
 	}
 
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 		return
@@ -247,7 +247,7 @@ func CommitWheelSpin(helper *helper.Helper) {
 func GetWheelSpinInfo(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.DefaultWheelSpinInfo(baseInfo)
-	err := helper.SendResponse(response)
+	err := helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}

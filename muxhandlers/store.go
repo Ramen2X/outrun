@@ -93,7 +93,7 @@ func GetRedStarExchangeList(helper *helper.Helper) {
 		index++
 	}
 	response = responses.RedStarExchangeList(baseInfo, redStarItems, 0, "1900-1-1")
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -197,7 +197,7 @@ func RedStarExchange(helper *helper.Helper) {
 	}
 
 	response := responses.DefaultRedStarExchange(baseInfo, player)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}

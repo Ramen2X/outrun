@@ -30,7 +30,7 @@ func GetMessageList(helper *helper.Helper) {
 	db.SavePlayer(player)
 	// response := responses.DefaultMessageList(baseInfo)
 	response := responses.MessageList(baseInfo, []obj.Message{}, player.OperatorMessages)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -148,7 +148,7 @@ func GetMessage(helper *helper.Helper) {
 			}
 			player.ChaoState[chaoIndex].Level += currentPresent.NumItem
 			maxChaoLevel := int64(10)
-			if request.Version == "1.1.4" {
+			if request.Version == "1.0.0" {
 				maxChaoLevel = int64(5)
 			}
 			if player.ChaoState[chaoIndex].Level > maxChaoLevel { // if max chao level
@@ -176,12 +176,12 @@ func GetMessage(helper *helper.Helper) {
 		}
 	}
 	respPlayer := player
-	if request.Version == "1.1.4" { // must send fewer characters
+	if request.Version == "1.0.0" { // must send fewer characters
 		// only get first 21 characters
 		// TODO: enforce order 300000 to 300020?
 		//cState = cState[:len(cState)-(len(cState)-10)]
 		cState := respPlayer.CharacterState
-		cState = cState[:16]
+		cState = cState[:15]
 		helper.DebugOut("cState length: %v", len(cState))
 		helper.DebugOut("Sent character IDs: ")
 		for _, char := range cState {
@@ -195,7 +195,7 @@ func GetMessage(helper *helper.Helper) {
 	} else {
 		response = responses.NewBaseResponse(baseInfo)
 	}
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}

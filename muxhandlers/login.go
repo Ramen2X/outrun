@@ -56,7 +56,7 @@ func Login(helper *helper.Helper) {
 			newPlayer.Password,
 			newPlayer.Key,
 		)
-		err = helper.SendResponse(response)
+		err = helper.SendCompatibleResponse(response, true)
 		if err != nil {
 			helper.InternalErr("Error responding", err)
 		}
@@ -77,11 +77,11 @@ func Login(helper *helper.Helper) {
 			// likely account that wasn't found, so let's tell them that:
 			response := responses.LoginCheckKey(baseInfo, "")
 			baseInfo.StatusCode = status.MissingPlayer
-			helper.SendResponse(response)
+			helper.SendCompatibleResponse(response, true)
 			return
 		}
 		response := responses.LoginCheckKey(baseInfo, player.Key)
-		err = helper.SendResponse(response)
+		err = helper.SendCompatibleResponse(response, true)
 		if err != nil {
 			helper.InternalErr("Error sending response", err)
 			return
@@ -138,7 +138,7 @@ func Login(helper *helper.Helper) {
 					infoconf.CFile.EOLMessageURL,
 				)
 			}
-			err = helper.SendResponse(response)
+			err = helper.SendCompatibleResponse(response, true)
 			if err != nil {
 				helper.InternalErr("Error sending response", err)
 				return
@@ -176,7 +176,7 @@ func GetVariousParameter(helper *helper.Helper) {
 		return
 	}
 	response := responses.VariousParameter(baseInfo, player)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 		return
@@ -197,7 +197,7 @@ func GetInformation(helper *helper.Helper) {
 	operatorInfos := []obj.OperatorInformation{}
 	numOpUnread := int64(len(operatorInfos))
 	response := responses.Information(baseInfo, infos, operatorInfos, numOpUnread)
-	err := helper.SendResponse(response)
+	err := helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -211,7 +211,7 @@ func GetTicker(helper *helper.Helper) {
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.DefaultTicker(baseInfo, player)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -241,7 +241,7 @@ func LoginBonus(helper *helper.Helper) {
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.DefaultLoginBonus(baseInfo, player, doLoginBonus)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -303,7 +303,7 @@ func LoginBonusSelect(helper *helper.Helper) {
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.LoginBonusSelect(baseInfo, rewardList, firstRewardList)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -313,7 +313,7 @@ func GetCountry(helper *helper.Helper) {
 	// TODO: Should get correct country code!
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.DefaultGetCountry(baseInfo)
-	err := helper.SendResponse(response)
+	err := helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -356,7 +356,7 @@ func GetMigrationPassword(helper *helper.Helper) {
 	player.UserPassword = request.UserPassword
 	db.SavePlayer(player)
 	response := responses.MigrationPassword(baseInfo, player)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -430,18 +430,18 @@ func Migration(helper *helper.Helper) {
 			helper.DebugOut("Username: %s", migratePlayer.Username)
 			helper.DebugOut("New Transfer ID: %s", migratePlayer.MigrationPassword)
 			response := responses.MigrationSuccess(baseInfo, sid, migratePlayer.ID, migratePlayer.Username, migratePlayer.Password)
-			helper.SendResponse(response)
+			helper.SendCompatibleResponse(response, true)
 		} else {
 			baseInfo.StatusCode = status.InvalidPassword
 			baseInfo.SetErrorMessage(emess.BadPassword)
 			helper.DebugOut("Incorrect password for user ID %s", migratePlayer.ID)
 			response := responses.NewBaseResponse(baseInfo)
-			helper.SendResponse(response)
+			helper.SendCompatibleResponse(response, true)
 		}
 	} else {
 		helper.DebugOut("Failed to find player")
 		baseInfo.StatusCode = status.InvalidPassword
 		response := responses.NewBaseResponse(baseInfo)
-		helper.SendResponse(response)
+		helper.SendCompatibleResponse(response, true)
 	}
 }

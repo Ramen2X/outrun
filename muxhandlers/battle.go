@@ -403,7 +403,7 @@ func GetDailyBattleHistory(helper *helper.Helper) {
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.GetDailyBattleHistory(baseInfo, history)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("error sending response", err)
 	}

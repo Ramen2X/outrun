@@ -81,7 +81,7 @@ func GetPlayerState(helper *helper.Helper) {
 		return
 	}
 	response := responses.PlayerState(baseInfo, player.PlayerState)
-	helper.SendResponse(response)
+	helper.SendCompatibleResponse(response, true)
 }
 
 func GetCharacterState(helper *helper.Helper) {
@@ -108,11 +108,11 @@ func GetCharacterState(helper *helper.Helper) {
 		return
 	}
 	cState := player.CharacterState
-	if request.Version == "1.1.4" { // must send fewer characters
+	if request.Version == "1.0.0" { // must send fewer characters
 		// only get first 21 characters
 		// TODO: enforce order 300000 to 300020?
 		//cState = cState[:len(cState)-(len(cState)-10)]
-		cState = cState[:16]
+		cState = cState[:15]
 		helper.DebugOut("cState length: " + strconv.Itoa(len(cState)))
 		helper.DebugOut("Sent character IDs: ")
 		for _, char := range cState {
@@ -120,7 +120,7 @@ func GetCharacterState(helper *helper.Helper) {
 		}
 	}
 	response := responses.CharacterState(baseInfo, cState)
-	helper.SendResponse(response)
+	helper.SendCompatibleResponse(response, true)
 }
 
 func GetChaoState(helper *helper.Helper) {
@@ -149,7 +149,7 @@ func GetChaoState(helper *helper.Helper) {
 	//cap max levels to prevent hang
 	chaoState := player.ChaoState
 	maxLevel := 10
-	if request.Version == "1.1.4" {
+	if request.Version == "1.0.0" {
 		maxLevel = 5
 	}
 	for index, chao := range chaoState {
@@ -158,7 +158,7 @@ func GetChaoState(helper *helper.Helper) {
 		}
 	}
 	response := responses.ChaoState(baseInfo, chaoState)
-	helper.SendResponse(response)
+	helper.SendCompatibleResponse(response, true)
 }
 
 func SetUsername(helper *helper.Helper) {
@@ -183,7 +183,7 @@ func SetUsername(helper *helper.Helper) {
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.NewBaseResponse(baseInfo)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 		return
