@@ -31,7 +31,7 @@ type PostGameResultsRequest struct {
 type QuickActStartRequest struct {
 	Base
 	Modifier []int64 `json:"modifire"`           // Seems to be list of item IDs.
-//	Tutorial int64   `json:"tutorial,omitempty"` // will omit the field if not found (breaks 1.0.0 for some reason)
+	Tutorial int64   `json:"tutorial,string"` // will omit the field if not found (breaks 1.0.0 for some reason)
 }
 
 type ActStartRequest struct {
