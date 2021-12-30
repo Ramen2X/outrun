@@ -202,19 +202,14 @@ func DefaultTicker(base responseobjs.BaseInfo, player netobj.Player) TickerRespo
 				obj.NewTicker(
 					3,
 					time.Now().UTC().Unix()+7200, // two hours later
-					"High score (Timed Mode): [0000ff]"+strconv.Itoa(int(player.PlayerState.TimedHighScore)),
+					"High score: [0000ff]"+strconv.Itoa(int(player.PlayerState.HighScore)),
 				),
 				obj.NewTicker(
 					4,
 					time.Now().UTC().Unix()+7200, // two hours later
-					"High score (Story Mode): [0000ff]"+strconv.Itoa(int(player.PlayerState.HighScore)),
-				),
-				obj.NewTicker(
-					5,
-					time.Now().UTC().Unix()+7200, // two hours later
-					"Total distance ran (Story Mode): [0000ff]"+strconv.Itoa(int(player.PlayerState.TotalDistance)),
+					"Total distance ran: [0000ff]"+strconv.Itoa(int(player.PlayerState.TotalDistance)),
 				)}
-			di = 5
+			di = 4
 		}
 		for i, ct := range infoconf.CFile.Tickers {
 			newTicker := conversion.ConfiguredTickerToTicker(int64(di+i+1), ct)
