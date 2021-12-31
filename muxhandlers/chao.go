@@ -416,8 +416,22 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 	}
 }
 
-func GetFirstLaunchChao(helper *helper.Helper) {
+func GetFirstLaunchChao(helper *helper.Helper) { // 1.0.0 endpoint that triggers a fake hardcoded roulette spin that (seemingly) always awards Hero Chao
 	player, err := helper.GetCallingPlayer(true)
+	chaoIndex := player.IndexOfChao("400000") // Hero Chao
+	if chaoIndex == -1 { // chao index not found, should never happen
+		helper.InternalErr("cannot get index of chao '"+strconv.Itoa(chaoIndex)+"'", err)
+		return
+	}
+	if player.ChaoState[chaoIndex].Status == enums.ChaoStatusNotOwned {
+		// earn the Chao
+		helper.DebugOut("Attempting to add Hero Chao to calling player's ChaoState")
+		player.ChaoState[chaoIndex].Status = enums.ChaoStatusOwned
+		player.ChaoState[chaoIndex].Acquired = 1
+		player.ChaoState[chaoIndex].Level = 0 // starting level
+	} else {
+		helper.DebugOut("Somehow, player already owns Hero Chao!!") // Should never happen!!!
+	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.FirstLaunchChao(baseInfo, player.PlayerState, player.ChaoState)
 	err = helper.SendCompatibleResponse(response, true)
@@ -425,4 +439,3 @@ func GetFirstLaunchChao(helper *helper.Helper) {
 		helper.InternalErr("Error sending response", err)
 	}
 }
-
