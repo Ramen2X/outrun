@@ -116,3 +116,18 @@ func DefaultChaoWheelSpin(base responseobjs.BaseInfo, player netobj.Player) Chao
 		[]netobj.ChaoSpinResult{chaoSpinResults},
 	)
 }
+
+type FirstLaunchChaoResponse struct {
+	BaseResponse
+	PlayerState    netobj.PlayerState  `json:"playerState"`
+	ChaoState      []netobj.Chao       `json:"chaoState"`
+}
+
+func FirstLaunchChao(base responseobjs.BaseInfo, playerState netobj.PlayerState, chaoState []netobj.Chao) FirstLaunchChaoResponse {
+	baseResponse := NewBaseResponse(base)
+	return FirstLaunchChaoResponse{
+		baseResponse,
+		playerState,
+		chaoState,
+	}
+}

@@ -10,3 +10,7 @@ type CommitChaoWheelSpinRequest struct {
     Base
     Count int64 `json:"count,string"`
 }
+
+type GetFirstLaunchChaoRequest struct {
+    Base
+}

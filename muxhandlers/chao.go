@@ -415,3 +415,14 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 		helper.WarnErr("Error storing analytics (AnalyticTypeSpinChaoRoulette)", err)
 	}
 }
+
+func GetFirstLaunchChao(helper *helper.Helper) {
+	player, err := helper.GetCallingPlayer(true)
+	baseInfo := helper.BaseInfo(emess.OK, status.OK)
+	response := responses.FirstLaunchChao(baseInfo, player.PlayerState, player.ChaoState)
+	err = helper.SendCompatibleResponse(response, true)
+	if err != nil {
+		helper.InternalErr("Error sending response", err)
+	}
+}
+

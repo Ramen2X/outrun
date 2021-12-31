@@ -231,6 +231,7 @@ func main() {
 	router.HandleFunc(prefix+"/RaidbossSpin/getPrizeRaidbossWheelSpin/", h(muxhandlers.GetPrizeRaidbossWheelSpin, LogExecutionTime))
 	router.HandleFunc(prefix+"/RaidbossSpin/getItemStockNum/", h(muxhandlers.GetItemStockNum, LogExecutionTime))
 	router.HandleFunc(prefix+"/Spin/commitWheelSpin/", h(muxhandlers.CommitWheelSpin, LogExecutionTime))
+	router.HandleFunc(prefix+"/Chao/getFirstLaunchChao/", h(muxhandlers.GetFirstLaunchChao, LogExecutionTime))
 	router.HandleFunc(prefix+"/Chao/commitChaoWheelSpin/", h(muxhandlers.CommitChaoWheelSpin, LogExecutionTime))
 	//router.HandleFunc(prefix+"/RaidbossSpin/commitRaidbossWheelSpin/", h(muxhandlers.CommitRaidbossWheelSpin, LogExecutionTime))
 	router.HandleFunc(prefix+"/Spin/getWheelSpinInfo/", h(muxhandlers.GetWheelSpinInfo, LogExecutionTime))
