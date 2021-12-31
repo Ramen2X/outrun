@@ -10,18 +10,18 @@ type QuickPostGameResultsRequest struct {
 	RedRings               int64  `json:"numRedStarRings,string"`
 	Distance               int64  `json:"distance,string"`
 	DailyChallengeValue    int64  `json:"dailyChallengeValue,string"`
-	DailyChallengeComplete int64  `json:"dailyChallengeComplete"`
+	DailyChallengeComplete int64  `json:"dailyChallengeComplete,string"`
 	Animals                int64  `json:"numAnimals,string"`
 	MaxCombo               int64  `json:"maxCombo,string"`
-	Closed                 int64  `json:"closed"`
+	Closed                 int64  `json:"closed,string"`
 	CheatResult            string `json:"cheatResult"`
 }
 
 type PostGameResultsRequest struct {
 	QuickPostGameResultsRequest
 	BossDestroyed int64 `json:"bossDestroyed"`
-	ChapterClear  int64 `json:"chapterClear"`
-	GetChaoEgg    int64 `json:"getChaoEgg"`
+	ChapterClear  int64 `json:"chapterClear,string"`
+	GetChaoEgg    int64 `json:"getChaoEgg,string"`
 	NumBossAttack int64 `json:"numBossAttack,string"`
 	ReachPoint    int64 `json:"reachPoint,string"`
 	EventId       int64 `json:"eventId,string"`
