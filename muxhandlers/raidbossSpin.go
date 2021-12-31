@@ -15,7 +15,7 @@ func GetItemStockNum(helper *helper.Helper) {
 	// for item IDs, along with an event ID, likely for event characters.
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.DefaultItemStockNum(baseInfo)
-	err := helper.SendResponse(response)
+	err := helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -31,7 +31,7 @@ func GetRaidbossWheelOptions(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	if player.Suspended {
 		baseInfo.StatusCode = status.MissingPlayer
-		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		err = helper.SendCompatibleResponse(responses.NewBaseResponse(baseInfo), true)
 		if err != nil {
 			helper.InternalErr("Error sending response", err)
 		}
@@ -49,7 +49,7 @@ func GetPrizeRaidbossWheelSpin(helper *helper.Helper) {
 	// agnostic
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.DefaultPrizeRaidbossWheel(baseInfo)
-	err := helper.SendResponse(response)
+	err := helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}

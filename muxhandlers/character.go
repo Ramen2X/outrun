@@ -34,7 +34,7 @@ func ChangeCharacter(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	if player.Suspended {
 		baseInfo.StatusCode = status.MissingPlayer
-		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		err = helper.SendCompatibleResponse(responses.NewBaseResponse(baseInfo), true)
 		if err != nil {
 			helper.InternalErr("Error sending response", err)
 			return
@@ -85,7 +85,7 @@ func ChangeCharacter(helper *helper.Helper) {
 	db.SavePlayer(player)
 
 	response := responses.ChangeCharacter(baseInfo, player.PlayerState)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -108,7 +108,7 @@ func UpgradeCharacter(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	if player.Suspended {
 		baseInfo.StatusCode = status.MissingPlayer
-		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		err = helper.SendCompatibleResponse(responses.NewBaseResponse(baseInfo), true)
 		if err != nil {
 			helper.InternalErr("Error sending response", err)
 			return
@@ -175,7 +175,7 @@ func UpgradeCharacter(helper *helper.Helper) {
 		respPlayer.CharacterState = cState
 	}
 	response := responses.DefaultUpgradeCharacter(baseInfo, respPlayer)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -198,7 +198,7 @@ func UnlockedCharacter(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	if player.Suspended {
 		baseInfo.StatusCode = status.MissingPlayer
-		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		err = helper.SendCompatibleResponse(responses.NewBaseResponse(baseInfo), true)
 		if err != nil {
 			helper.InternalErr("Error sending response", err)
 			return
@@ -268,7 +268,7 @@ func UnlockedCharacter(helper *helper.Helper) {
 	helper.DebugOut("CharacterState[%v].Star: %v", charaIndex, player.CharacterState[charaIndex].Star)
 
 	response := responses.DefaultUpgradeCharacter(baseInfo, player)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}

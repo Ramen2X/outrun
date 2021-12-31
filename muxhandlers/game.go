@@ -40,7 +40,7 @@ func GetDailyChallengeData(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	if player.Suspended {
 		baseInfo.StatusCode = status.MissingPlayer
-		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		err = helper.SendCompatibleResponse(responses.NewBaseResponse(baseInfo), true)
 		if err != nil {
 			helper.InternalErr("Error sending response", err)
 			return
@@ -73,7 +73,7 @@ func GetMileageData(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	if player.Suspended {
 		baseInfo.StatusCode = status.MissingPlayer
-		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		err = helper.SendCompatibleResponse(responses.NewBaseResponse(baseInfo), true)
 		if err != nil {
 			helper.InternalErr("Error sending response", err)
 			return
@@ -120,7 +120,7 @@ func QuickActStart(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	if player.Suspended {
 		baseInfo.StatusCode = status.MissingPlayer
-		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		err = helper.SendCompatibleResponse(responses.NewBaseResponse(baseInfo), true)
 		if err != nil {
 			helper.InternalErr("Error sending response", err)
 			return
@@ -218,7 +218,7 @@ func ActStart(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	if player.Suspended {
 		baseInfo.StatusCode = status.MissingPlayer
-		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		err = helper.SendCompatibleResponse(responses.NewBaseResponse(baseInfo), true)
 		if err != nil {
 			helper.InternalErr("Error sending response", err)
 			return
@@ -324,7 +324,7 @@ func ActRetry(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	if player.Suspended {
 		baseInfo.StatusCode = status.MissingPlayer
-		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		err = helper.SendCompatibleResponse(responses.NewBaseResponse(baseInfo), true)
 		if err != nil {
 			helper.InternalErr("Error sending response", err)
 			return
@@ -363,7 +363,7 @@ func ActRetryFree(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	if player.Suspended {
 		baseInfo.StatusCode = status.MissingPlayer
-		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		err = helper.SendCompatibleResponse(responses.NewBaseResponse(baseInfo), true)
 		if err != nil {
 			helper.InternalErr("Error sending response", err)
 			return
@@ -398,7 +398,7 @@ func QuickPostGameResults(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	if player.Suspended {
 		baseInfo.StatusCode = status.MissingPlayer
-		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		err = helper.SendCompatibleResponse(responses.NewBaseResponse(baseInfo), true)
 		if err != nil {
 			helper.InternalErr("Error sending response", err)
 			return
@@ -648,7 +648,7 @@ func PostGameResults(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	if player.Suspended {
 		baseInfo.StatusCode = status.MissingPlayer
-		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		err = helper.SendCompatibleResponse(responses.NewBaseResponse(baseInfo), true)
 		if err != nil {
 			helper.InternalErr("Error sending response", err)
 			return

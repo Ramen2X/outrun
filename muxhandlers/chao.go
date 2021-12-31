@@ -32,14 +32,14 @@ func GetChaoWheelOptions(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	if player.Suspended {
 		baseInfo.StatusCode = status.MissingPlayer
-		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		err = helper.SendCompatibleResponse(responses.NewBaseResponse(baseInfo), true)
 		if err != nil {
 			helper.InternalErr("Error sending response", err)
 		}
 		return
 	}
 	response := responses.DefaultChaoWheelOptions(baseInfo, player)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -49,7 +49,7 @@ func GetPrizeChaoWheelSpin(helper *helper.Helper) {
 	// agnostic
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.DefaultPrizeChaoWheel(baseInfo)
-	err := helper.SendResponse(response)
+	err := helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -73,7 +73,7 @@ func EquipChao(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	if player.Suspended {
 		baseInfo.StatusCode = status.MissingPlayer
-		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		err = helper.SendCompatibleResponse(responses.NewBaseResponse(baseInfo), true)
 		if err != nil {
 			helper.InternalErr("Error sending response", err)
 			return
@@ -152,7 +152,7 @@ completed:
 	db.SavePlayer(player)
 
 	response := responses.EquipChao(baseInfo, player.PlayerState)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -175,7 +175,7 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	if player.Suspended {
 		baseInfo.StatusCode = status.MissingPlayer
-		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		err = helper.SendCompatibleResponse(responses.NewBaseResponse(baseInfo), true)
 		if err != nil {
 			helper.InternalErr("Error sending response", err)
 			return
@@ -405,7 +405,7 @@ func CommitChaoWheelSpin(helper *helper.Helper) {
 		return
 	}
 
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 		return

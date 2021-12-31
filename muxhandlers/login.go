@@ -100,7 +100,7 @@ func Login(helper *helper.Helper) {
 		}
 		if player.Suspended {
 			baseInfo.StatusCode = status.MissingPlayer
-			err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+			err = helper.SendCompatibleResponse(responses.NewBaseResponse(baseInfo), true)
 			if err != nil {
 				helper.InternalErr("Error sending response", err)
 				return
@@ -149,7 +149,7 @@ func Login(helper *helper.Helper) {
 			baseInfo.StatusCode = status.InvalidPassword
 			baseInfo.SetErrorMessage(emess.BadPassword)
 			helper.DebugOut("Incorrect passkey sent: \"%s\"", request.Password)
-			err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+			err = helper.SendCompatibleResponse(responses.NewBaseResponse(baseInfo), true)
 			if err != nil {
 				helper.InternalErr("Error sending response", err)
 				return
@@ -168,7 +168,7 @@ func GetVariousParameter(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	if player.Suspended {
 		baseInfo.StatusCode = status.MissingPlayer
-		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		err = helper.SendCompatibleResponse(responses.NewBaseResponse(baseInfo), true)
 		if err != nil {
 			helper.InternalErr("Error sending response", err)
 			return
@@ -343,7 +343,7 @@ func GetMigrationPassword(helper *helper.Helper) {
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	if player.Suspended {
 		baseInfo.StatusCode = status.MissingPlayer
-		err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+		err = helper.SendCompatibleResponse(responses.NewBaseResponse(baseInfo), true)
 		if err != nil {
 			helper.InternalErr("Error sending response", err)
 			return
@@ -405,7 +405,7 @@ func Migration(helper *helper.Helper) {
 		if migrationUserPassword == migratePlayer.UserPassword {
 			if migratePlayer.Suspended {
 				baseInfo.StatusCode = status.MissingPlayer
-				err = helper.SendResponse(responses.NewBaseResponse(baseInfo))
+				err = helper.SendCompatibleResponse(responses.NewBaseResponse(baseInfo), true)
 				if err != nil {
 					helper.InternalErr("Error sending response", err)
 					return

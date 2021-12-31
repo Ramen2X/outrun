@@ -30,7 +30,7 @@ func SendApollo(helper *helper.Helper) {
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.NewBaseResponse(baseInfo)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
@@ -47,7 +47,7 @@ func SetNoahID(helper *helper.Helper) {
 	helper.DebugOut("Noah ID: %v", request.NoahID)
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.NewBaseResponse(baseInfo)
-	err = helper.SendResponse(response)
+	err = helper.SendCompatibleResponse(response, true)
 	if err != nil {
 		helper.InternalErr("Error sending response", err)
 	}
