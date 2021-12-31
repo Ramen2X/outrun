@@ -430,7 +430,9 @@ func GetFirstLaunchChao(helper *helper.Helper) { // 1.0.0 endpoint that triggers
 		player.ChaoState[chaoIndex].Acquired = 1
 		player.ChaoState[chaoIndex].Level = 0 // starting level
 	} else {
-		helper.DebugOut("Somehow, player already owns Hero Chao!!") // Should never happen!!!
+		/* No companion level up code is present here to prevent a user from gaining free level ups by sending a request to the endpoint,
+		force closing the game before the tutorial finishes, and then sending another request to get an additional Hero Chao.*/
+		helper.DebugOut("Player already owns Hero Chao!!") // Should never happen on the first connection with endpoint
 	}
 	baseInfo := helper.BaseInfo(emess.OK, status.OK)
 	response := responses.FirstLaunchChao(baseInfo, player.PlayerState, player.ChaoState)
